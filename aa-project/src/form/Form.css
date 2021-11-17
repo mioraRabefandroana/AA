@@ -1,0 +1,27 @@
+.field input{
+    width: 300px;
+    border-radius: 17px;
+    border: unset;
+    padding: 5px 15px;
+    font-size: 20px;
+}
+
+.field{
+    padding: 5px;
+}
+
+
+.btn{
+    border: 1px solid white;
+    background: none;
+    color: white;
+    padding: 10px 38px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 22px;
+}
+.btn:hover{
+    background: rgba(0, 0, 0, 0.5);
+    /* cursor: pointer; */
+    /* text-decoration: underline; */
+}
