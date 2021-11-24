@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from '../logo.svg';
 import './Explore.css';
-import { Button, SearchBar } from '../form/Form';
+import { Button, FloatButton, SearchBar } from '../form/Form';
 import aaLogo from '../img/aa_logo.png';
 import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE } from '../Utilities';
 import tmpMenuIcon from '../img/super-star-2.jpg'
@@ -47,7 +47,8 @@ const PUBLICATIONS = [
         text: "Lorem ipsum dolor sit amet. Id dicta accusamus in itaque reprehenderit ad magni deleniti velit voluptas est nisi obcaecati et magnam consequatur eos architecto cupiditate.",
         publisher: {
             name: "Jain",
-            image: logo
+            image: logo,
+            badges: [BADGE.star, BADGE.superstar]
         },
         
         type: PUBLICATION_CONTENT_TYPE.image,
@@ -64,6 +65,15 @@ const PUBLICATIONS = [
                     image: logo,
                     badges: [BADGE.star]
                 }
+            },
+            {
+                text : "Lorem ipsum dolor sit amet. Ut mollitia eius ut facilis reiciendis et dolor quaerat ex rerum natus ex veniam aliquid qui quod quia",
+                publishTime : "2min",
+                author: {
+                    name: "Parry Hotter",
+                    image: logo,
+                    badges: [BADGE.star]
+                }
             }
         ]
     }
@@ -71,27 +81,33 @@ const PUBLICATIONS = [
 PUBLICATIONS.push(PUBLICATIONS[0])
 PUBLICATIONS.push(PUBLICATIONS[0])
 
+
+const USER = {
+    name: "username",
+    image: logo
+}
+
 export function Explore({}){
-
+    // #TODO : notifications et messages
     console.log(PUBLICATIONS);
-
+    const rightMenu = USER ? 
+        <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/> 
+        : "";
     return <div id="explore">
-        <ExploreHeader/>        
+        <ExploreHeader user={ USER }/>        
         <ExploreLeftMenu/>
-        <ExploreContent topArtists={ TOP_ARTISTS } publications={ PUBLICATIONS }/>
+        <ExploreContent topArtists={ TOP_ARTISTS } publications={ PUBLICATIONS }/>    
+        { rightMenu }
         <ExploreFooter/>
     </div>;
 }
 
-
-
-
-function ExploreHeader({}){
+function ExploreHeader({user}){
     return <nav id="explore-nav" className="nav top-nav">
         <ExploreIcon/>
         <ExplorerMenu/>
         <SearchBar id="explore-search-bar"/>
-        <InfoUser/>
+        <UserInfo user={ user }/>
     </nav>
 }
 
@@ -129,12 +145,14 @@ function NavMenuItem({menu}){
     </a>
 }
 
-function InfoUser({}){
-    return <div>
-        <Button className="nav-connexion-btn">Se connecter</Button>
+function UserInfo({user}){
+    const className = (user) ? "user-info-btn" : "nav-connexion-btn";
+    const text = (user) ? user.name : "Se connecter";
+    const icon = (user) ? user.image : null;
+    return <div className="user-info">
+        <Button className={ className } icon={ icon }>{ text }</Button>
     </div>
 }
-
 
 function ExploreContent({topArtists, publications}){
     console.log(publications);
@@ -234,4 +252,32 @@ function LeftSubMenuItem({menu}){
             <div>{menu.description}</div>
         </div>
     </li>
+}
+
+
+function ExploreRightMenu({notifications, messages}){
+    // #TODO : customiser le "title"
+    // #TODO : 
+    const notificationClick = function(e){};
+    const messageClick = function(e){};
+    return <div className="explore-right-menu menu">
+        <ul>
+            <li>
+                <FloatButton 
+                    icon={logo} 
+                    title="notifications" 
+                    onClick={ notificationClick } 
+                    className="notification-btn" 
+                    number={ notifications.length }/>
+            </li>
+            <li>
+                <FloatButton 
+                    icon={logo} 
+                    title="messages" 
+                    onClick={ messageClick } 
+                    className="message-btn" 
+                    number={ messages.length }/>
+            </li>
+        </ul>
+    </div>
 }

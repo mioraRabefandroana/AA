@@ -62,10 +62,25 @@ nav{
   z-index: 1;
 }
 
+.menu ul,
+.menu li{
+  list-style: none;
+  padding: unset;
+  margin: unset;
+  width: fit-content;
+}
+
 .footer{
   grid-area: footer;
   align-self: end;
 }
 .top-nav{
   padding: 10px 0px;
+}
+
+
+button{
+  background: none;
+  border: unset;
+  padding: unset;
 }

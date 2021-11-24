@@ -1,9 +1,9 @@
 #explore{  
     display: grid;
-    grid-template-areas: "nav nav" "menu content" "footer footer";
+    grid-template-areas: "nav nav nav" "l_menu content r_menu" "footer footer footer";
     min-height: 100%;
     grid-template-rows: auto 1fr auto;
-    grid-template-columns: max-content;
+    grid-template-columns: max-content 1fr max-content;
     
 
     background-color: #0000000f;
@@ -66,6 +66,20 @@
     box-shadow: 2px 2px 8px white;
 }
 
+
+.user-info-btn{
+    font-size: 12px;
+    padding: unset;
+    display: grid;
+    grid-template-rows: max-content max-content;
+    border: unset;
+}
+.user-info-btn:hover{
+    background: unset;
+}
+.user-info-btn img{
+    width: 100px;
+}
 /** LEFT MENU *********************************************/
 .left-menu{
     padding-top: 85px;
@@ -73,6 +87,8 @@
     background: #ffffffd9;
     padding-right: 20px;
     padding-left: 20px;
+
+    grid-area: l_menu;
 }
 .left-menu ul{
     margin: unset;
@@ -109,4 +125,19 @@
 .left-menu>ul{
     display: grid;
     grid-row-gap: 10px;
+}
+
+/** RIGHT MENU *******************************************/
+.explore-right-menu{
+    grid-area: r_menu;
+}
+
+.explore-right-menu{
+    width: fit-content;
+    position: fixed;
+    right: 0px;
+    top: 110px;
+    grid-area: r_menu;
+    padding-top: 24px;
+    padding-right: 20px;
 }

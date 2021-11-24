@@ -25,3 +25,19 @@
     /* cursor: pointer; */
     /* text-decoration: underline; */
 }
+
+.float-btn{
+    cursor: pointer;
+}
+.float-btn img{
+    width: 70px;
+}
+.float-info{
+    color: white;
+    position: absolute;
+    transform: translate(51px, -3px);
+    width: 15px;
+    background: red;
+    border-radius: 7px;
+    text-align: center;
+}

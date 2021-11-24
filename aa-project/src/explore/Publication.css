@@ -10,10 +10,14 @@
 }
 
 .like-btn{
-    width: 50px;
+    width: 43px;
     background: unset;
     cursor: pointer;
     border: unset;
+}
+
+.like-btn img{
+    width: 100%;
 }
 
 .publication{
@@ -36,9 +40,11 @@
     color: red;
     font-size: 11px;
     align-items: center;
+    grid-column-gap: 2px;
 }
 .publication-likes img{
-    width: 21px;
+    width: 10px;
+    margin-top: 1px;
 }
 
 .publication-details-wrapper{
@@ -91,6 +97,10 @@
 .publication-publisher-name{
     color: blue;
     font-weight: bold;
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    align-items: center;
 }
 
 
@@ -99,7 +109,11 @@
 }
 
 
-
+.publication-comments-details{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 5px;
+}
 
 
 /* comments */
@@ -176,6 +190,10 @@
 
 .publication-comments-wrapper{
     width: 310px;
+    display: grid;
+    grid-auto-flow: row;
+    grid-auto-rows: max-content;
+    grid-template-rows: 1fr max-content;
 }
 
 .publication-content-wrapper,
@@ -186,7 +204,43 @@
     padding: 10px;
 }
 
+.publication-comments{
+    display: grid;
+    grid-auto-flow: row;
+    grid-auto-rows: max-content;
+    grid-row-gap: 10px;
+}
+
 .comment-author-badge{
     display: inline;
     width: 25px;
+}
+
+
+.cshare-btn img,
+.comment-btn img{
+    width: 25px;
+}
+
+.comment-btn ,
+.cshare-btn{
+    cursor: pointer;
+}
+
+.share-number,
+.comment-number{
+    font-size: 11px;
+}
+
+.share-btn-wrapper,
+.comment-btn-wrapper{
+    display: grid;
+    grid-auto-flow: row;
+    grid-row-gap: 0px;
+}
+
+.share-btn-wrapper *,
+.comment-btn-wrapper *{
+    margin: auto;
+    text-align: center;
 }

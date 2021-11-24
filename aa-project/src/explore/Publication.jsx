@@ -1,5 +1,11 @@
 import React from 'react';
 import logo from '../logo.svg';
+import likeLineIcon from '../img/heart-line.svg';
+import likeFilledIcon from '../img/heart-filled.svg';
+import commentLineIcon from '../img/comment-line.png';
+import commentFiledIcon from '../img/comment-filled.png';
+import shareLineIcon from '../img/share-line.png';
+import shareFilledIcon from '../img/share-filled.png';
 import './Publication.css';
 import { cuniqid, PUBLICATION_CONTENT_TYPE, shortenNumber } from '../Utilities';
 
@@ -20,7 +26,7 @@ function PublicationContentWrapper({publication}){
 
         <div className="publication-details-wrapper">     
             <div className="publication-details publication-details-name-and-likes">
-                <PublicationArtistName>{ publication.publisher.name }</PublicationArtistName>
+                <PublisherName badges={publication.publisher.badges}>{ publication.publisher.name }</PublisherName>
                 <PublicationLikes likesNumber={ likesNumber }/>
             </div>       
             <div className="publication-details publication-details-text-and-liked">
@@ -29,16 +35,43 @@ function PublicationContentWrapper({publication}){
             </div>
         </div>
 
-        <PublicationPublisher publisher={ publication.publisher }/>        
+        <Publisher publisher={ publication.publisher }/>        
     </div>
 }
 
 function PublicationCommentsWrapper({comments}){
     // console.log(comments);
     return <div className="publication-comments-wrapper">
+        <div className="publication-comments">
         {
             comments.map( comment =>  <Comment comment={ comment } key={ cuniqid(comment.author.name) }/>)
+        
         }        
+        </div>
+        <div className="publication-comments-details">
+            <CommentButton commented={ false } commentNumber={ 100 }/>
+            <ShareButton shared={ false } shareNumber={ 100 } />
+        </div>
+    </div>
+}
+
+function CommentButton({commented, commentNumber}){
+    const commentIcon = commented ? commentFiledIcon : commentLineIcon;
+    return <div className="comment-btn-wrapper">
+        <button className="comment-btn">
+            <img src={ commentIcon } alt="comment" />
+        </button>
+        <div className="comment-number">{ shortenNumber(commentNumber) }</div>
+    </div>
+}
+
+function ShareButton({shared, shareNumber}){
+    const commentIcon = shared ? shareFilledIcon : shareLineIcon;
+    return <div className="share-btn-wrapper">
+        <button className="cshare-btn">
+            <img src={ commentIcon } alt="share" />
+        </button>
+        <div className="share-number">{ shortenNumber(shareNumber) }</div>
     </div>
 }
 
@@ -91,32 +124,34 @@ function PublicationText({children}){
 }
 
 function LikeButton({liked}){
-    // #TODO : Remplacer par les vraie icône 
-    const likeIcon = liked ? logo : logo;
-    return <button className="like-btn" title="like">
-        <img src={ likeIcon } alt="like" />
+    const likeIcon = liked ? likeFilledIcon : likeLineIcon;
+    const likeTitle = liked ? "unlike" : "like";
+    return <button className="like-btn" title={ likeTitle }>
+        <img src={ likeLineIcon } alt="like" />
     </button>
 }
 
 function PublicationLikes({likesNumber}){
-    // #TODO : Remplacer par la vraie icône 
-    const fiiledLikeIcon = logo;
     const numbers = shortenNumber(likesNumber);
     return <div className="publication-likes" title={ numbers }>
-        <img src={ fiiledLikeIcon } alt="like" />
+        <img src={ likeFilledIcon } alt="like" />
         <div className="publication-likes-number">
             { numbers }
         </div>
     </div>
 }
 
-function PublicationArtistName({children}){
+function PublisherName({badges, children}){
+    const badgeElts = (badges && badges.length > 0)? 
+        badges.map(badge => <UserBadge name={ badge.name } icon={ badge.icon } key={ cuniqid(badge.name) }/>)
+        : "";
     return <div className="publication-publisher-name">
         { children }
+        { badgeElts }
     </div>
 }
 
-function PublicationPublisher({publisher}){
+function Publisher({publisher}){
     return <div className="publication-publisher">
         <img src={ publisher.image } alt={ publisher.name } />
     </div>
