@@ -1,41 +1,28 @@
-import React, {Component} from 'react'
-import './Home.css'
-import aaLogo from '../img/aa_logo.png'
-import mastercard from '../img/mastercard.png'
-import { Button } from '../form/Form';
+import React from 'react';
+import './Home.css';
+import aaLogo from '../img/aa_logo.png';
+import mastercard from '../img/mastercard.png';
+import { Button, SearchBar } from '../form/Form';
 import { LoginForm } from '../form/LoginForm';
+import { cuniqid } from '../Utilities'
+import { gotoExplore } from '../App';
 
 export function Home(){
-    return <>
+    return <div id="home">
         <HomeHeader/>
         <HomeContent/>
         <HomeFooter/>
-    </>;
+    </div>;
 }
 
 export function HomeHeader(){
-    return <nav>
+    return <nav id="home-nav" className="nav top-nav">
         <SearchBar id="home-search-bar"/>
     </nav>
 }
 
-export function SearchBar({placeholder, className, id}){
-    const placeholderText = placeholder || "search";
-    const searchBarClassName = "search-bar "+ (className || "");
-    
 
-    return <div className={searchBarClassName} id={id}>
-        <img src="" alt="search-icon" />
-        <input 
-        className="search-input"
-        type="text" 
-        placeholder={placeholderText}/>
-    </div>
-    
-}
-
-
-export function HomeContent(){
+function HomeContent(){
     const text = descriptionText()
     return  <div className="content" id="home-content">
         <HomeExploreButton/>
@@ -44,7 +31,7 @@ export function HomeContent(){
     </div> 
 }
 
-export function HomeFooter(){
+function HomeFooter(){
     const sponsors = getSponsors();
     return <footer>
         <div id="home-footer">
@@ -58,7 +45,7 @@ export function HomeFooter(){
             </div>
             <div id="home-sponsor-wrapper" className="home-footer-col home-footer-col-3">
                 {
-                    sponsors.map(i => <img key={i} src={mastercard} alt="" />)
+                    sponsors.map(i => <img key={ cuniqid(i) } src={ mastercard } alt="" />)
                 }
             </div>
         </div>
@@ -67,13 +54,18 @@ export function HomeFooter(){
 
 function HomeExploreButton(){
     const text = "EXPLORER";
-    return <Button icon="">{text}</Button>
+    const handleClick = function(e){
+        e.preventDefault();
+        gotoExplore();
+    }
+
+    return <Button className="home-explore-btn" icon="" onClick={ handleClick }>{text}</Button>
 }
 
 
 function AAHomeDescription({children}){
     return <div className="home-description-wrapper">
-        <img className="home-description-img" src={aaLogo} alt="" />
+        <img className="home-description-img" src={ aaLogo } alt="" />
         <div className="home-description">
             {children}
         </div>
@@ -89,8 +81,7 @@ function getSponsors(){
     // #TODO : get from DB
     const n = 15;
     const sponsors = [];
-    for(let i=0; i<n; i++)
-    {
+    for(let i=0; i<n; i++){
         sponsors.push("sponsor-"+i);
     }
     return sponsors;

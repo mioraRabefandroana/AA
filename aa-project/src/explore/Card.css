@@ -1,0 +1,96 @@
+.card-list{
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: 0px;
+    grid-auto-columns: max-content;
+
+    padding: 10px;
+}
+.card{
+    width: 200px;
+    border: 1px solid white;
+    border-radius: 10px;
+    background: linear-gradient(0deg, rgba(195,34,34,0.9696079115239846) 39%, rgba(233,45,253,0.9556023092830882) 100%);
+    font-size: 12px;
+    display: grid;
+    align-content: center;
+    padding: 0px 10px 10px 10px;
+}
+.card ul, .card li{
+    list-style-type: none;
+    padding: unset;
+    margin: unset;
+}
+.card-follow-btn{
+    position: absolute;
+    justify-self: end; 
+    padding: unset;
+    margin: unset;
+    margin-right: -8px;
+    background: none;
+    border: unset;
+}
+.card-follow-btn img{
+    width : 20px;
+    border-radius: 2px;
+}
+
+.card-image{
+    padding: 10px;
+    width: fit-content;
+    overflow: hidden;
+    margin: auto;
+    margin-bottom: unset;
+    padding-bottom: unset;
+}
+.card-image img{
+    --card-image-width: 150px;
+
+    width: var(--card-image-width);
+    height: var(--card-image-width);
+    border-radius: var(--card-image-width);
+    border: 5px solid white;
+}
+
+.card-followers-number{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 2px;
+    color: white;
+}
+.card-followers-number img{
+    width: 20px;
+}
+
+.card-product-item img{
+    width: 20px;
+}
+
+.card-name{
+    font-size: 13px;
+    font-weight: bold;
+    color: rgb(5, 5, 167)
+}
+
+.card-line-sep{
+    height: 1px;
+    border-top: 1px solid white;
+    margin: 0px 30px;
+}
+
+.card-content-header{
+    display: grid;
+    grid-template-columns: auto max-content;
+}
+
+.card-description{
+    color: gold;
+    padding: 0px 10px;
+}
+
+.card-product-item{
+    padding-left: 10px !important;
+}
+.card-product-list-title{
+    color: white;
+}

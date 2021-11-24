@@ -5,7 +5,7 @@ export function LoginForm(){
     return <form id="login-form">
         <UserField/>
         <PasswordField/>
-        <Button>connexion</Button>
+        <Button className="login-connexion-btn">connexion</Button>
         <div className="login-register-btn-wrapper">
             <RegisterButton/>
         </div>
@@ -16,13 +16,13 @@ function Field({name, id, type, placeholder, icon}){
     const inputType = type || "text";
     const inputPlaceholder = placeholder || "";
 
-    return <div className="field" id={id}>
-        {icon ? <img src={icon}/> : ""}
+    return <div className="field" id={ id }>
+        { icon ? <img src={ icon } alt={ name } /> : "" }
         <input 
             className="field-input" 
-            type={inputType} 
-            name={name} 
-            placeholder={inputPlaceholder}/>
+            type={ inputType } 
+            name={ name } 
+            placeholder={ inputPlaceholder }/>
     </div>
 }
 
@@ -36,7 +36,8 @@ function PasswordField(){
 }
 
 function RegisterButton(){
+    const registerBtnText = "S'enregistrer";
     return <a href="#register" className="login-register-btn">
-        S'enregistrer
+        { registerBtnText }
     </a>
 }
