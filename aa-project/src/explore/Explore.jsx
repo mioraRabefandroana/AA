@@ -1,8 +1,29 @@
 import React from 'react';
 import logo from '../logo.svg';
+import bellFilled from '../img/bell-filled.png';
+import messageFilled from '../img/message-filled.png';
+import fire from '../img/fire.png';
+import videoPlay from '../img/video-play.png';
+import musicalNote from '../img/musical-note.png';
+import photos from '../img/photos.png';
+import paintPalette from '../img/paint-palette.png';
+import shoppingCart from '../img/shopping-cart.png';
+import defaultUserIcon from '../img/user.png';
+import museeDuLouvreIcon from '../img/musee-du-louvre.png';
+import pabloPicasso from '../img/pablo-picasso.jpg';
+import plusIcon from '../img/plus-sign.png';
+import minusIcon from '../img/minus-sign.png';
+import afficheAthome from '../img/affiche-athome.jpeg';
+import popcornTv from '../img/popcorn.png';
+import brigitteLecordier from '../img/brigitte-lecordiert.png';
+import liveIcon from '../img/live.png';
+
 import './Explore.css';
+
 import { Button, FloatButton, SearchBar } from '../form/Form';
 import aaLogo from '../img/aa_logo.png';
+import jainImage from '../img/jain.jpg';
+
 import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE } from '../Utilities';
 import tmpMenuIcon from '../img/super-star-2.jpg'
 import { CardList } from './Card';
@@ -47,7 +68,7 @@ const PUBLICATIONS = [
         text: "Lorem ipsum dolor sit amet. Id dicta accusamus in itaque reprehenderit ad magni deleniti velit voluptas est nisi obcaecati et magnam consequatur eos architecto cupiditate.",
         publisher: {
             name: "Jain",
-            image: logo,
+            image: jainImage,
             badges: [BADGE.star, BADGE.superstar]
         },
         
@@ -84,8 +105,66 @@ PUBLICATIONS.push(PUBLICATIONS[0])
 
 const USER = {
     name: "username",
-    image: logo
+    image: defaultUserIcon
 }
+
+
+// #TODO : changer les icônes/images du menu
+const LEFT_MENUS = [
+    {
+        name: 'Expositions',
+        className: 'exposition-menu',
+        description: 'Expositions',
+        icon: museeDuLouvreIcon,
+        folded: true,
+        content: [
+            {
+                name: 'Pablo Picasso',
+                description: "le travail d'une vie",
+                icon: pabloPicasso
+            },
+            {
+                name: 'Pablo Picasso',
+                description: "le travail d'une vie",
+                icon: tmpMenuIcon
+            },
+            {
+                name: 'Pablo Picasso',
+                description: "le travail d'une vie",
+                icon: tmpMenuIcon
+            }
+        ]
+    },
+    {
+        name: 'Séance vidéos',
+        description: 'Séance vidéos',
+        className: 'seance-video-menu',
+        icon: popcornTv,
+        folded: false,
+        content: [
+            {
+                name: 'Elisabeth Leuvrey',
+                description: "AT(h)OME",
+                icon: afficheAthome
+            }
+        ]
+    },
+    {
+        name: 'Live',
+        description: 'Live',
+        className: 'live-menu',
+        icon: liveIcon,
+        folded: false,
+        content: [
+            {
+                name: 'Brigitte Lecordier',
+                description: "FAQ: DBS - OUI OUI",
+                icon: brigitteLecordier 
+            }
+        ]
+    }
+];
+
 
 export function Explore({}){
     // #TODO : notifications et messages
@@ -124,12 +203,12 @@ function ExploreIcon(){
 function ExplorerMenu({}){
     // #TODO : mettre les vraies icône pour chaqu menu
     const menus = [
-        {name: "tendance", icon: tmpMenuIcon},
-        {name: "vidéos", icon: tmpMenuIcon},
-        {name: "musique", icon: tmpMenuIcon},
-        {name: "photos", icon: tmpMenuIcon},
-        {name: "peinture", icon: tmpMenuIcon},
-        {name: "achat", icon: tmpMenuIcon}
+        {name: "tendance", icon: fire},
+        {name: "vidéos", icon: videoPlay},
+        {name: "musique", icon: musicalNote},
+        {name: "photos", icon: photos},
+        {name: "peinture", icon: paintPalette},
+        {name: "boutique", icon: shoppingCart}
     ]
     return <div id="explore-nav-menu">
         <ul>
@@ -148,7 +227,7 @@ function NavMenuItem({menu}){
 function UserInfo({user}){
     const className = (user) ? "user-info-btn" : "nav-connexion-btn";
     const text = (user) ? user.name : "Se connecter";
-    const icon = (user) ? user.image : null;
+    const icon = (user && user.image) ? user.image : defaultUserIcon;
     return <div className="user-info">
         <Button className={ className } icon={ icon }>{ text }</Button>
     </div>
@@ -158,7 +237,6 @@ function ExploreContent({topArtists, publications}){
     console.log(publications);
 
     return <div id="explore-content" className="content">
-        <div>
             <CardList artists={ topArtists } />
             <div className="publications-wrapper">
             { 
@@ -166,7 +244,6 @@ function ExploreContent({topArtists, publications}){
             }
 
             {/* { <Publication publication={ publications[0] }/> } */}
-            </div>
         </div>
     </div>
 }
@@ -178,44 +255,7 @@ function ExploreFooter({}){
 }
 
 function ExploreLeftMenu({}){
-    // #TODO : changer les icônes/images du menu
-    const leftMenus = [
-        {
-            name: 'Expositions',
-            description: 'Expositions',
-            icon: tmpMenuIcon,
-            content: [
-                {
-                    name: 'Pablo Picasso',
-                    description: "le travail d'une vie",
-                    icon: tmpMenuIcon
-                },
-                {
-                    name: 'Pablo Picasso',
-                    description: "le travail d'une vie",
-                    icon: tmpMenuIcon
-                },
-                {
-                    name: 'Pablo Picasso',
-                    description: "le travail d'une vie",
-                    icon: tmpMenuIcon
-                }
-            ]
-        },
-        {
-            name: 'Expositions',
-            description: 'Expositions',
-            icon: tmpMenuIcon,
-            content: [
-                {
-                    name: 'Pablo Picasso',
-                    description: "le travail d'une vie",
-                    icon: tmpMenuIcon
-                }
-            ]
-        }
-    ];
-
+    const leftMenus = LEFT_MENUS;
     // #TODO : Ajouter l'icône fold/unfold
     return <div className="left-menu menu">
         <ul>
@@ -227,14 +267,14 @@ function ExploreLeftMenu({}){
 }
 
 function LeftMenuItem({menu}){
-    // #TODO : mettre la vraie icône de fold/unfold
-    // #TODO : Gerer le mécanisme de fold/unfold (avec le changement d'icône)
-    const foldIcon = logo;
-    return <li className="left-menu-item">
+    const foldIcon = menu.folded ? minusIcon : plusIcon;
+    const title = menu.folded ? "réduire" : "voir plus";
+    const menuItemClassName = "left-menu-item " + menu.className;
+    return <li className={ menuItemClassName }>
         <div className="left-menu-item-header">
             <img src={ menu.icon } alt="-" className="left-menu-item-icon"/>
             {menu.name}
-            <img src={ foldIcon } alt="-" className="left-menu-item-fold-btn"/>
+            <img src={ foldIcon } alt="-" className="left-menu-item-fold-btn" title={ title }/>
         </div>
         <ul>
             {
@@ -245,39 +285,50 @@ function LeftMenuItem({menu}){
 }
 
 function LeftSubMenuItem({menu}){
-    return <li className="left-submenu-item">
-        <img src={menu.icon} alt={menu.name} />
+    const title = menu.description + "\n-" + menu.name;
+    return <li className="left-submenu-item" title={title}>
+        <img src={menu.icon} alt={menu.name} className="left-submenu-icon"/>
         <div>
-            <div className="submenu-header">{menu.name}</div>
-            <div>{menu.description}</div>
+            <div className="submenu-description">{menu.description}</div>
+            <a className="submenu-header" href={"#"+menu.name}>{menu.name}</a>
         </div>
     </li>
 }
 
 
 function ExploreRightMenu({notifications, messages}){
-    // #TODO : customiser le "title"
-    // #TODO : 
-    const notificationClick = function(e){};
-    const messageClick = function(e){};
     return <div className="explore-right-menu menu">
         <ul>
             <li>
-                <FloatButton 
-                    icon={logo} 
-                    title="notifications" 
-                    onClick={ notificationClick } 
-                    className="notification-btn" 
-                    number={ notifications.length }/>
+                <NotificationFloatButton notifications={ notifications }/>
             </li>
             <li>
-                <FloatButton 
-                    icon={logo} 
-                    title="messages" 
-                    onClick={ messageClick } 
-                    className="message-btn" 
-                    number={ messages.length }/>
+                <MessageFloatButton messages={ messages }/>
             </li>
         </ul>
     </div>
+}
+
+function NotificationFloatButton({notifications}){
+    const notificationClick = function(e){};
+    const notificationNumber = notifications.length ;
+    const title = notificationNumber ? notificationNumber + " notifications" : "Pas de notification"
+    return <FloatButton 
+        icon={ bellFilled } 
+        title={ title } 
+        onClick={ notificationClick } 
+        className="notification-btn" 
+        number={ notificationNumber }/>
+}
+
+function MessageFloatButton({messages}){
+    const messageClick = function(e){};
+    const messageNumber = messages.length ;
+    const title = messageNumber ? messageNumber + " messages" : "Pas de message"
+    return <FloatButton 
+        icon={ messageFilled } 
+        title={ title } 
+        onClick={ messageClick } 
+        className="message-btn" 
+        number={ messageNumber }/>
 }

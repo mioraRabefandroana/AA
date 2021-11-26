@@ -13,8 +13,9 @@ export function Button({icon, children, onClick, className}){
 export function FloatButton({icon, title, onClick, className, number}){
     const btnClassName = "float-btn "+className;
     const btnIcon = icon ? <img src={icon} alt={ title } /> : "";
-    const info = number ? <div className="float-info">{ number }</div> : ""
-    return <button className={ btnClassName } onClick={ onClick } title={ title }>
+    const info = number ? <div className="float-info">{ number }</div> : "";
+    const active = !!number;   
+    return <button className={ btnClassName } onClick={ onClick } title={ title } active={ ""+active }>
         { info }
         { btnIcon }
     </button>

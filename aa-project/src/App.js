@@ -6,6 +6,8 @@ import { Explore } from './explore/Explore';
 
 export const root = document.getElementById('root');
 
+// # comment & share button icon color : #ffde00
+
 function App() {
   return (
     <Home/>
@@ -20,8 +22,24 @@ export function gotoHome()
 }
 export function gotoExplore()
 {
-    ReactDOM.render(<Explore/>, root)
+    ReactDOM.render(<Explore/>, root);
 }
+
+
+/**
+ * #TODO : fit explore page
+ * ~#DEPRECATED
+ */
+function fitContent(){
+  window.addEventListener('load', function(){
+    const contentElt = document.querySelector(".content");
+    if(!contentElt)
+      return;
+    const height = document.body.clientHeight - contentElt.offsetTop;
+    contentElt.style.maxHeight = height;
+    console.log('fit');
+  });  
+};
 
 
 export default App;

@@ -2,6 +2,8 @@ import React from 'react';
 import './Card.css';
 import { cuniqid, PRODUCT_TYPE, PRODUCT_TYPE_ICON, shortenNumber } from '../Utilities'
 import tmpMenuIcon from '../img/super-star-2.jpg'
+import cardFollowBtnIcon from '../img/check-mark.png'
+import followersNumberIcon from '../img/followers.png'
 
 
 export function CardList({artists}){
@@ -27,10 +29,10 @@ function Card({artist}){
 
 function CardFollowBtn({isFollowedByCurrentUser}){
     // #TODO : remplacer l'icône par la vraie : l'étoile vide/plein
-    const cardFollowBtnIcon = isFollowedByCurrentUser ? "" : tmpMenuIcon;
-    const title = isFollowedByCurrentUser ? "unfollow" : "follow";
+    const btnIcon = isFollowedByCurrentUser ? "" : cardFollowBtnIcon;
+    const title = isFollowedByCurrentUser ? "ne plus suivre" : "suivre";
     return <button className="card-follow-btn" title={ title }>
-        <img src={ cardFollowBtnIcon } alt="follow" />
+        <img src={ btnIcon } alt="follow" />
     </button>
 }
 
@@ -58,9 +60,10 @@ function CardContent({artist}){
 
 function CardFollowersNumber({followersNumber}){
     // #TODO : mettre la vraie icône de follower (le petit home sous form OK)
-    return <div className="card-followers-number">
+    const title = shortenNumber(followersNumber)+" abonné(e)s";
+    return <div className="card-followers-number" title={ title }>
         { shortenNumber(followersNumber) }
-        <img src={ tmpMenuIcon } alt="follower number" />
+        <img src={ followersNumberIcon } alt="follower number" />
     </div>
 }
 

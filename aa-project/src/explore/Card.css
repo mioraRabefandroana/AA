@@ -23,15 +23,22 @@
 }
 .card-follow-btn{
     position: absolute;
-    justify-self: end; 
-    padding: unset;
+    justify-self: end;
     margin: unset;
     margin-right: -8px;
+    margin-top: 2px;
     background: none;
-    border: unset;
+    border: 2px solid white;
+    padding: 0px 2px;
+    border-radius: 5px;
+    cursor: pointer;
 }
+.card-follow-btn[active=true]{
+    background-color: gold;
+}
+
 .card-follow-btn img{
-    width : 20px;
+    width : 15px;
     border-radius: 2px;
 }
 
@@ -69,7 +76,8 @@
 .card-name{
     font-size: 13px;
     font-weight: bold;
-    color: rgb(5, 5, 167)
+    color: rgb(5, 5, 167);
+    text-shadow: 0 0 7px white;
 }
 
 .card-line-sep{

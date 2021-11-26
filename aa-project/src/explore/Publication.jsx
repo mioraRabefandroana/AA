@@ -1,11 +1,11 @@
 import React from 'react';
-import logo from '../logo.svg';
 import likeLineIcon from '../img/heart-line.svg';
 import likeFilledIcon from '../img/heart-filled.svg';
 import commentLineIcon from '../img/comment-line.png';
 import commentFiledIcon from '../img/comment-filled.png';
 import shareLineIcon from '../img/share-line.png';
 import shareFilledIcon from '../img/share-filled.png';
+
 import './Publication.css';
 import { cuniqid, PUBLICATION_CONTENT_TYPE, shortenNumber } from '../Utilities';
 
@@ -106,7 +106,10 @@ function PublicationContent({name, type, src}){
     let content = null;
     switch(type){
         case PUBLICATION_CONTENT_TYPE.image:
-        content = <PublicationImage src={ src } name={ name }/>
+            content = <PublicationImage src={ src } name={ name }/>;
+            break;
+        default:
+
     }
     return <div className="publication-content">
         { content }
@@ -127,7 +130,7 @@ function LikeButton({liked}){
     const likeIcon = liked ? likeFilledIcon : likeLineIcon;
     const likeTitle = liked ? "unlike" : "like";
     return <button className="like-btn" title={ likeTitle }>
-        <img src={ likeLineIcon } alt="like" />
+        <img src={ likeIcon } alt="like" />
     </button>
 }
 

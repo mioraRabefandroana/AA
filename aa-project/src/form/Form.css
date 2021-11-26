@@ -28,14 +28,18 @@
 
 .float-btn{
     cursor: pointer;
+    background: white;
+    border-radius: 43px;
+    width: 65px;
+    height: 65px;
 }
 .float-btn img{
-    width: 70px;
+    width: 40px;
 }
 .float-info{
     color: white;
     position: absolute;
-    transform: translate(51px, -3px);
+    transform: translate(44px, -8px);
     width: 15px;
     background: red;
     border-radius: 7px;
