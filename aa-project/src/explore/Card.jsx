@@ -6,8 +6,8 @@ import cardFollowBtnIcon from '../img/check-mark.png'
 import followersNumberIcon from '../img/followers.png'
 
 
-export function CardList({artists}){
-    return <div className="card-list">
+export function CardList({artists, id}){
+    return <div id={ id } className="card-list">
         {
             artists.map(artist => <Card key={ cuniqid(artist.name) } artist={ artist } />)
         }

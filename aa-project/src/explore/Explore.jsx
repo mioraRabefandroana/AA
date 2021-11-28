@@ -237,7 +237,7 @@ function ExploreContent({topArtists, publications}){
     console.log(publications);
 
     return <div id="explore-content" className="content">
-            <CardList artists={ topArtists } />
+            <CardList artists={ topArtists } id="top-5"/>
             <div className="publications-wrapper">
             { 
                 publications.map(publication => <Publication publication={ publication } key={ cuniqid(publication.name) }/>)
