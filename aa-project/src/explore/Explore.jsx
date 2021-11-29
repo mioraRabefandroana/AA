@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from '../logo.svg';
 import bellFilled from '../img/bell-filled.png';
 import messageFilled from '../img/message-filled.png';
@@ -24,11 +24,12 @@ import { Button, FloatButton, SearchBar } from '../form/Form';
 import aaLogo from '../img/aa_logo.png';
 import jainImage from '../img/jain.jpg';
 
-import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE } from '../Utilities';
+import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, HEADERS, API_URL, API_URLS } from '../Utilities';
 import tmpMenuIcon from '../img/super-star-2.jpg'
 import { CardList } from './Card';
 import { Publication } from './Publication';
 import { gotoHome } from '../App';
+import { getTop5, loadExploreData } from './ExploreData'
 
 // #TODO : récuperer les top artists depuis la BD
 const TOP_ARTISTS = [
@@ -172,6 +173,12 @@ export function Explore({}){
     const rightMenu = USER ? 
         <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/> 
         : "";
+    
+    useEffect(async () => { 
+        const data = await loadExploreData() ;
+        console.log("ExploreData :", data)
+    }, [])
+
     return <div id="explore">
         <ExploreHeader user={ USER }/>        
         <ExploreLeftMenu/>
