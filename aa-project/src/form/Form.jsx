@@ -4,7 +4,13 @@ import './Form.css'
 export function Button({icon, children, onClick, className}){
     const btnClassName = "btn "+className;
     const btnIcon = icon ? <img src={icon} alt={ children } /> : "";
-    return <button className={ btnClassName } onClick={ onClick } title={ children }>
+
+    const handleClick = function(e){
+        e.preventDefault();
+        onClick();
+    }
+
+    return <button className={ btnClassName } onClick={ handleClick } title={ children }>
         { btnIcon }
         { children }
     </button>

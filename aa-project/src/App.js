@@ -10,12 +10,7 @@ export const root = document.getElementById('root');
 
 // # comment & share button icon color : #ffde00
 
-function App() {
-   
-  useEffect(() => {
-      initApiConnection();    
-    }, [])
-
+function App() { 
   return (
     <Home/>
   );

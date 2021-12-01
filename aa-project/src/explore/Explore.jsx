@@ -30,6 +30,7 @@ import { CardList } from './Card';
 import { Publication } from './Publication';
 import { gotoHome } from '../App';
 import { getTop5, loadExploreData } from './ExploreData'
+import { CURRENT_USER } from '../UserManager';
 
 // #TODO : récuperer les top artists depuis la BD
 const TOP_ARTISTS = [
@@ -170,7 +171,7 @@ const LEFT_MENUS = [
 export function Explore({}){
     // #TODO : notifications et messages
     console.log(PUBLICATIONS);
-    const rightMenu = USER ? 
+    const rightMenu = CURRENT_USER ? 
         <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/> 
         : "";
     
@@ -180,7 +181,7 @@ export function Explore({}){
     }, [])
 
     return <div id="explore">
-        <ExploreHeader user={ USER }/>        
+        <ExploreHeader user={ CURRENT_USER }/>        
         <ExploreLeftMenu/>
         <ExploreContent topArtists={ TOP_ARTISTS } publications={ PUBLICATIONS }/>    
         { rightMenu }
@@ -233,7 +234,7 @@ function NavMenuItem({menu}){
 
 function UserInfo({user}){
     const className = (user) ? "user-info-btn" : "nav-connexion-btn";
-    const text = (user) ? user.name : "Se connecter";
+    const text = (user) ? user.username : "Se connecter";
     const icon = (user && user.image) ? user.image : defaultUserIcon;
     return <div className="user-info">
         <Button className={ className } icon={ icon }>{ text }</Button>

@@ -55,7 +55,7 @@ function HomeFooter(){
 function HomeExploreButton(){
     const text = "EXPLORER";
     const handleClick = function(e){
-        e.preventDefault();
+        // e.preventDefault();
         gotoExplore();
     }
 

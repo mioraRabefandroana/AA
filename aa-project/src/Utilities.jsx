@@ -36,9 +36,14 @@ export const BADGE = {
 
 export const API_URL_ORIGIN = "http://localhost:8000"
 export const API_URLS = {
-  "apiLoginUrl": API_URL_ORIGIN+"/api/login/",
+  "apiLoginUrl": API_URL_ORIGIN+"/user/login/",
   "artisteUrl": API_URL_ORIGIN+"/artiste/",
-  "test": API_URL_ORIGIN+"/test/"
+  "test": API_URL_ORIGIN+"/test/",
+
+  "userByusername" : function(username){
+      return API_URL_ORIGIN+"/utilisateur/?user__username=" + username;
+  }
+
 };
 
 export const TOKENS = {
@@ -50,35 +55,19 @@ export const HEADERS = {
   'Content-Type': 'application/json'
 }
 
-const API_USER = {
-  username: "aaapiuser",
-  password: "toortoor"
+// const API_USER = {
+//   username: "user1",
+//   password: "toortoor"
+// }
+
+// const AA_USER = {
+//   username: null,
+// }
+
+export const ERROR_MSG = {
+    AUTH_FAILED: "Echec d'authentification",
+    USER_NOT_FOUND: "Cet utilisateur n'existe pas."
 }
-
-function saveAuthentificationToken(token){
-  console.log("token :) ",token)
-  TOKENS.authentificationToken = token;
-  HEADERS.Authorization = `token ${TOKENS.authentificationToken}`;
-}
-
-export function initApiConnection(){
-  const requestOptions = {
-      method: 'POST',
-      headers: HEADERS,
-      body: JSON.stringify(API_USER)
-  };
-
-  fetch(API_URLS.apiLoginUrl, requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        saveAuthentificationToken(data.key)
-      },
-      (error)=>{
-        console.log("Erreur lors de la récupération du token");
-        console.error(error);
-      });
-}
-
 
 export function shortenNumber(number){
   // #TODO : formater le nombre envoyer. ex: 12000 => 12K

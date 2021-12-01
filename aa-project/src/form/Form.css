@@ -45,3 +45,8 @@
     border-radius: 7px;
     text-align: center;
 }
+
+.login-form-message{
+    color: red;
+    text-align: center;
+}
