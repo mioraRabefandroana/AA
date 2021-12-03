@@ -1,0 +1,63 @@
+#register-form,
+#register-success{
+    color: white;
+    width: fit-content;
+    display: block;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.61);
+    padding: 50px;
+    border-radius: 15px;
+}
+#register-form .field{
+    display: grid;
+    grid-template-columns: 180px auto;
+    align-items: center;
+}
+
+#register-sexe-field-details-wrapper{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-self: start;
+}
+#register-sexe-field-details-wrapper input{
+    width: unset;
+}
+#register-sexe-field-details-wrapper div{
+    display: gird;
+    grid-template-columns: max-content max-content;
+}
+#register-form-header{
+    text-align: center;
+}
+#register-form-footer{
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: 50px;
+}
+
+#register-success{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.register-account_type{
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: 10px;
+}
+.register-account_type input{
+    display: none;
+}
+.register-account_type-item{
+    cursor: pointer;
+    border: 1px solid white;
+    padding: 10px 20px;
+    align-content: center;
+    /* margin: auto; */
+    text-align: center;
+}
+
+.chosen-account-type{
+    background: #c72bc2;
+}

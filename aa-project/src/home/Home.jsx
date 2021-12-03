@@ -6,8 +6,14 @@ import { Button, SearchBar } from '../form/Form';
 import { LoginForm } from '../form/LoginForm';
 import { cuniqid } from '../Utilities'
 import { gotoExplore } from '../App';
+import { CURRENT_USER } from '../UserManager';
 
 export function Home(){
+    // if(CURRENT_USER){
+    //     gotoExplore();
+    //     return;
+    // }
+
     return <div id="home">
         <HomeHeader/>
         <HomeContent/>

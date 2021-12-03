@@ -12,7 +12,6 @@ export async function login(username, password){
         headers: HEADERS,
         body: JSON.stringify({username,password})
     };
-
     
     const res = await fetch(API_URLS.apiLoginUrl, requestOptions)
         .then(response => {
@@ -61,9 +60,39 @@ export let CURRENT_USER = null;
 export function saveCurrentUser(user){
     CURRENT_USER = user;
 }
-function removeCurrentUser(){
+export function removeCurrentUser(){
     CURRENT_USER = null;
 }
+
+/**
+ * register new user
+ * @param {*} user 
+ * @returns 
+ */
+export async function registerUser(user){
+    const requestOptions = {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify(user)
+    };
+
+    const res = await fetch(API_URLS.userRegister, requestOptions)
+        .then(response => {
+            if(response.ok)
+                return response.json();
+        })
+        .then(data => {
+            return data;
+            },
+            (error)=>{
+                console.log("/!\\\n", error.message)
+                throw new Error(ERROR_MSG.USER_REGISTER_FAILED);
+            })
+        
+    return res;
+
+}
+
 
 /**
  * save authetification token into the headers

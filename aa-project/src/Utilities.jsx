@@ -2,7 +2,6 @@
 import logo from './logo.svg';
 import uniqid from 'uniqid';
 
-
 export const PRODUCT_TYPE = {
     film: "film",
     video: "video",
@@ -42,7 +41,8 @@ export const API_URLS = {
 
   "userByusername" : function(username){
       return API_URL_ORIGIN+"/utilisateur/?user__username=" + username;
-  }
+  },
+  "userRegister" : API_URL_ORIGIN+"/api/user/register"
 
 };
 
@@ -66,7 +66,8 @@ export const HEADERS = {
 
 export const ERROR_MSG = {
     AUTH_FAILED: "Echec d'authentification",
-    USER_NOT_FOUND: "Cet utilisateur n'existe pas."
+    USER_NOT_FOUND: "Cet utilisateur n'existe pas.",
+    USER_REGISTER_FAILED: "Echec de la création du compte"
 }
 
 export function shortenNumber(number){
@@ -74,6 +75,8 @@ export function shortenNumber(number){
   // return number;
   return "1M";
 }
+
+
 
 /**
  * custom uniq id

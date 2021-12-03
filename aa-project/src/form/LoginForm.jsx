@@ -2,8 +2,9 @@ import './LoginForm.css';
 import { Button } from "./Form";
 import { getAuthentifiedUser, login, saveCurrentUser } from "../UserManager";
 import { useState } from 'react';
-import { gotoExplore } from '../App';
-
+import ReactDOM from 'react-dom';
+import { root, gotoExplore } from '../App';
+import { RegisterForm } from './RegisterForm';
 
 export function LoginForm(){
     const [password, setPassword] = useState(null)
@@ -38,14 +39,15 @@ export function LoginForm(){
         }        
     }
 
-    const msgElt = msg ? <div className="login-form-message">{ msg }</div> : ""
+    // const msgElt = msg ? <div className="form-message login-form-message">{ msg }</div> : ""
 
+    /** show register form */
     const register = function(){
-        console.log(username, password)
+        ReactDOM.render( <RegisterForm/>, root);
     }
 
     return <form id="login-form">
-        { msgElt }
+        <FormMessage>{ msg }</FormMessage>
         <UserField onChange={ handleUsernameChange }/>
         <PasswordField onChange={ handlePasswordChange }/>
         <Button className="login-connexion-btn" onClick={ logUser }>connexion</Button>
@@ -53,6 +55,11 @@ export function LoginForm(){
             <RegisterButton onClick={ register }/>
         </div>
     </form>
+}
+
+export function FormMessage({children, className}){
+    const msgClassName = "form-message " + className;
+    return children ? <div className={ msgClassName } >{ children }</div> : ""
 }
 
 function Field({name, id, type, placeholder, icon, onChange}){
@@ -99,9 +106,13 @@ function PasswordField({onChange}){
         onChange={ onChange }/>
 }
 
-function RegisterButton(){
+function RegisterButton({onClick}){
+    const handleClick = function(e){
+        e.preventDefault();
+        onClick(e);
+    }
     const registerBtnText = "S'enregistrer";
-    return <a href="#register" className="login-register-btn">
+    return <a href="#register" className="login-register-btn" onClick={ handleClick }>
         { registerBtnText }
     </a>
 }

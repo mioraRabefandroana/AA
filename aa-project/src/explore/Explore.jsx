@@ -233,9 +233,10 @@ function NavMenuItem({menu}){
 }
 
 function UserInfo({user}){
+    console.log(">>>",user);
     const className = (user) ? "user-info-btn" : "nav-connexion-btn";
     const text = (user) ? user.username : "Se connecter";
-    const icon = (user && user.image) ? user.image : defaultUserIcon;
+    const icon = (user) ? ( (user.image) ? user.image : defaultUserIcon ) : null;
     return <div className="user-info">
         <Button className={ className } icon={ icon }>{ text }</Button>
     </div>
