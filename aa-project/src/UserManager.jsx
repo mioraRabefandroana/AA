@@ -85,12 +85,34 @@ export async function registerUser(user){
             return data;
             },
             (error)=>{
-                console.log("/!\\\n", error.message)
                 throw new Error(ERROR_MSG.USER_REGISTER_FAILED);
             })
         
     return res;
+}
 
+
+export async function updateUser(user){
+    console.log("updateUser")
+    const requestOptions = {
+        method: 'PUT',
+        headers: HEADERS,
+        body: JSON.stringify(user)
+    };
+
+    const res = await fetch(API_URLS.updateUser(user.id), requestOptions)
+        .then(response => {
+            if(response.ok)
+                return response.json();
+        })
+        .then(data => {
+            return data;
+            },
+            (error)=>{
+                throw new Error(ERROR_MSG.USER_UPDATE_FAILED);
+            })
+        
+    return res;
 }
 
 

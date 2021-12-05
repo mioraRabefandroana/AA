@@ -1,5 +1,6 @@
 #register-form,
-#register-success{
+#register-success,
+.profile-content{
     color: white;
     width: fit-content;
     display: block;

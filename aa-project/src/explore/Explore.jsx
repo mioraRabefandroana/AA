@@ -28,7 +28,7 @@ import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, HEADERS, API_UR
 import tmpMenuIcon from '../img/super-star-2.jpg'
 import { CardList } from './Card';
 import { Publication } from './Publication';
-import { gotoHome } from '../App';
+import { gotoHome, gotoLogin, gotoProfile } from '../App';
 import { getTop5, loadExploreData } from './ExploreData'
 import { CURRENT_USER } from '../UserManager';
 
@@ -168,20 +168,21 @@ const LEFT_MENUS = [
 ];
 
 
-export function Explore({}){
+export function Explore({user}){
     // #TODO : notifications et messages
-    console.log(PUBLICATIONS);
-    const rightMenu = CURRENT_USER ? 
+    // console.log(PUBLICATIONS);
+    const rightMenu = user ? 
         <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/> 
         : "";
     
     useEffect(async () => { 
+        console.log("auth user = ", user);
         const data = await loadExploreData() ;
         console.log("ExploreData :", data)
     }, [])
 
     return <div id="explore">
-        <ExploreHeader user={ CURRENT_USER }/>        
+        <ExploreHeader user={ user }/>        
         <ExploreLeftMenu/>
         <ExploreContent topArtists={ TOP_ARTISTS } publications={ PUBLICATIONS }/>    
         { rightMenu }
@@ -189,7 +190,7 @@ export function Explore({}){
     </div>;
 }
 
-function ExploreHeader({user}){
+export function ExploreHeader({user}){
     return <nav id="explore-nav" className="nav top-nav">
         <ExploreIcon/>
         <ExplorerMenu/>
@@ -237,8 +238,16 @@ function UserInfo({user}){
     const className = (user) ? "user-info-btn" : "nav-connexion-btn";
     const text = (user) ? user.username : "Se connecter";
     const icon = (user) ? ( (user.image) ? user.image : defaultUserIcon ) : null;
+
+    const handleClick = function(){
+        if(user)
+            gotoProfile({user});
+        else
+            gotoLogin();
+    }
+
     return <div className="user-info">
-        <Button className={ className } icon={ icon }>{ text }</Button>
+        <Button className={ className } icon={ icon } onClick={ handleClick }>{ text }</Button>
     </div>
 }
 

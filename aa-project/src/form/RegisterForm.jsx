@@ -3,9 +3,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { useState } from 'react';
 import { registerUser, saveCurrentUser } from '../UserManager';
-import { gotoExplore, root } from '../App';
+import { gotoExplore, gotoProfile, root } from '../App';
 import { FormMessage } from './LoginForm';
 import './RegisterForm.css'
+import { Field } from './Form';
+import { Profile } from '../explore/Profile';
 export function RegisterForm({}){
     const [user, setUser] = useState({});
     const [msg, setmessage] = useState("")
@@ -49,7 +51,7 @@ export function RegisterForm({}){
         <RegisterTextField name="prenom" label="Prénoms" id="register-prenom" onChange={ handleChange }/>
         <RegisterTextField name="username" label="pseudo" id="register-prenom" onChange={ handleChange }/>
         <RegisterSexeField name="sexe" id="register-sexe" label="Sexe" onChange={ handleChange }/>
-        <RegisterMailField name="email" label="E-mail" id="register-mail" onChange={ handleChange }/>
+        <RegisterMailField name="email" label="E-mail" id="register-email" onChange={ handleChange }/>
         <RegisterTextField name="tel" label="Téléphone" id="register-telephone" onChange={ handleChange }/>
 
         <RegisterDateField name="date_de_naissance" label="Date de naissance" id="register-date_de_naissance" onChange={ handleChange }/>
@@ -92,7 +94,7 @@ function RegisterAccountTypeField({onChange}){
 function RegisterSuccess({user, children}){
     const handleClick = function(e){
         e.preventDefault();
-        gotoExplore();
+        gotoProfile({user});
     }
 
     const message = "Heureux de t'acceuillr parmis nous "+user.username+"!";
@@ -103,20 +105,20 @@ function RegisterSuccess({user, children}){
 }
 
 function RegisterTextField({label, id, name, onChange}){
-    return <RegisterField {...{label, id, name, onChange}}/>
+    return <Field {...{label, id, name, onChange}}/>
 }
 function RegisterPasswordField({label, id, name, onChange}){
     const type = "password";
-    return <RegisterField {...{label, id, name, type, onChange}}/>
+    return <Field {...{label, id, name, type, onChange}}/>
 }
 function RegisterMailField({label, id, name, onChange}){
     const type = "email";
-    return <RegisterField {...{label, id, name, type, onChange}}/>
+    return <Field {...{label, id, name, type, onChange}}/>
 }
 
 function RegisterDateField({label, id, name, onChange}){
     const type = "date";
-    return <RegisterField {...{label, id, name, type, onChange}}/>
+    return <Field {...{label, id, name, type, onChange}}/>
 }
 
 function RegisterSexeField({id, name, label, onChange}){
@@ -140,17 +142,4 @@ function RegisterSexeField({id, name, label, onChange}){
     </div>
 }
 
-function RegisterField({type="text", label, id, name, onChange}){
-    const [value, setvalue] = useState("")
-    const handleChange = function(e){
-        e.preventDefault();
-        setvalue(value => e.target.value);
-        onChange(name, e.target.value)
-    }
-    const inputId = id + "-value";
-    return <div className="field" id={ id }>
-        <label htmlFor={ inputId } className="field-label">{ label }</label>
-        <input id={ inputId } type={ type } className="field-input" name={ name } value={ value } onChange={ handleChange }/>
-    </div>
-}
 

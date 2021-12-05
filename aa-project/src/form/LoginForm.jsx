@@ -7,8 +7,8 @@ import { root, gotoExplore } from '../App';
 import { RegisterForm } from './RegisterForm';
 
 export function LoginForm(){
-    const [password, setPassword] = useState(null)
-    const [username, setUsername] = useState(null)
+    const [username, setUsername] = useState("user1"); // DEBUG
+    const [password, setPassword] = useState("toor"); // DEBUG
     const [msg, setMessage] = useState("");
 
     const handleUsernameChange = function(val){
@@ -25,14 +25,12 @@ export function LoginForm(){
 
             // authentification completed
             const user = await getAuthentifiedUser(username);
-            saveCurrentUser(user);
-
-            console.log(user);
+            // saveCurrentUser(user);
 
             // clear message
             setMessage(msg => "")
 
-            gotoExplore();
+            gotoExplore({ user });
         }
         catch(error){
             setMessage(msg => error.message)
@@ -48,8 +46,8 @@ export function LoginForm(){
 
     return <form id="login-form">
         <FormMessage>{ msg }</FormMessage>
-        <UserField onChange={ handleUsernameChange }/>
-        <PasswordField onChange={ handlePasswordChange }/>
+        <UserField onChange={ handleUsernameChange } value={ username }/>
+        <PasswordField onChange={ handlePasswordChange } value={ password }/>
         <Button className="login-connexion-btn" onClick={ logUser }>connexion</Button>
         <div className="login-register-btn-wrapper">
             <RegisterButton onClick={ register }/>
@@ -62,11 +60,11 @@ export function FormMessage({children, className}){
     return children ? <div className={ msgClassName } >{ children }</div> : ""
 }
 
-function Field({name, id, type, placeholder, icon, onChange}){
+function LoginField({name, id, type, placeholder, icon, onChange, value}){
     const inputType = type || "text";
     const inputPlaceholder = placeholder || "";
 
-    const [value, setValue] = useState("")
+    const [val, setValue] = useState(value)
 
     const handleChange = function (e){
         e.preventDefault();
@@ -80,30 +78,31 @@ function Field({name, id, type, placeholder, icon, onChange}){
             className="field-input" 
             type={ inputType } 
             name={ name } 
-            value = { value }
+            value = { val }
             placeholder={ inputPlaceholder }
             onChange={ handleChange }/>
     </div>
 }
 
 
-function UserField({onChange}){
-    return <Field 
+function UserField({onChange, value}){
+    return <LoginField 
         name="username" 
         id="login-user" 
         placeholder="nom d'utilisateur"
-        onChange={onChange}/>
+        onChange={onChange}
+        value={ value }/>
 }
 
 
-
-function PasswordField({onChange}){
-    return <Field 
+function PasswordField({onChange, value}){
+    return <LoginField 
         name="password" 
         id="login-password" 
         type="password" 
         placeholder="mot de passe"
-        onChange={ onChange }/>
+        onChange={ onChange }
+        value={ value }/>
 }
 
 function RegisterButton({onClick}){

@@ -62,7 +62,7 @@ function HomeExploreButton(){
     const text = "EXPLORER";
     const handleClick = function(e){
         // e.preventDefault();
-        gotoExplore();
+        gotoExplore({});
     }
 
     return <Button className="home-explore-btn" icon="" onClick={ handleClick }>{text}</Button>

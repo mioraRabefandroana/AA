@@ -6,6 +6,7 @@ import { Explore } from './explore/Explore';
 import { useEffect } from 'react';
 import { initApiConnection } from './Utilities';
 import { CURRENT_USER } from './UserManager';
+import { Profile } from './explore/Profile';;
 
 export const root = document.getElementById('root');
 
@@ -22,10 +23,18 @@ export function gotoHome()
 {
     ReactDOM.render(<Home/>, root)
 }
-export function gotoExplore()
+export function gotoExplore({user})
 {
-    ReactDOM.render(<Explore/>, root);
+    ReactDOM.render(<Explore user={ user }/>, root);
+}
+export function gotoProfile({children, activeMenu, user}){
+    ReactDOM.render(<Profile activeMenu={ activeMenu } user={ user }>{ children }</Profile> , root);
 }
 
+export function gotoLogin(){
+    // TODO: Afficher le login form en modal
+    // ReactDOM.render(<Profile activeMenu={ activeMenu }>{ children }</Profile>, root);
+    gotoHome();
+}
 
 export default App;

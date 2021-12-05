@@ -75,6 +75,7 @@
     display: grid;
     grid-template-rows: max-content max-content;
     border: unset;
+    cursor: pointer;
 }
 .user-info-btn *{
     margin: auto;

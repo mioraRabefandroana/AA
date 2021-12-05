@@ -1,7 +1,8 @@
 import './Form.css'
+import { useEffect, useState } from 'react';
 
 
-export function Button({icon, children, onClick, className}){
+export function Button({icon, children, onClick, id, className}){
     const btnClassName = "btn "+className;
     const btnIcon = icon ? <img src={icon} alt={ children } /> : "";
 
@@ -10,7 +11,7 @@ export function Button({icon, children, onClick, className}){
         onClick();
     }
 
-    return <button className={ btnClassName } onClick={ handleClick } title={ children }>
+    return <button id={ id } className={ btnClassName } onClick={ handleClick } title={ children }>
         { btnIcon }
         { children }
     </button>
@@ -30,8 +31,7 @@ export function FloatButton({icon, title, onClick, className, number}){
 
 export function SearchBar({placeholder, className, id}){
     const placeholderText = placeholder || "search";
-    const searchBarClassName = "search-bar "+ (className || "");
-    
+    const searchBarClassName = "search-bar "+ (className || "");    
 
     return <div className={searchBarClassName} id={id}>
         {/* <img src="" alt="search-icon" /> */}
@@ -41,4 +41,32 @@ export function SearchBar({placeholder, className, id}){
         placeholder={ placeholderText }/>
     </div>
     
+}
+
+export function Field({type="text", label, id, name, onChange, readOnly=false, value, className}){
+    const inputId = id + "-value";
+    
+    const input = (!readOnly) ? 
+        <input id={ inputId } type={ type } className="field-input field-value" name={ name } value={ value } onChange={ onChange }/> :
+        <div className="field-value" title={ value }>{ value }</div>
+
+    className = "field " + (className ? className : "");
+    return <div className={ className } id={ id }>
+        <label htmlFor={ inputId } className="field-label">{ label }</label>
+        { input }        
+    </div>
+}
+
+export function TextAreaField({label, id, name, onChange, readOnly=false, value, className}){
+
+    const inputId = id + "-value";
+    const input = (!readOnly) ? 
+        <textarea id={ inputId } name={ name } value={ value } onChange={ onChange } className="field-input" cols="30" rows="10"></textarea> :
+        <div className="field-value" title={ value }>{ value ? value : "-" }</div>
+
+    className = "field " + (className ? className : "");
+    return <div className={ className } id={ id }>
+        <label htmlFor={ inputId } className="field-label">{ label }</label>
+        { input }  
+   </div>    
 }
