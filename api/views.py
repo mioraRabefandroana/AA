@@ -45,11 +45,10 @@ class UtilisateurViewSet(viewsets.ModelViewSet):
     # permissions
     # permission_classes = (IsAuthenticated,)
 
-    filterset_fields  = ['nom', 'prenom', 'user__username']
+    filterset_fields  = ['id','nom', 'prenom', 'user__username']
     filter_backends = [DjangoFilterBackend]
 
     search_fields = ['nom']
-
 
 
 class ArtisteViewSet(viewsets.ModelViewSet):
@@ -224,7 +223,13 @@ class RegisterView(views.APIView):
             self.user.get("password")
         )
         # clear permissions : do not give permission yet : waiting for email validation
-        newUser.user_permissions.clear()
+        # newUser.user_permissions.clear()
+
+        # disable account new user first : wait for email validation
+        newUser.is_active = False
+        newUser.save()
+
+        print("user active : ", newUser.is_active)
 
         # create user (api table : Utilisateur)
         utilisateur = Utilisateur()
@@ -246,6 +251,11 @@ class RegisterView(views.APIView):
             self.createArtiste(utilisateur)
 
         return utilisateur
+
+
+    def active_utilisateur(self, utilisateur):
+        utilisateur.user.is_active = True
+        utilisateur.user.save()
 
     def post(self, request):
         self.user = request.data
@@ -280,6 +290,12 @@ class RegisterView(views.APIView):
         validation.set_utilisateur(utilisateur)
         validation.save()
         validation.send_validation_code()
+
+        # activate user account : temporarily
+        # in future it will be activated after email validation
+        self.active_utilisateur(utilisateur)
+
+        print(' after activation : ', utilisateur.user.is_active)
 
 
 

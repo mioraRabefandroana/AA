@@ -18,6 +18,8 @@ class Utilisateur(models.Model):
     pseudo = models.CharField(max_length=100, blank=True, null=True)
     sexe = models.CharField(choices=SEXE, max_length=20, default='FEMME')
     
+    biographie = models.TextField(blank=True, null=True)
+
     email = models.CharField(max_length=200)
     tel = models.CharField(max_length=100)
     adresse = models.CharField(max_length=500)
@@ -30,6 +32,8 @@ class Utilisateur(models.Model):
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     date_de_creation = models.DateTimeField(auto_now=True)
 
+    # 0 : waiting for email validation
+    # 1 : active => user account is active and can be used :)
     active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -38,6 +42,7 @@ class Utilisateur(models.Model):
     
     def nom_complet(self):
         return self.prenom +' '+ self.nom
+
 
 class TypeArtiste(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -78,7 +83,6 @@ class Artiste(models.Model):
 
     type_artiste = models.ManyToManyField(TypeArtiste, blank=True, null=True)
     nom_d_artiste = models.CharField(max_length=100, blank=True, null=True)
-    biographie = models.TextField(blank=True, null=True)
     # badge_artiste = models.CharField(choices=BADGE_ARTISTE, max_length=100)
     badges = models.ManyToManyField(BadgeArtiste, blank=True, null=True)
 
@@ -91,8 +95,7 @@ class Fan(models.Model):
     id = models.BigAutoField(primary_key=True)
 
     # badges = models.CharField(choices=BADGE_FAN, max_length=100)
-    badges = models.ManyToManyField(BadgeFan, blank=True, null=True)
-    biographie = models.TextField(blank=True, null=True)    
+    badges = models.ManyToManyField(BadgeFan, blank=True, null=True)  
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
 
     def __str__(self):
