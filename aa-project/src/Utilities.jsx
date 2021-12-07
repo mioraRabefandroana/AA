@@ -33,19 +33,20 @@ export const BADGE = {
   }
 }
 
-export const API_URL_ORIGIN = "http://localhost:8000"
+export const API_URL_ORIGIN = "http://localhost:8000/"
 export const API_URLS = {
-  "apiLoginUrl": API_URL_ORIGIN+"/user/login/",
-  "artisteUrl": API_URL_ORIGIN+"/artiste/",
-  "test": API_URL_ORIGIN+"/test/",
+  "apiLoginUrl": API_URL_ORIGIN+"user/login/",
+  "artisteUrl": API_URL_ORIGIN+"artiste/",
+  "test": API_URL_ORIGIN+"test/",
 
   "userByusername" : function(username){
-      return API_URL_ORIGIN+"/utilisateur/?user__username=" + username;
+      return API_URL_ORIGIN+"utilisateur/?user__username=" + username;
   },
   "updateUser" : function(userId){
-      return API_URL_ORIGIN+"/utilisateur/" + userId +"/";
+      return API_URL_ORIGIN+"utilisateur/" + userId +"/";
   },
-  "userRegister" : API_URL_ORIGIN+"/api/user/register"
+  "userByToken" : API_URL_ORIGIN+"api/user/token/",
+  "userRegister" : API_URL_ORIGIN+"api/user/register"
 
 };
 
@@ -54,18 +55,17 @@ export const TOKENS = {
   cscrfToken: null
 }
 
-export const HEADERS = {
-  'Content-Type': 'application/json'
+export function getHeaders(){
+    let HEADERS = {
+        'Content-Type': 'application/json'
+    }
+    const authToken = getCookie("token");
+    if(authToken)
+        HEADERS.Authorization = `token ${authToken}`;
+    
+    return HEADERS
 }
 
-// const API_USER = {
-//   username: "user1",
-//   password: "toortoor"
-// }
-
-// const AA_USER = {
-//   username: null,
-// }
 
 export const ERROR_MSG = {
     AUTH_FAILED: "Echec d'authentification",
@@ -91,3 +91,22 @@ export function cuniqid(val){
   return uniqid(val+"-")
 }
 
+
+export function setCookie(cname, cvalue) {
+    document.cookie = cname + "=" + cvalue;
+}
+
+export function getCookie(cname) {
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}

@@ -1,4 +1,4 @@
-import { HEADERS, API_URLS, ERROR_MSG } from './Utilities';
+import { getHeaders, API_URLS, ERROR_MSG, setCookie, getCookie } from './Utilities';
 
 /**
  * login user with username and password
@@ -9,7 +9,7 @@ import { HEADERS, API_URLS, ERROR_MSG } from './Utilities';
 export async function login(username, password){
     const requestOptions = {
         method: 'POST',
-        headers: HEADERS,
+        headers: getHeaders(),
         body: JSON.stringify({username,password})
     };
     
@@ -36,8 +36,9 @@ export async function login(username, password){
  * @returns 
  */
 export async function getAuthentifiedUser(username){
+    console.log(getHeaders());
     const requestOptions = {
-        headers: HEADERS
+        headers: getHeaders()
     };
 
     const res = await fetch(API_URLS.userByusername(username), requestOptions)
@@ -72,7 +73,7 @@ export function removeCurrentUser(){
 export async function registerUser(user){
     const requestOptions = {
         method: 'POST',
-        headers: HEADERS,
+        headers: getHeaders(),
         body: JSON.stringify(user)
     };
 
@@ -96,7 +97,7 @@ export async function updateUser(user){
     console.log("updateUser")
     const requestOptions = {
         method: 'PUT',
-        headers: HEADERS,
+        headers: getHeaders(),
         body: JSON.stringify(user)
     };
 
@@ -121,8 +122,34 @@ export async function updateUser(user){
  * @param {*} token 
  */
 function saveAuthentificationToken(token){
-    console.log("token :) ",token)
-    HEADERS.Authorization = `token ${token}`;
+    setCookie("token", token);
 }
 
-  
+
+export async function getAuthentifiedUserFromSession(){
+    const token = getCookie("token");
+    if(!token)
+        return [];
+
+    console.log("TOKEN", token);
+    console.log("getHeaders()", getHeaders());
+    const requestOptions = {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({token: token})
+    };
+
+    const res = await fetch(API_URLS.userByToken, requestOptions)
+        .then(response => {
+            if(response.ok)
+                return response.json();
+        })
+        .then(data => {
+            return data;
+            },
+            (error)=>{
+                return [];        
+            })    
+    return res;
+}
+

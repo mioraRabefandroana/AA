@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from '../logo.svg';
 import bellFilled from '../img/bell-filled.png';
 import messageFilled from '../img/message-filled.png';
@@ -24,13 +24,13 @@ import { Button, FloatButton, SearchBar } from '../form/Form';
 import aaLogo from '../img/aa_logo.png';
 import jainImage from '../img/jain.jpg';
 
-import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, HEADERS, API_URL, API_URLS } from '../Utilities';
+import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, getHeaders, API_URL, API_URLS } from '../Utilities';
 import tmpMenuIcon from '../img/super-star-2.jpg'
 import { CardList } from './Card';
 import { Publication } from './Publication';
 import { gotoHome, gotoLogin, gotoProfile } from '../App';
 import { getTop5, loadExploreData } from './ExploreData'
-import { CURRENT_USER } from '../UserManager';
+import { CURRENT_USER, getAuthentifiedUserFromSession } from '../UserManager';
 
 // #TODO : récuperer les top artists depuis la BD
 const TOP_ARTISTS = [
@@ -168,9 +168,9 @@ const LEFT_MENUS = [
 ];
 
 
-export function Explore({user}){
-    // #TODO : notifications et messages
-    // console.log(PUBLICATIONS);
+export function Explore({}){
+    const [user, setUser] = useState(null);
+
     const rightMenu = user ? 
         <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/> 
         : "";
@@ -178,7 +178,12 @@ export function Explore({user}){
     useEffect(async () => { 
         console.log("auth user = ", user);
         const data = await loadExploreData() ;
-        console.log("ExploreData :", data)
+        if(!user)
+        {
+            const [u] = await getAuthentifiedUserFromSession(); 
+            setUser(oldUser => u);
+        }
+                       
     }, [])
 
     return <div id="explore">

@@ -4,15 +4,18 @@ import {Home} from './home/Home';
 import ReactDOM from 'react-dom';
 import { Explore } from './explore/Explore';
 import { useEffect } from 'react';
-import { initApiConnection } from './Utilities';
-import { CURRENT_USER } from './UserManager';
+import { getCookie, initApiConnection } from './Utilities';
+import { CURRENT_USER, getAuthentifiedUserFromSession } from './UserManager';
 import { Profile } from './explore/Profile';;
 
 export const root = document.getElementById('root');
 
 // # comment & share button icon color : #ffde00
 
-function App() { 
+function App() {
+    if(getCookie("token"))
+        return <Explore/>
+    
     return (
         <Home/>
     );
