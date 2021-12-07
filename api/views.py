@@ -19,7 +19,7 @@ from api.models import Artiste, BadgeArtiste, BadgeFan, Contenu, DevenirMembre, 
 from api.serializer import AdministrateurSerializer, ArtisteSerializer, BadgeArtisteSerializer, BadgeFanSerializer, ContenuSerializer, DevenirMembreSerializer, FanClubSerializer, PageSerializer, PublicationSerializer, TestSerializer, TypeArtisteSerializer, UserAuthentificationSerializer, UtilisateurSerializer
 
 # from django.contrib.auth.models import User
-
+from rest_framework.authtoken.models import Token
 import django_filters
 
 
@@ -43,7 +43,7 @@ class UtilisateurViewSet(viewsets.ModelViewSet):
     # filter_class = ModelFilter
 
     # permissions
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     filterset_fields  = ['id','nom', 'prenom', 'user__username']
     filter_backends = [DjangoFilterBackend]
@@ -302,7 +302,22 @@ class RegisterView(views.APIView):
         return Response({
             "success": True
         }) 
-    
+
+
+# get user by token
+class UtilisateurByTokenView(views.APIView):
+    utilisateurUrl = '/utilisateur/?user__username='
+    def utilisateur_url(self, username):
+        return self.utilisateurUrl+username
+
+    def post(self, request):
+        try:
+            token = request.data.get("token")
+            user = Token.objects.get(key=token).user
+            return response.HttpResponseRedirect(redirect_to= self.utilisateur_url(user.username))
+        except Exception:
+            return Response([])
+
 
 ######################################################
 class CreateUserView(CreateAPIView):

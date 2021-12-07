@@ -18,6 +18,7 @@ from django.db import router
 from django.urls import path, include
 from api import views
 from rest_framework import routers
+from rest_framework.authtoken import views
 # from . import api
 
 from api.urls import router as api_router
@@ -28,6 +29,7 @@ router.registry.extend(api_router.registry)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('dj_rest_auth.urls')),
+    # path('user/token/', views.obtain_auth_token), # get user by passed token
     path('api/', include('api.urls')),
     path('', include(router.urls)),
 ]
