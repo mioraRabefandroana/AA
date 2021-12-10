@@ -15,15 +15,15 @@
     align-items: center;
 }
 
-#register-sexe-field-details-wrapper{
+#register-sex-field-details-wrapper{
     display: grid;
     grid-template-columns: max-content max-content;
     align-self: start;
 }
-#register-sexe-field-details-wrapper input{
+#register-sex-field-details-wrapper input{
     width: unset;
 }
-#register-sexe-field-details-wrapper div{
+#register-sex-field-details-wrapper div{
     display: gird;
     grid-template-columns: max-content max-content;
 }

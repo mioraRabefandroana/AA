@@ -139,6 +139,10 @@ export async function getAuthentifiedUserFromSession(){
         body: JSON.stringify({token: token})
     };
 
+    // console.log("URL ===>", API_URLS.userByToken);
+    // debugger;
+    // return; //DEBUG
+
     const res = await fetch(API_URLS.userByToken, requestOptions)
         .then(response => {
             if(response.ok)

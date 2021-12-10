@@ -12,9 +12,11 @@ export function RegisterForm({}){
     const [user, setUser] = useState({});
     const [msg, setmessage] = useState("")
 
-    const handleChange = function(name, value){
+    const handleChange = function(e){
+        const {name, value} = e.target;
         setUser(user => {
             user = {...user, [name]: value}
+            console.log("++new :", {[name]: value})
             console.log(user)
             return user;
         })
@@ -46,21 +48,21 @@ export function RegisterForm({}){
             <h2>Inscription</h2>
             <FormMessage>{ msg }</FormMessage>
         </div>
-        <RegisterAccountTypeField onChange={ handleChange }/>
-        <RegisterTextField name="nom" label="Nom" id="register-nom" onChange={ handleChange }/>
-        <RegisterTextField name="prenom" label="Prénoms" id="register-prenom" onChange={ handleChange }/>
-        <RegisterTextField name="username" label="pseudo" id="register-prenom" onChange={ handleChange }/>
-        <RegisterSexeField name="sexe" id="register-sexe" label="Sexe" onChange={ handleChange }/>
-        <RegisterMailField name="email" label="E-mail" id="register-email" onChange={ handleChange }/>
-        <RegisterTextField name="tel" label="Téléphone" id="register-telephone" onChange={ handleChange }/>
+        <RegisterAccountTypeField onChange={ handleChange } value={ user.accountType }/>
+        <RegisterTextField name="name" label="Nom" id="register-name" onChange={ handleChange } value={ user.name }/>
+        <RegisterTextField name="firstName" label="Prénoms" id="register-firstName" onChange={ handleChange } value={ user.firstName }/>
+        <RegisterTextField name="username" label="pseudo" id="register-username" onChange={ handleChange } value={ user.username }/>
+        <RegisterSexeField name="sex" id="register-sex" label="Sexe" onChange={ handleChange }  value={ user.sex }/>
+        <RegisterMailField name="email" label="E-mail" id="register-email" onChange={ handleChange } value={ user.email }/>
+        <RegisterTextField name="tel" label="Téléphone" id="register-telephone" onChange={ handleChange } value={ user.tel }/>
 
-        <RegisterDateField name="date_de_naissance" label="Date de naissance" id="register-date_de_naissance" onChange={ handleChange }/>
-        <RegisterTextField name="lieu_de_naissance" label="Lieu de naissance" id="register-lieu_de_naissance" onChange={ handleChange }/>
-        <RegisterTextField name="adresse" label="Adresse" id="register-adresse" onChange={ handleChange }/>
+        <RegisterDateField name="dateOfBirth" label="Date de naissance" id="register-dateOfBirth" onChange={ handleChange } value={ user.dateOfBirth }/>
+        <RegisterTextField name="placeOfBirth" label="Lieu de naissance" id="register-placeOfBirth" onChange={ handleChange } value={ user.placeOfBirth }/>
+        <RegisterTextField name="address" label="Adresse" id="register-address" onChange={ handleChange } value={ user.address }/>
 
         <br />
-        <RegisterPasswordField name="password" label="mot de passe" id="register-mot_de_passe" onChange={ handleChange }/>
-        <RegisterPasswordField name="passwordConfirm" label="confirmation mot de passe" id="register-mot_de_passe" onChange={ handleChange }/>
+        <RegisterPasswordField name="password" label="mot de passe" id="register-mot_de_passe" onChange={ handleChange } value={ user.password }/>
+        <RegisterPasswordField name="passwordConfirm" label="confirmation mot de passe" id="register-mot_de_passe" onChange={ handleChange } value={ user.passwordConfirm }/>
         {/* <RegisterTextField label="Photo de profil" id="register-photo_de_profil"/>
         <RegisterTextField label="Photo de couverture" id="register-photo_de_couverture"/> */}
 
@@ -72,22 +74,22 @@ export function RegisterForm({}){
 }
 
 
-function RegisterAccountTypeField({onChange}){
-    const [accountType, setAccountType] = useState(null);
-    const handleChange = function(e){
-        setAccountType(accountType => e.target.value)
-        onChange("accountType", e.target.value)
-    }
+function RegisterAccountTypeField({onChange, value}){
+    // const [accountType, setAccountType] = useState(null);
+    // const handleChange = function(e){
+    //     setAccountType(accountType => e.target.value)
+    //     onChange("accountType", e.target.value)
+    // }
 
     const chosenAccountTypeClassName = "chosen-account-type"
-    const fanClassName = "register-account_type-item " + ( (accountType === "fan") ? chosenAccountTypeClassName : "" );
-    const artisteClassName = "register-account_type-item " + ( (accountType === "artiste") ? chosenAccountTypeClassName : "" );
+    const fanClassName = "register-account_type-item " + ( (value === "fan") ? chosenAccountTypeClassName : "" );
+    const artisteClassName = "register-account_type-item " + ( (value === "artist") ? chosenAccountTypeClassName : "" );
 
     return <div className="register-account_type">
-        <input type="radio" name="accountType" id="register-account_type-fan" value="fan" onChange={ handleChange }/>
+        <input type="radio" name="accountType" id="register-account_type-fan" value="fan" onChange={ onChange }/>
         <label className={ fanClassName } htmlFor="register-account_type-fan">Fan</label>
-        <input type="radio" name="accountType" id="register-account_type-artiste" value="artiste" onChange={ handleChange }/>
-        <label className={ artisteClassName } htmlFor="register-account_type-artiste">Artiste</label>
+        <input type="radio" name="accountType" id="register-account_type-artist" value="artist" onChange={ onChange }/>
+        <label className={ artisteClassName } htmlFor="register-account_type-artist">Artiste</label>
     </div>
 }
 
@@ -104,39 +106,39 @@ function RegisterSuccess({user, children}){
     </div>
 }
 
-function RegisterTextField({label, id, name, onChange}){
-    return <Field {...{label, id, name, onChange}}/>
+function RegisterTextField({label, id, name, value, onChange}){
+    return <Field {...{label, id, name, value, onChange}}/>
 }
-function RegisterPasswordField({label, id, name, onChange}){
+function RegisterPasswordField({label, id, name, value, onChange}){
     const type = "password";
-    return <Field {...{label, id, name, type, onChange}}/>
+    return <Field {...{label, id, name, value, type, onChange}}/>
 }
-function RegisterMailField({label, id, name, onChange}){
+function RegisterMailField({label, id, name, value, onChange}){
     const type = "email";
-    return <Field {...{label, id, name, type, onChange}}/>
+    return <Field {...{label, id, name, value, type, onChange}}/>
 }
 
-function RegisterDateField({label, id, name, onChange}){
+function RegisterDateField({label, id, name, value, onChange}){
     const type = "date";
-    return <Field {...{label, id, name, type, onChange}}/>
+    return <Field {...{label, id, name, value, type, onChange}}/>
 }
 
-function RegisterSexeField({id, name, label, onChange}){
-    const [sexe, setSexe] = useState("")
-    const handleChange = function(e){
-        setSexe(sexe =>  e.target.value);  
-        onChange(name, e.target.value);      
-    }
+function RegisterSexeField({id, name, value, label, onChange}){
+    // const [sex, setSexe] = useState("")
+    // const handleChange = function(e){
+    //     setSexe(sex =>  e.target.value);  
+    //     onChange(name, e.target.value);      
+    // }
     return <div className="field" id={ id }>
         { label }
-        <div id="register-sexe-field-details-wrapper">
+        <div id="register-sex-field-details-wrapper">
             <div>
-                <input id="sexe-homme" type="radio" name={ name } value="HOMME" onChange={ handleChange }/>
-                <label htmlFor="sexe-homme">homme</label>
+                <input id="sex-homme" type="radio" name={ name } value="HOMME" onChange={ onChange }/>
+                <label htmlFor="sex-homme">homme</label>
             </div>
             <div>
-                <input id="sexe-femme" type="radio" name={ name } value="FEMME" onChange={ handleChange }/>
-                <label htmlFor="sexe-femme">femme</label>
+                <input id="sex-femme" type="radio" name={ name } value="FEMME" onChange={ onChange }/>
+                <label htmlFor="sex-femme">femme</label>
             </div>            
         </div>        
     </div>

@@ -36,14 +36,14 @@ export const BADGE = {
 export const API_URL_ORIGIN = "http://localhost:8000/"
 export const API_URLS = {
   "apiLoginUrl": API_URL_ORIGIN+"user/login/",
-  "artisteUrl": API_URL_ORIGIN+"artiste/",
+  "artisteUrl": API_URL_ORIGIN+"artist/",
   "test": API_URL_ORIGIN+"test/",
 
   "userByusername" : function(username){
-      return API_URL_ORIGIN+"utilisateur/?user__username=" + username;
+      return API_URL_ORIGIN+"aauser/?user__username=" + username;
   },
   "updateUser" : function(userId){
-      return API_URL_ORIGIN+"utilisateur/" + userId +"/";
+      return API_URL_ORIGIN+"aauser/" + userId +"/";
   },
   "userByToken" : API_URL_ORIGIN+"api/user/token/",
   "userRegister" : API_URL_ORIGIN+"api/user/register"

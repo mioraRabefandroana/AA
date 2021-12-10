@@ -3,6 +3,8 @@ import { Button, Field, TextAreaField } from "../form/Form"
 import './Profile.css'
 import { ExploreHeader } from "./Explore"
 import { updateUser } from "../UserManager"
+import defaultCoverPicture from "../img/default-cover-picture.png"
+import defaultProfilePicture from "../img/user.png"
 
 export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
     const [menu, setMenu] = useState(activeMenu);
@@ -38,21 +40,21 @@ const PROFILE_MENU = {
 /** header */
 function ProfileHeader({user}){
     return <div className="user-profile-header">
-        <CoverPicture src={ user.photo_couverture }/>
+        <CoverPicture src={ user.coverPicture }/>
         <div className="user-profile-picture-wrapper">
-            <ProfilePicture  src={ user.photo_profil }/>
+            <ProfilePicture  src={ user.profilePicture }/>
         </div>
     </div>
 }
 
 function CoverPicture({src}){
     return <div className="user-profile-cover">
-        <img src={ src } alt="photo de couverture" className="user-profile-cover-image" />
+        <img src={ src || defaultCoverPicture} alt="photo de couverture" className="user-profile-cover-image" />
     </div>
 }
 function ProfilePicture({src}){
     return <div className="user-profile-picture">
-        <img src={ src } alt="photo de profile" className="user-profile-cover-image" />
+        <img src={ src || defaultProfilePicture } alt="photo de profile" className="user-profile-cover-image" />
     </div>
 }
 
@@ -116,14 +118,14 @@ function ProfileInfos({user, onUserSave}){
 
     const [
         {
-            biographie, 
-            nom, 
-            prenom,
+            biography, 
+            name, 
+            firstName,
             email, 
             tel, 
-            date_de_naissance, 
-            lieu_de_naissance, 
-            adresse
+            dateOfBirth, 
+            placeOfBirth, 
+            address
         }, 
         setUser
     ] = useState(user);
@@ -135,14 +137,14 @@ function ProfileInfos({user, onUserSave}){
     const handleProfileSave = function(e){
         setReadOnly(readOnly => true);
         onUserSave({...user, 
-            biographie, 
-            nom, 
-            prenom,
+            biography, 
+            name, 
+            firstName,
             email, 
             tel, 
-            date_de_naissance, 
-            lieu_de_naissance, 
-            adresse
+            dateOfBirth, 
+            placeOfBirth, 
+            address
         });
     }
     const handleCancel = function(e){
@@ -168,16 +170,16 @@ function ProfileInfos({user, onUserSave}){
     }
 
     return <div className="profile-infos"> 
-        <TextAreaField name="biographie" label="Biographie" id="profile-biographie" onChange={ handleChange } readOnly={ readOnly } value={ biographie }/>
-        <Field name="nom" label="Nom" id="profile-nom" onChange={ handleChange } readOnly={ readOnly } value={ nom }/>
-        <Field name="prenom" label="Prénoms" id="profile-prenom" onChange={ handleChange } readOnly={ readOnly } value={ prenom }/>
-        {/* <Field name="username" label="pseudo" id="profile-prenom" onChange={ handleChange } readOnly={ readOnly } value={ updatedUser.username }/> */}
+        <TextAreaField name="biography" label="Biographie" id="profile-biography" onChange={ handleChange } readOnly={ readOnly } value={ biography }/>
+        <Field name="name" label="Nom" id="profile-name" onChange={ handleChange } readOnly={ readOnly } value={ name }/>
+        <Field name="firstName" label="Prénoms" id="profile-firstName" onChange={ handleChange } readOnly={ readOnly } value={ firstName }/>
+        {/* <Field name="username" label="pseudo" id="profile-firstName" onChange={ handleChange } readOnly={ readOnly } value={ updatedUser.username }/> */}
         <Field type="email" name="email" label="E-mail" id="profile-email" onChange={ handleChange } readOnly={ readOnly } value={ email }/>
         <Field name="tel" label="Téléphone" id="profile-telephone" onChange={ handleChange } readOnly={ readOnly } value={ tel }/>
 
-        <Field type="date" name="date_de_naissance" label="Date de naissance" id="profile-date_de_naissance" onChange={ handleChange } readOnly={ readOnly } value={ date_de_naissance }/>
-        <Field name="lieu_de_naissance" label="Lieu de naissance" id="profile-lieu_de_naissance" onChange={ handleChange } readOnly={ readOnly } value={ lieu_de_naissance }/>
-        <Field name="adresse" label="Adresse" id="profile-adresse" onChange={ handleChange } readOnly={ readOnly } value={ adresse }/>
+        <Field type="date" name="dateOfBirth" label="Date de naissance" id="profile-dateOfBirth" onChange={ handleChange } readOnly={ readOnly } value={ dateOfBirth }/>
+        <Field name="placeOfBirth" label="Lieu de naissance" id="profile-placeOfBirth" onChange={ handleChange } readOnly={ readOnly } value={ placeOfBirth }/>
+        <Field name="address" label="Adresse" id="profile-address" onChange={ handleChange } readOnly={ readOnly } value={ address }/>
 
         { button }
     </div>
