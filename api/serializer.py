@@ -1,22 +1,22 @@
 from django.db.models import fields
-from api.models import Administrateur, Artiste, BadgeArtiste, BadgeFan, Contenu, DevenirMembre, FanClub, Page, Publication, Test, TypeArtiste, Utilisateur, ValidationEmail
+from api.models import Administrator, Artist, ArtistBadge, FanBadge, Content, BecomeMember, FanClub, Page, Publication, Test, ArtistType, AAUser, EmailValidation
 from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
 
-class ArtisteSerializer(serializers.ModelSerializer):
+class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Artiste
+        model = Artist
         fields = '__all__'
 
-class BadgeArtisteSerializer(serializers.ModelSerializer):
+class ArtistBadgeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BadgeArtiste
+        model = ArtistBadge
         fields = '__all__'
 
-class BadgeFanSerializer(serializers.ModelSerializer):
+class FanBadgeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BadgeFan
+        model = FanBadge
         fields = '__all__'
 
 class TestSerializer(serializers.ModelSerializer):
@@ -25,20 +25,20 @@ class TestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class UtilisateurSerializer(serializers.ModelSerializer):
+class AAUserSerializer(serializers.ModelSerializer):
 
-    # dateOfBirth = serializers.DateField(source='date_de_naissance')
+    # dateOfBirth = serializers.DateField(source='dateOfBirth')
     username = serializers.CharField(source="user.username")
 
     class Meta:
-        model = Utilisateur
-        # exclude = ['date_de_naissance']
+        model = AAUser
+        # exclude = ['dateOfBirth']
         fields = '__all__'
 
 
-class AdministrateurSerializer(serializers.ModelSerializer):
+class AdministratorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Administrateur
+        model = Administrator
         fields = '__all__'
 
 
@@ -58,24 +58,24 @@ class FanClubSerializer(serializers.ModelSerializer):
         model = FanClub
         fields = '__all__'
 
-class DevenirMembreSerializer(serializers.ModelSerializer):
+class BecomeMemberSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DevenirMembre
+        model = BecomeMember
         fields = '__all__'
 
-class ContenuSerializer(serializers.ModelSerializer):
+class ContentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Contenu
+        model = Content
         fields = '__all__'
 
-class TypeArtisteSerializer(serializers.ModelSerializer):
+class ArtistTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TypeArtiste
+        model = ArtistType
         fields = '__all__'
 
-class ValidationEmailSerializer(serializers.ModelSerializer):
+class EmailValidationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ValidationEmail
+        model = EmailValidation
         fields = '__all__'
 
 #########################################################################

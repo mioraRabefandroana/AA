@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from random import random
 # from multiselectfield import MultiSelectField
 
-class Utilisateur(models.Model):
+class AAUser(models.Model):
     id = models.BigAutoField(primary_key=True)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -13,24 +13,24 @@ class Utilisateur(models.Model):
         ('FEMME', 'femme')
     )
 
-    nom = models.CharField(max_length=100)
-    prenom = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    firstName = models.CharField(max_length=100)
     pseudo = models.CharField(max_length=100, blank=True, null=True)
-    sexe = models.CharField(choices=SEXE, max_length=20, default='FEMME')
+    sex = models.CharField(choices=SEXE, max_length=20, default='FEMME')
     
-    biographie = models.TextField(blank=True, null=True)
+    biography = models.TextField(blank=True, null=True)
 
     email = models.CharField(max_length=200)
     tel = models.CharField(max_length=100)
-    adresse = models.CharField(max_length=500)
-    date_de_naissance = models.DateField()
-    lieu_de_naissance = models.CharField(max_length=100)
+    address = models.CharField(max_length=500)
+    dateOfBirth = models.DateField()
+    placeOfBirth = models.CharField(max_length=100)
     # mot_de_passe = models.CharField(max_length=1000)
-    photo_profil  = models.CharField(max_length=1000, blank=True, null=True)
-    photo_couverture = models.CharField(max_length=1000, blank=True, null=True)
+    profilePicture  = models.CharField(max_length=1000, blank=True, null=True)
+    coverPicture = models.CharField(max_length=1000, blank=True, null=True)
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    date_de_creation = models.DateTimeField(auto_now=True)
+    creationDate = models.DateTimeField(auto_now=True)
 
     # 0 : waiting for email validation
     # 1 : active => user account is active and can be used :)
@@ -41,65 +41,64 @@ class Utilisateur(models.Model):
     
     
     def nom_complet(self):
-        return self.prenom +' '+ self.nom
+        return self.firstName +' '+ self.name
 
 
-class TypeArtiste(models.Model):
+class ArtistType(models.Model):
     id = models.BigAutoField(primary_key=True)
-    nom = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     description = models.TextField()
     icon = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
-        return self.nom
+        return self.name
     
-class BadgeArtiste(models.Model):
+class ArtistBadge(models.Model):
     id = models.BigAutoField(primary_key=True)  
-    nom = models.CharField(max_length=100) 
+    name = models.CharField(max_length=100) 
     description = models.TextField()
     icon = models.CharField(max_length=1000)
 
     def __str__(self):
-        return self.nom
+        return self.name
     
-class BadgeFan(models.Model):
+class FanBadge(models.Model):
     id = models.BigAutoField(primary_key=True)  
-    nom = models.CharField(max_length=100) 
+    name = models.CharField(max_length=100) 
     description = models.TextField()
     icon = models.CharField(max_length=1000)
 
     def __str__(self):
-        return self.nom
+        return self.name
 
-class TypeOuvrage(models.Model):
+class WorkType(models.Model):
     id = models.BigAutoField(primary_key=True)  
-    nom = models.CharField(max_length=100) 
+    name = models.CharField(max_length=100) 
     description = models.TextField(null=True, blank=True)
     icon = models.CharField(max_length=1000, null=True, blank=True)
 
 
-class Artiste(models.Model):
+class Artist(models.Model):
     id = models.BigAutoField(primary_key=True)
 
-    type_artiste = models.ManyToManyField(TypeArtiste, blank=True, null=True)
-    nom_d_artiste = models.CharField(max_length=100, blank=True, null=True)
-    # badge_artiste = models.CharField(choices=BADGE_ARTISTE, max_length=100)
-    badges = models.ManyToManyField(BadgeArtiste, blank=True, null=True)
+    type = models.ManyToManyField(ArtistType, blank=True, null=True)
+    stageName = models.CharField(max_length=100, blank=True, null=True)
+    badges = models.ManyToManyField(ArtistBadge, blank=True, null=True)
 
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    aaUser = models.ForeignKey(AAUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nom_d_artiste
+        return self.stageName
 
 class Fan(models.Model):    
     id = models.BigAutoField(primary_key=True)
 
     # badges = models.CharField(choices=BADGE_FAN, max_length=100)
-    badges = models.ManyToManyField(BadgeFan, blank=True, null=True)  
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    badges = models.ManyToManyField(FanBadge, blank=True, null=True)  
+    aaUser = models.ForeignKey(AAUser, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.utilisateur
+        return self.aaUser
 
 
 class Test(models.Model):
@@ -110,27 +109,27 @@ class Test(models.Model):
         return self.x+' '+self.y
 
 
-class Ouvrage(models.Model):
+class Work(models.Model):
     id = models.BigAutoField(primary_key=True)  
-    type = models.ForeignKey(TypeOuvrage, on_delete=models.CASCADE)
-    nom = models.CharField(max_length=100) 
+    type = models.ForeignKey(WorkType, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100) 
     description = models.TextField()
     image = models.CharField(max_length=1000, null=True, blank=True)
     url = models.CharField(max_length=1000, null=True, blank=True)
 
-    date_de_creation = models.DateTimeField(auto_now=True)
-    createurs = models.ManyToManyField(Artiste)
+    creationDate = models.DateTimeField(auto_now=True)
+    createurs = models.ManyToManyField(Artist)
 
     def __str__(self):
-        return self.nom
+        return self.name
 
-class Administrateur(models.Model):
+class Administrator(models.Model):
     id = models.BigAutoField(primary_key=True)
 
     description = models.TextField()
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    date_de_creation = models.DateTimeField(auto_now=True)
+    creationDate = models.DateTimeField(auto_now=True)
 
 
 class Publication(models.Model):
@@ -139,10 +138,10 @@ class Publication(models.Model):
     text = models.TextField()
 
     # TODO : foreign key many to one
-    # contenus = 
+    # contents = 
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    date_de_publication = models.DateTimeField(auto_now=True)
+    publicationDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.text
@@ -151,64 +150,64 @@ class Publication(models.Model):
 class Page(models.Model):
     id = models.BigAutoField(primary_key=True)
 
-    nom = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     description = models.TextField()
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    date_de_creation = models.DateTimeField(auto_now=True)
+    creationDate = models.DateTimeField(auto_now=True)
     
-    proprietaire = models.ForeignKey(Artiste, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Artist, on_delete=models.CASCADE)
 
     publications = models.ManyToManyField(Publication)
 
     def __str__(self):
-        return self.nom
+        return self.name
 
 
 class FanClub(models.Model):
     id = models.BigAutoField(primary_key=True)
 
-    nom = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
     description = models.TextField()
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    date_de_creation = models.DateTimeField(auto_now=True)
+    creationDate = models.DateTimeField(auto_now=True)
 
-    membres = models.ManyToManyField(Fan, through='DevenirMembre')
+    members = models.ManyToManyField(Fan, through='BecomeMember')
 
-    proprietaire = models.ForeignKey(Artiste, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Artist, on_delete=models.CASCADE)
 
     publications = models.ManyToManyField(Publication)
 
     def __str__(self):
-        return self.nom
+        return self.name
 
-class DevenirMembre(models.Model):
+class BecomeMember(models.Model):
     id = models.BigAutoField(primary_key=True)
 
     fan = models.ForeignKey(Fan, on_delete=models.CASCADE)
     fanClub = models.ForeignKey(FanClub, on_delete=models.CASCADE)
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    date_d_inscription = models.DateTimeField(auto_now=True)
+    inscriptionDate = models.DateTimeField(auto_now=True)
 
-    remarque = models.TextField()
+    remark = models.TextField()
 
-class Contenu(models.Model):
+class Content(models.Model):
     id = models.BigAutoField(primary_key=True)
 
-    TYPE_CONTENU = (
+    CONTENT_TYPE = (
         ('IMAGE', 'image'),
         ('VIDEO', 'video'),
         ('audio', 'audio'),        
     )
 
-    type = models.CharField(choices=TYPE_CONTENU, max_length=100)
+    type = models.CharField(choices=CONTENT_TYPE, max_length=100)
     description = models.TextField()
     source = models.CharField(max_length=500)
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    date_de_creation = models.DateTimeField(auto_now=True)
+    creationDate = models.DateTimeField(auto_now=True)
 
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
 
@@ -216,46 +215,46 @@ class Contenu(models.Model):
 class Action(models.Model):
     id = models.BigAutoField(primary_key=True)
 
-    TYPE_ACTION = (
+    ACTION_TYPE = (
         ('LIKE', 'like'),
         ('COMMENTAIRE', 'commentaire'),
         ('PARTAGE', 'partage'),        
     )
 
-    type = models.CharField(choices=TYPE_ACTION, max_length=100)
+    type = models.CharField(choices=ACTION_TYPE, max_length=100)
     description = models.TextField()
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    date_de_creation = models.DateTimeField(auto_now=True)
+    creationDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.type
 
 
-class ValidationEmail(models.Model):
+class EmailValidation(models.Model):
     id = models.BigAutoField(primary_key=True)
-    code_de_validation = models.CharField(max_length=1000)
+    validationCode = models.CharField(max_length=1000)
 
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    aaUser = models.ForeignKey(AAUser, on_delete=models.CASCADE)
 
     def set_validation_code(self):
-        self.code_de_validation = int( random()*1000000 )
-        print("validation code generated : ", self.code_de_validation)
+        self.validationCode = int( random()*1000000 )
+        print("validation code generated : ", self.validationCode)
     
     def get_validation_code(self):
-        return self.code_de_validation
+        return self.validationCode
     
     def send_validation_code(self):
         # TODO: send validation code to user by email
         # pass
-        print("code sent to ", self.utilisateur.email)
+        print("code sent to ", self.aaUser.email)
 
-    def set_utilisateur(self, utilisateur):
-        self.utilisateur = utilisateur
+    def set_utilisateur(self, aaUser):
+        self.aaUser = aaUser
         self.set_validation_code()        
 
     def __str__(self):
-        return self.code_de_validation
+        return self.validationCode
 
 
 

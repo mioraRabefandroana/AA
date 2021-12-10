@@ -11,12 +11,12 @@ from rest_framework.decorators import api_view
 from rest_framework import permissions
 from rest_framework.generics import CreateAPIView
 from django.contrib.auth import get_user_model
-from api.serializer import UserSerializer, ValidationEmailSerializer
+from api.serializer import UserSerializer, EmailValidationSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from api.models import Artiste, BadgeArtiste, BadgeFan, Contenu, DevenirMembre, Fan, FanClub, Page, Publication, Test, TypeArtiste, UserAuthentification, Utilisateur, Administrateur, ValidationEmail
-from api.serializer import AdministrateurSerializer, ArtisteSerializer, BadgeArtisteSerializer, BadgeFanSerializer, ContenuSerializer, DevenirMembreSerializer, FanClubSerializer, PageSerializer, PublicationSerializer, TestSerializer, TypeArtisteSerializer, UserAuthentificationSerializer, UtilisateurSerializer
+from api.models import Artist, ArtistBadge, FanBadge, Content, BecomeMember, Fan, FanClub, Page, Publication, Test, ArtistType, UserAuthentification, AAUser, Administrator, EmailValidation
+from api.serializer import AdministratorSerializer, ArtistSerializer, ArtistBadgeSerializer, FanBadgeSerializer, ContentSerializer, BecomeMemberSerializer, FanClubSerializer, PageSerializer, PublicationSerializer, TestSerializer, ArtistTypeSerializer, UserAuthentificationSerializer, AAUserSerializer
 
 # from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -30,32 +30,32 @@ import django_filters
 #     )
 
 #     class Meta:
-#         model = Utilisateur
+#         model = AAUser
 #         fields = ('username',)
 
 
-class UtilisateurViewSet(viewsets.ModelViewSet):
-    queryset = Utilisateur.objects.all()
+class AAUserViewSet(viewsets.ModelViewSet):
+    queryset = AAUser.objects.all()
     # print('------------------------------------------------')
     # print(queryset[0].user)
     # print('------------------------------------------------')
-    serializer_class = UtilisateurSerializer
+    serializer_class = AAUserSerializer
     # filter_class = ModelFilter
 
     # permissions
     permission_classes = (IsAuthenticated,)
 
-    filterset_fields  = ['id','nom', 'prenom', 'user__username']
+    filterset_fields  = ['id','name', 'firstName', 'user__username']
     filter_backends = [DjangoFilterBackend]
 
-    search_fields = ['nom']
+    search_fields = ['name']
 
 
-class ArtisteViewSet(viewsets.ModelViewSet):
-    queryset = Artiste.objects.all()
-    serializer_class = ArtisteSerializer
+class ArtistViewSet(viewsets.ModelViewSet):
+    queryset = Artist.objects.all()
+    serializer_class = ArtistSerializer
 
-    filterset_fields  = ['nom_d_artiste']
+    filterset_fields  = ['stageName']
     filter_backends = [DjangoFilterBackend]
 
 
@@ -67,20 +67,20 @@ class TestViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
 
 
-class BadgeArtisteViewSet(viewsets.ModelViewSet):
-    queryset = BadgeArtiste.objects.all()
-    serializer_class = BadgeArtisteSerializer
+class ArtistBadgeViewSet(viewsets.ModelViewSet):
+    queryset = ArtistBadge.objects.all()
+    serializer_class = ArtistBadgeSerializer
 
 
-class BadgeFanViewSet(viewsets.ModelViewSet):
-    queryset = BadgeFan.objects.all()
-    serializer_class = BadgeFanSerializer
+class FanBadgeViewSet(viewsets.ModelViewSet):
+    queryset = FanBadge.objects.all()
+    serializer_class = FanBadgeSerializer
 
 
 
-class AdministrateurViewSet(viewsets.ModelViewSet):
-    queryset = Administrateur.objects.all()
-    serializer_class = AdministrateurSerializer
+class AdministratorViewSet(viewsets.ModelViewSet):
+    queryset = Administrator.objects.all()
+    serializer_class = AdministratorSerializer
 
     # permissions
     permission_classes = (IsAuthenticated,)
@@ -109,35 +109,35 @@ class FanClubViewSet(viewsets.ModelViewSet):
     # permissions
     permission_classes = (IsAuthenticated,)
 
-#>> TODO : voir si DevenirMembre sera afficher ou pas à la fin
-class DevenirMembreViewSet(viewsets.ModelViewSet):
-    queryset = DevenirMembre.objects.all()
-    serializer_class = DevenirMembreSerializer
+#>> TODO : voir si BecomeMember sera afficher ou pas à la fin
+class BecomeMemberViewSet(viewsets.ModelViewSet):
+    queryset = BecomeMember.objects.all()
+    serializer_class = BecomeMemberSerializer
 
     # permissions
     permission_classes = (IsAuthenticated,)
 
 
-#>> TODO : voir si Contenu sera afficher ou pas à la fin
-class ContenuViewSet(viewsets.ModelViewSet):
-    queryset = Contenu.objects.all()
-    serializer_class = ContenuSerializer
+#>> TODO : voir si Content sera afficher ou pas à la fin
+class ContentViewSet(viewsets.ModelViewSet):
+    queryset = Content.objects.all()
+    serializer_class = ContentSerializer
 
     # permissions
     permission_classes = (IsAuthenticated,)
 
 
-#>> TODO : voir si TypeArtiste sera afficher ou pas à la fin
-class TypeArtisteViewSet(viewsets.ModelViewSet):
-    queryset = TypeArtiste.objects.all()
-    serializer_class = TypeArtisteSerializer
+#>> TODO : voir si ArtistType sera afficher ou pas à la fin
+class ArtistTypeViewSet(viewsets.ModelViewSet):
+    queryset = ArtistType.objects.all()
+    serializer_class = ArtistTypeSerializer
 
     # permissions
     permission_classes = (IsAuthenticated,)
 
-class ValidationEmailViewSet(viewsets.ModelViewSet):
-    queryset = ValidationEmail.objects.all()
-    serializer_class = ValidationEmailSerializer
+class EmailValidationViewSet(viewsets.ModelViewSet):
+    queryset = EmailValidation.objects.all()
+    serializer_class = EmailValidationSerializer
 
     # permissions
     # permission_classes = (IsAuthenticated,)
@@ -193,26 +193,26 @@ class RegisterView(views.APIView):
             ("accountType", "type de compte"), 
             ("username", "username"), 
             ("email", "email"), 
-            ("nom", "nom"), 
-            ("prenom", "prenom"), 
-            ("sexe", "sexe"),
-            ("adresse","adresse"),
+            ("name", "name"), 
+            ("firstName", "firstName"), 
+            ("sex", "sex"),
+            ("address","address"),
             ("tel","téléphone"),
-            ("date_de_naissance","date de naissance"),
-            ("lieu_de_naissance", "lieu de naissance"),
+            ("dateOfBirth","date de naissance"),
+            ("placeOfBirth", "lieu de naissance"),
             ("password", "mot de passe"),
             ("passwordConfirm", "confirmation mot de passe")
         ]
     
-    def createFan(self, utilisateur):
+    def createFan(self, aaUser):
         fan = Fan()
-        fan.utilisateur = utilisateur
+        fan.aaUser = aaUser
         fan.save()
 
-    def createArtiste(self, utilisateur):
-        artiste = Artiste()
-        artiste.utilisateur = utilisateur
-        artiste.save()
+    def createArtist(self, aaUser):
+        artist = Artist()
+        artist.aaUser = aaUser
+        artist.save()
 
     # create user (sys table)
     def create_user(self):        
@@ -231,31 +231,31 @@ class RegisterView(views.APIView):
 
         print("user active : ", newUser.is_active)
 
-        # create user (api table : Utilisateur)
-        utilisateur = Utilisateur()
-        utilisateur.user = newUser
-        utilisateur.nom = self.user.get("nom")
-        utilisateur.prenom = self.user.get("prenom")
-        utilisateur.sexe = self.user.get("sexe")
-        utilisateur.email = self.user.get("email")
-        utilisateur.tel = self.user.get("tel")
-        utilisateur.adresse = self.user.get("adresse")
-        utilisateur.date_de_naissance = self.user.get("date_de_naissance")
-        utilisateur.lieu_de_naissance = self.user.get("lieu_de_naissance")
-        utilisateur.save()
+        # create user (api table : AAUser)
+        aaUser = AAUser()
+        aaUser.user = newUser
+        aaUser.name = self.user.get("name")
+        aaUser.firstName = self.user.get("firstName")
+        aaUser.sex = self.user.get("sex")
+        aaUser.email = self.user.get("email")
+        aaUser.tel = self.user.get("tel")
+        aaUser.address = self.user.get("address")
+        aaUser.dateOfBirth = self.user.get("dateOfBirth")
+        aaUser.placeOfBirth = self.user.get("placeOfBirth")
+        aaUser.save()
 
         #create specific account for the user
         if self.user.get("accountType") == "fan":
-            self.createFan(utilisateur)
-        if self.user.get("accountType") == "artiste":
-            self.createArtiste(utilisateur)
+            self.createFan(aaUser)
+        if self.user.get("accountType") == "artist":
+            self.createArtist(aaUser)
 
-        return utilisateur
+        return aaUser
 
 
-    def active_utilisateur(self, utilisateur):
-        utilisateur.user.is_active = True
-        utilisateur.user.save()
+    def active_utilisateur(self, aaUser):
+        aaUser.user.is_active = True
+        aaUser.user.save()
 
     def post(self, request):
         self.user = request.data
@@ -271,7 +271,7 @@ class RegisterView(views.APIView):
         
         # username control
         if self.user_exists_by_username():
-            message = "ce nom d'utilisateur est déjà prise"
+            message = "ce name d'aaUser est déjà prise"
             return self.not_valid_field("username", message)
         
         # email adress control
@@ -284,18 +284,18 @@ class RegisterView(views.APIView):
             return self.not_valid_field("password", "les mots de passe ne correspondent pas")
 
         # create user
-        utilisateur = self.create_user()
+        aaUser = self.create_user()
 
-        validation = ValidationEmail()
-        validation.set_utilisateur(utilisateur)
+        validation = EmailValidation()
+        validation.set_utilisateur(aaUser)
         validation.save()
         validation.send_validation_code()
 
         # activate user account : temporarily
         # in future it will be activated after email validation
-        self.active_utilisateur(utilisateur)
+        self.active_utilisateur(aaUser)
 
-        print(' after activation : ', utilisateur.user.is_active)
+        print(' after activation : ', aaUser.user.is_active)
 
 
 
@@ -305,14 +305,15 @@ class RegisterView(views.APIView):
 
 
 # get user by token
-class UtilisateurByTokenView(views.APIView):
-    utilisateurUrl = '/utilisateur/?user__username='
+class AAUserByTokenView(views.APIView):
+    utilisateurUrl = '/aauser/?user__username='
     def utilisateur_url(self, username):
         return self.utilisateurUrl+username
 
     def post(self, request):
         try:
             token = request.data.get("token")
+            print(">>>>> token:", token)
             user = Token.objects.get(key=token).user
             return response.HttpResponseRedirect(redirect_to= self.utilisateur_url(user.username))
         except Exception:
