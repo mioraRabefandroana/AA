@@ -1,4 +1,4 @@
-import { getHeaders, API_URLS, ERROR_MSG, setCookie, getCookie } from './Utilities';
+import { getHeaders, API_URLS, ERROR_MSG, setCookie, getCookie, removeToken } from './Utilities';
 
 /**
  * login user with username and password
@@ -29,6 +29,29 @@ export async function login(username, password){
         
     return res;
 }
+
+
+export async function logout(){
+    const requestOptions = {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({})
+    };
+    
+    const res = await fetch(API_URLS.apiLogoutUrl, requestOptions)
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            
+        },
+        (error)=>{
+            
+        })
+        
+    return res;
+}
+
 
 /**
  * get authentified user data

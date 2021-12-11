@@ -68,6 +68,12 @@
     box-shadow: 2px 2px 8px white;
 }
 
+.user-info{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 5px;
+    align-items: center;
+}
 
 .user-info-btn{
     font-size: 12px;

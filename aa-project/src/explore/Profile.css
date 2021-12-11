@@ -80,3 +80,13 @@
     border-bottom: 4px solid white;
     font-weight: bold;
 }
+
+#user-info-dropdown-img{
+    width: 22px;
+    cursor: pointer;
+}
+
+#user-info-dropdown-menu{
+    position: fixed;
+    right: 0px;
+}

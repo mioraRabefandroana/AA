@@ -17,6 +17,8 @@ import afficheAthome from '../img/affiche-athome.jpeg';
 import popcornTv from '../img/popcorn.png';
 import brigitteLecordier from '../img/brigitte-lecordiert.png';
 import liveIcon from '../img/live.png';
+import dropdownIcon from "../img/dropdown.png";
+import goupIcon from "../img/goup.png";
 
 import './Explore.css';
 
@@ -24,13 +26,13 @@ import { Button, FloatButton, SearchBar } from '../form/Form';
 import aaLogo from '../img/aa_logo.png';
 import jainImage from '../img/jain.jpg';
 
-import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, getHeaders, API_URL, API_URLS } from '../Utilities';
+import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, removeToken, getHeaders, API_URL, API_URLS } from '../Utilities';
 import tmpMenuIcon from '../img/super-star-2.jpg'
 import { CardList } from './Card';
 import { Publication } from './Publication';
-import { gotoHome, gotoLogin, gotoProfile } from '../App';
+import { gotoExplore, gotoHome, gotoLogin, gotoProfile } from '../App';
 import { getTop5, loadExploreData } from './ExploreData'
-import { CURRENT_USER, getAuthentifiedUserFromSession } from '../UserManager';
+import { CURRENT_USER, getAuthentifiedUserFromSession, logout } from '../UserManager';
 
 // #TODO : récuperer les top artists depuis la BD
 const TOP_ARTISTS = [
@@ -207,7 +209,7 @@ export function ExploreHeader({user}){
 function ExploreIcon(){
     const handleClick = function(e){
         e.preventDefault();
-        gotoHome();
+        gotoExplore({});
     }
     return <a id="explore-icon" href="#home" onClick={handleClick}>
         <img src={aaLogo} alt="aa_logo" />
@@ -251,8 +253,33 @@ function UserInfo({user}){
             gotoLogin();
     }
 
+    const [dropDown, setDropDown] = useState(false)
+    const handleDropDownClick = function(e){
+        setDropDown(dpd => !dropDown);
+    }
+
+    const handleDisconnect = function(e){
+        e.preventDefault();
+        logout();
+        // remove token
+        removeToken();
+        gotoHome();
+    }
+
+    const diconnectElt = <div>
+        <div onClick={ handleDropDownClick }><img id="user-info-dropdown-img" src={ dropDown ?  goupIcon : dropdownIcon } alt="plus de menu" /></div>
+        { 
+            dropDown ?
+                <ul id="user-info-dropdown-menu">
+                    <li><a href="#deconnexion" onClick={ handleDisconnect }>deconnexion</a></li>
+                </ul>
+            : "" 
+        }
+    </div>
+
     return <div className="user-info">
         <Button className={ className } icon={ icon } onClick={ handleClick }>{ text }</Button>
+        { user ? diconnectElt : ""}
     </div>
 }
 
@@ -319,7 +346,7 @@ function LeftSubMenuItem({menu}){
 }
 
 
-function ExploreRightMenu({notifications, messages}){
+export function ExploreRightMenu({notifications, messages}){
     return <div className="explore-right-menu menu">
         <ul>
             <li>

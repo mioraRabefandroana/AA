@@ -36,6 +36,7 @@ export const BADGE = {
 export const API_URL_ORIGIN = "http://localhost:8000/"
 export const API_URLS = {
   "apiLoginUrl": API_URL_ORIGIN+"user/login/",
+  "apiLogoutUrl": API_URL_ORIGIN+"user/logout/",
   "artisteUrl": API_URL_ORIGIN+"artist/",
   "test": API_URL_ORIGIN+"test/",
 
@@ -109,4 +110,9 @@ export function getCookie(cname) {
         }
     }
     return "";
+}
+
+
+export function removeToken(){
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }

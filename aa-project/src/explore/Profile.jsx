@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button, Field, TextAreaField } from "../form/Form"
 import './Profile.css'
-import { ExploreHeader } from "./Explore"
+import { ExploreHeader, ExploreRightMenu } from "./Explore"
 import { updateUser } from "../UserManager"
 import defaultCoverPicture from "../img/default-cover-picture.png"
 import defaultProfilePicture from "../img/user.png"
@@ -27,6 +27,7 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
         <div className="profile-content-wrapper">
             <ProfileContent user={ user } activeMenu={ menu }   onUserSave={ handleUserSave }/>
         </div>
+        <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/>
         <ProfileFooter user={ user }/>
     </div>
 }
