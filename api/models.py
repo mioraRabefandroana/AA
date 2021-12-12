@@ -26,8 +26,10 @@ class AAUser(models.Model):
     dateOfBirth = models.DateField()
     placeOfBirth = models.CharField(max_length=100)
     # mot_de_passe = models.CharField(max_length=1000)
-    profilePicture  = models.CharField(max_length=1000, blank=True, null=True)
-    coverPicture = models.CharField(max_length=1000, blank=True, null=True)
+    # profilePicture  = models.CharField(max_length=1000, blank=True, null=True)
+    # coverPicture = models.CharField(max_length=1000, blank=True, null=True)
+    profilePicture  = models.ImageField(upload_to="profilePicture/", blank=True, null=True)
+    coverPicture  = models.ImageField(upload_to="coverPicture/".format(id), blank=True, null=True)
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)

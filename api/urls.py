@@ -4,7 +4,7 @@ from api.models import ArtistBadge, FanBadge
 
 
 from rest_framework import routers
-from api.views import ArtistViewSet, ArtistBadgeViewSet, FanBadgeViewSet, CreateUserView, RegisterView, TestViewSet, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet
+from api.views import ArtistViewSet, ArtistBadgeViewSet, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, ProfilePictureUploadView, RegisterView, TestViewSet, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet
 
 router = routers.DefaultRouter()
 router.register('aauser', AAUserViewSet)
@@ -23,10 +23,12 @@ router.register('becomemember', BecomeMemberViewSet)
 router.register('content', ContentViewSet)
 
 urlpatterns = [
-    path('user/login', UserAuthentificationView.as_view(), name="api_user_login"),
+    path('user/login/', UserAuthentificationView.as_view(), name="api_user_login"),
     # path('user/register', CreateUserView.as_view(), name="api_user_register"),
-    path('user/register', RegisterView.as_view(), name="api_user_register"),
+    path('user/register/', RegisterView.as_view(), name="api_user_register"),
     path('user/token/', AAUserByTokenView.as_view(), name="api_get_user_by_token"),
+    path('user/upload/cover/', CoverPictureUploadView.as_view(), name="api_cover_picture_upload"),
+    path('user/upload/profile/', ProfilePictureUploadView.as_view(), name="api_profile_picture_upload"),
 ]
 
 

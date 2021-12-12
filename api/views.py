@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 
 from django.http import HttpResponse, response
@@ -22,6 +23,10 @@ from api.serializer import AdministratorSerializer, ArtistSerializer, ArtistBadg
 from rest_framework.authtoken.models import Token
 import django_filters
 
+from django.contrib.sites.models import Site
+from django.core.files import File
+from django.conf import settings
+
 
 # class ModelFilter(django_filters.FilterSet):
 #     username = django_filters.ModelChoiceFilter(
@@ -36,9 +41,6 @@ import django_filters
 
 class AAUserViewSet(viewsets.ModelViewSet):
     queryset = AAUser.objects.all()
-    # print('------------------------------------------------')
-    # print(queryset[0].user)
-    # print('------------------------------------------------')
     serializer_class = AAUserSerializer
     # filter_class = ModelFilter
 
@@ -146,15 +148,11 @@ class EmailValidationViewSet(viewsets.ModelViewSet):
 
 
 class UserAuthentificationView(views.APIView):
-    # permission_classes = (IsAuthenticated,)
-    
+
     def get(self, request):
         return Response({})
         
     def post(self, request):
-        print('----------------------------')
-        print(request.POST)
-        print('----------------------------')
         username = UserAuthentification(request.POST.get('username'))
         password = UserAuthentification(request.POST.get('password'))
         user = UserAuthentification(username, password)
@@ -163,9 +161,6 @@ class UserAuthentificationView(views.APIView):
             
 
 class RegisterView(views.APIView):
-
-    # def get(self, request):
-    #     return Response({"get": "get"})
     
     def user_exists_by_username(self):
         try:
@@ -178,7 +173,7 @@ class RegisterView(views.APIView):
         try:
             get_user_model().objects.get(email=self.user.get("email"))
             return True
-        except BaseException:
+        except Exception:
             return False
 
     def not_valid_field(self, field, message):
@@ -204,12 +199,12 @@ class RegisterView(views.APIView):
             ("passwordConfirm", "confirmation mot de passe")
         ]
     
-    def createFan(self, aaUser):
+    def create_fan(self, aaUser):
         fan = Fan()
         fan.aaUser = aaUser
         fan.save()
 
-    def createArtist(self, aaUser):
+    def create_artist(self, aaUser):
         artist = Artist()
         artist.aaUser = aaUser
         artist.save()
@@ -246,9 +241,9 @@ class RegisterView(views.APIView):
 
         #create specific account for the user
         if self.user.get("accountType") == "fan":
-            self.createFan(aaUser)
+            self.create_fan(aaUser)
         if self.user.get("accountType") == "artist":
-            self.createArtist(aaUser)
+            self.create_artist(aaUser)
 
         return aaUser
 
@@ -318,6 +313,61 @@ class AAUserByTokenView(views.APIView):
             return response.HttpResponseRedirect(redirect_to= self.utilisateur_url(user.username))
         except Exception:
             return Response([])
+
+
+class CoverPictureUploadView(views.APIView):
+
+    def get_cover_upload_filename(self,  userId):
+        filename, ext = os.path.splitext(str(self.coverPictureFile))    
+        filename = "user_{0}-cover{1}".format(userId, ext)
+        return filename
+
+    def post(self, request):
+        try:
+            self.coverPictureFile = request.FILES["coverPicture"]
+            userId = request.data.get("userId")
+            filename = self.get_cover_upload_filename(userId)
+
+            aaUser = AAUser.objects.get(id=userId)
+            aaUser.coverPicture.save(
+                os.path.basename(filename),
+                File(self.coverPictureFile)
+            )
+            aaUser.save()
+            
+            imageUrl = request.build_absolute_uri(aaUser.coverPicture.url)
+            return Response({"filename": imageUrl})
+
+        except Exception as error:
+            print("/!\ /!\ upload error ==>", error)
+            return Response({"message": "upload failed"})
+
+
+class ProfilePictureUploadView(views.APIView):
+
+    def get_profile_upload_filename(self,  userId):
+        filename, ext = os.path.splitext(str(self.profilePictureFile))    
+        filename = "user_{0}-profile{1}".format(userId, ext)
+        return filename
+
+    def post(self, request):
+        try:
+            self.profilePictureFile = request.FILES["profilePicture"]
+            userId = request.data.get("userId")
+            filename = self.get_profile_upload_filename(userId)
+
+            aaUser = AAUser.objects.get(id=userId)
+            aaUser.profilePicture.save(
+                os.path.basename(filename),
+                File(self.profilePictureFile)
+            )
+            aaUser.save()
+            imageUrl = request.build_absolute_uri(aaUser.profilePicture.url)
+            return Response({"filename": imageUrl})
+
+        except Exception as error:
+            print("/!\ /!\ upload error ==>", error)
+            return Response({"message": "upload failed"})
 
 
 ######################################################

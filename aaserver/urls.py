@@ -20,6 +20,9 @@ from api import views
 from rest_framework import routers
 from rest_framework.authtoken import views
 # from . import api
+from django.conf import settings
+from django.views.static import serve
+from django.conf.urls import include, url
 
 from api.urls import router as api_router
 
@@ -32,4 +35,5 @@ urlpatterns = [
     # path('user/token/', views.obtain_auth_token), # get user by passed token
     path('api/', include('api.urls')),
     path('', include(router.urls)),
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT,})
 ]
