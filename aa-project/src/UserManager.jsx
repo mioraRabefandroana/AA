@@ -180,3 +180,64 @@ export async function getAuthentifiedUserFromSession(){
     return res;
 }
 
+
+export async function uploadCoverPicture(pictureFile, userId){
+
+    let formData = new FormData();            
+    formData.append("coverPicture", pictureFile);
+    formData.append("userId", userId)
+
+    const headers = getHeaders();
+    delete headers["Content-Type"];
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {},
+        body: formData
+    };
+
+    return await uploadImage(API_URLS.coverPictureUpload, requestOptions);
+}
+
+export async function uploadProfilePicture(pictureFile, userId){
+
+    let formData = new FormData();            
+    formData.append("profilePicture", pictureFile);
+    formData.append("userId", userId)
+
+    const headers = getHeaders();
+    delete headers["Content-Type"];
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {},
+        body: formData
+    };
+
+    return await uploadImage(API_URLS.profilePictureUpload, requestOptions);
+}
+
+export async function uploadImage(url, requestOptions){
+        
+        try{
+            const res = await fetch(url, requestOptions)
+                .then(response => {
+                    if(response.ok)
+                        return response.json();
+                    throw new Error(ERROR_MSG.UPLOAD_FAILED)
+                })
+                .then(data => {
+                        return data;
+                    },
+                    (error)=>{
+                        throw new Error(ERROR_MSG.UPLOAD_FAILED);
+                })
+
+            console.log("res ==>", res)
+            return [res.filename, res.message];
+        }
+        catch(error){
+            return [null, error.message]
+        }
+            
+}

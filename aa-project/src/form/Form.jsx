@@ -1,5 +1,6 @@
-import './Form.css'
+import './Form.css';
 import { useEffect, useState } from 'react';
+import ReactDOM from "react-dom";
 
 
 export function Button({icon, children, onClick, id, className}){
@@ -69,4 +70,25 @@ export function TextAreaField({label, id, name, onChange, readOnly=false, value,
         <label htmlFor={ inputId } className="field-label">{ label }</label>
         { input }  
    </div>    
+}
+
+export function Modal({children}){
+
+    return  <div className="modal">
+        <div className="modal-close-btn" onClick={ hideModal }>x</div>
+        { children }
+    </div>
+}
+
+export function showModal(modal){
+    // debugger;
+    const modalWrapper = document.getElementById("modal-wrapper");
+    modalWrapper.classList.add("active-modal");
+    ReactDOM.render(<Modal visible={ true }>{ modal }</Modal>, modalWrapper);
+}
+
+export function hideModal(){
+    const modalWrapper = document.getElementById("modal-wrapper");
+    modalWrapper.classList.remove("active-modal");
+    ReactDOM.render(<></>, modalWrapper);
 }

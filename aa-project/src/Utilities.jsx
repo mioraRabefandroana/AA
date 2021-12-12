@@ -47,8 +47,9 @@ export const API_URLS = {
       return API_URL_ORIGIN+"aauser/" + userId +"/";
   },
   "userByToken" : API_URL_ORIGIN+"api/user/token/",
-  "userRegister" : API_URL_ORIGIN+"api/user/register"
-
+  "userRegister" : API_URL_ORIGIN+"api/user/register/",
+  "coverPictureUpload" : API_URL_ORIGIN+"api/user/upload/cover/",
+  "profilePictureUpload" : API_URL_ORIGIN+"api/user/upload/profile/"
 };
 
 export const TOKENS = {
@@ -72,7 +73,8 @@ export const ERROR_MSG = {
     AUTH_FAILED: "Echec d'authentification",
     USER_NOT_FOUND: "Cet utilisateur n'existe pas.",
     USER_REGISTER_FAILED: "Echec de la création du compte",
-    USER_UPDATE_FAILED: "Echec de la mise à jour des informations"
+    USER_UPDATE_FAILED: "Echec de la mise à jour des informations",
+    UPLOAD_FAILED: "Echec de l'importation du fichier"
 }
 
 export function shortenNumber(number){

@@ -1,10 +1,11 @@
-import { useState } from "react"
-import { Button, Field, TextAreaField } from "../form/Form"
-import './Profile.css'
-import { ExploreHeader, ExploreRightMenu } from "./Explore"
-import { updateUser } from "../UserManager"
-import defaultCoverPicture from "../img/default-cover-picture.png"
-import defaultProfilePicture from "../img/user.png"
+import { useState } from "react";
+import { Button, Field, showModal, TextAreaField } from "../form/Form";
+import './Profile.css';
+import { ExploreHeader, ExploreRightMenu } from "./Explore";
+import { updateUser, uploadCoverPicture, uploadImage, uploadProfilePicture } from "../UserManager";
+import defaultCoverPicture from "../img/default-cover-picture.png";
+import defaultProfilePicture from "../img/user.png";
+import editIcon from "../img/edit-icon.png";
 
 export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
     const [menu, setMenu] = useState(activeMenu);
@@ -25,7 +26,7 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
         <ProfileHeader user={ user }/>
         <ProfileNav user={ user } onMenuChange={ menuHandleChange }/>
         <div className="profile-content-wrapper">
-            <ProfileContent user={ user } activeMenu={ menu }   onUserSave={ handleUserSave }/>
+            <ProfileContent user={ user } activeMenu={ menu }  onUserSave={ handleUserSave }/>
         </div>
         <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/>
         <ProfileFooter user={ user }/>
@@ -41,21 +42,81 @@ const PROFILE_MENU = {
 /** header */
 function ProfileHeader({user}){
     return <div className="user-profile-header">
-        <CoverPicture src={ user.coverPicture }/>
+        <CoverPicture user={ user }/>
         <div className="user-profile-picture-wrapper">
-            <ProfilePicture  src={ user.profilePicture }/>
+            <ProfilePicture user={ user }/>
         </div>
     </div>
 }
 
-function CoverPicture({src}){
+function CoverPicture({user}){
+    const [coverPicture, setCoverPicture] = useState(user.coverPicture)
+
+    const showCoverPicture = function(e){
+        if(!user.coverPicture)
+            return;
+        showModal( <ImageViewer src={ user.coverPicture }/> );
+    }
+
+    const handleCoverChange = async function(e){
+        const coverPictureFile = e.target.files[0];
+        if(!coverPictureFile)
+            return;
+        
+        const [filename, message] = await uploadCoverPicture(coverPictureFile, user.id);
+        if(!filename)
+        {
+            alert(message);
+        }
+        
+        setCoverPicture(coverPicture => filename)
+    }
+
     return <div className="user-profile-cover">
-        <img src={ src || defaultCoverPicture} alt="photo de couverture" className="user-profile-cover-image" />
+        <input id="user-profile-cover-file" className="picture-upload-input" type="file" name="coverPicture" onChange={ handleCoverChange }/>
+        <label htmlFor="user-profile-cover-file" className="user-profile-cover-edit-btn" title="modifier la photo de couverture">
+            <img src={ editIcon } alt="" />
+        </label>
+
+        <img src={ coverPicture || defaultCoverPicture} alt="photo de couverture" className="user-profile-cover-image" onClick={ showCoverPicture }/>
     </div>
 }
-function ProfilePicture({src}){
+
+function ProfilePicture({user}){
+    
+    const [profilePicture, setProfilePicture] = useState(user.profilePicture)
+
+    const handlePictureChange = async function(e){
+        const profilePictureFile = e.target.files[0];
+        if(!profilePictureFile)
+            return;
+        
+        const [filename, message] = await uploadProfilePicture(profilePictureFile, user.id);        
+        if(!filename)
+        {
+            alert(message);
+        }
+        
+        setProfilePicture(profilePicture => filename);
+    }
+
+    const showProfilePicture = function(e){
+        if(!user.profilePicture)
+            return;
+        showModal( <ImageViewer src={ user.profilePicture }/> );
+    }
+
     return <div className="user-profile-picture">
-        <img src={ src || defaultProfilePicture } alt="photo de profile" className="user-profile-cover-image" />
+        <img 
+            src={ profilePicture || defaultProfilePicture } 
+            className="user-profile-picture-image" 
+            title="voir la photo"
+            onClick={ showProfilePicture }/>
+
+        <label htmlFor="user-profile-picture-file" className="user-profile-picture-edit-btn" title="modifier la photo de profil">
+            <img src={ editIcon } alt="" />
+        </label>
+        <input id="user-profile-picture-file" className="picture-upload-input" type="file" name="profilePicture" onChange={ handlePictureChange }/>
     </div>
 }
 
@@ -183,6 +244,12 @@ function ProfileInfos({user, onUserSave}){
         <Field name="address" label="Adresse" id="profile-address" onChange={ handleChange } readOnly={ readOnly } value={ address }/>
 
         { button }
+    </div>
+}
+
+export function ImageViewer({src}){
+    return <div className="image-viewer">
+        <img src={ src } alt="photo de profil" />
     </div>
 }
 

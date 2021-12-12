@@ -37,15 +37,53 @@
     border: 5px solid white;
 
     background-color: gold;
+    cursor: pointer;
 
     transform: translate(10px, -100px);
 }
 
 .user-profile-picture,
-.user-profile-picture img{
+.user-profile-picture-image{
     width: 200px;
+    height: 200px;
+}
+.user-profile-picture{
+    background: url("/src/img/user.png") no-repeat gold;
+    background-size: contain;
 }
 
+.user-profile-picture-edit-btn{
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 145px;
+    width: 210px;
+    text-align: center;
+    background: rgb(255, 255, 255, 0.8);
+    cursor: pointer;
+}
+.user-profile-picture-edit-btn img,
+.user-profile-cover-edit-btn img{
+    width: 50px;
+}
+.user-profile-cover-edit-btn img{
+    background: white;
+    border-radius: 10px;
+    padding: 3px;
+}
+
+.user-profile-cover-edit-btn{
+    position: absolute;
+    width: fit-content;
+    cursor: pointer;
+}
+.user-profile-cover-edit-btn:hover img{
+    background-color: rgba(219, 219, 219, 0.61);
+}
+
+.user-profile-picture:hover .user-profile-picture-edit-btn{
+    display: unset;
+}
 
 .profile-nav{
     /* padding-left: 500px */
