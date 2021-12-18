@@ -182,7 +182,7 @@ export function Explore({}){
         const data = await loadExploreData() ;
         if(!user)
         {
-            const [u] = await getAuthentifiedUserFromSession(); 
+            const u = await getAuthentifiedUserFromSession(); 
             setUser(oldUser => u);
         }
                        

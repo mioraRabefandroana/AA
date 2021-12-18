@@ -133,6 +133,29 @@ export async function updateUser(user){
             return data;
             },
             (error)=>{
+                throw new Error(ERROR_MSG.ARTIST_UPDATE_FAILED);
+            })
+        
+    return res;
+}
+
+export async function updateArtist(artist){
+    console.log("updateArtist")
+    const requestOptions = {
+        method: 'PUT',
+        headers: getHeaders(),
+        body: JSON.stringify(artist)
+    };
+
+    const res = await fetch(API_URLS.updateArtist(artist.id), requestOptions)
+        .then(response => {
+            if(response.ok)
+                return response.json();
+        })
+        .then(data => {
+            return data;
+            },
+            (error)=>{
                 throw new Error(ERROR_MSG.USER_UPDATE_FAILED);
             })
         
@@ -166,7 +189,7 @@ export async function getAuthentifiedUserFromSession(){
     // debugger;
     // return; //DEBUG
 
-    const res = await fetch(API_URLS.userByToken, requestOptions)
+    const [user] = await fetch(API_URLS.userByToken, requestOptions)
         .then(response => {
             if(response.ok)
                 return response.json();
@@ -177,7 +200,56 @@ export async function getAuthentifiedUserFromSession(){
             (error)=>{
                 return [];        
             })    
-    return res;
+    if(user)
+    {
+        user.artist = await getArtistByUser(user)
+        user.fan = await getFanByUser(user)
+    }
+    return user;
+}
+
+export async function getArtistByUser(user){
+
+    const requestOptions = {
+        method: 'GET',
+        headers: getHeaders()
+    };
+
+    const [artist] = await fetch(API_URLS.artistByUserId(user.id), requestOptions)
+        .then(response => {
+            if(response.ok)
+                return response.json();
+        })
+        .then(data => {
+            return data;
+            },
+            (error)=>{
+                return [];        
+            })    
+    console.log("ARTIST",API_URLS.artistByUserId(user.id), artist)
+    return artist;
+}
+
+export async function getFanByUser(user){
+
+    const requestOptions = {
+        method: 'GET',
+        headers: getHeaders()
+    };
+
+    const [fan] = await fetch(API_URLS.fanByUserId(user.id), requestOptions)
+        .then(response => {
+            if(response.ok)
+                return response.json();
+        })
+        .then(data => {
+            return data;
+            },
+            (error)=>{
+                return [];        
+            })    
+    console.log("FAN",API_URLS.fanByUserId(user.id), fan)
+    return fan;
 }
 
 

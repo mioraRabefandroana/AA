@@ -128,3 +128,14 @@
     position: fixed;
     right: 0px;
 }
+
+.profile-user-full-name{
+    color: white;
+    font-size: 20px;
+    display: table;
+    transform: translate(14px, -97px);
+    background-color: #3e312b;
+    padding: 10px;
+    max-width: 300px;
+    border-radius: 10px;
+}

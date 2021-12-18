@@ -16,8 +16,6 @@ export function RegisterForm({}){
         const {name, value} = e.target;
         setUser(user => {
             user = {...user, [name]: value}
-            console.log("++new :", {[name]: value})
-            console.log(user)
             return user;
         })
     }

@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Button, Field, showModal, TextAreaField } from "../form/Form";
 import './Profile.css';
 import { ExploreHeader, ExploreRightMenu } from "./Explore";
-import { updateUser, uploadCoverPicture, uploadImage, uploadProfilePicture } from "../UserManager";
+import { updateArtist, updateUser, uploadCoverPicture, uploadImage, uploadProfilePicture } from "../UserManager";
 import defaultCoverPicture from "../img/default-cover-picture.png";
 import defaultProfilePicture from "../img/user.png";
 import editIcon from "../img/edit-icon.png";
+import { capitalize } from "../Utilities";
 
 export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
     const [menu, setMenu] = useState(activeMenu);
@@ -13,6 +14,12 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
     const handleUserSave = function(user){     
         // submit update user
         updateUser(user);
+    }
+
+    const handleArtistSave = function(artist){     
+        console.log("---handleArtistSave")
+        // submit updated artist
+        updateArtist(artist);
     }
     
     const menuHandleChange = function(activeMenu){
@@ -26,7 +33,7 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
         <ProfileHeader user={ user }/>
         <ProfileNav user={ user } onMenuChange={ menuHandleChange }/>
         <div className="profile-content-wrapper">
-            <ProfileContent user={ user } activeMenu={ menu }  onUserSave={ handleUserSave }/>
+            <ProfileContent user={ user } activeMenu={ menu }  onUserSave={ handleUserSave } onArtistSave={ handleArtistSave } />
         </div>
         <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/>
         <ProfileFooter user={ user }/>
@@ -35,6 +42,7 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
 
 const PROFILE_MENU = {
     INFO: "info",
+    ARTIST: "artist",
     PUBLICATION: "publication",
     WORK: "work"
 }
@@ -106,23 +114,29 @@ function ProfilePicture({user}){
         showModal( <ImageViewer src={ user.profilePicture }/> );
     }
 
-    return <div className="user-profile-picture">
-        <img 
-            src={ profilePicture || defaultProfilePicture } 
-            className="user-profile-picture-image" 
-            title="voir la photo"
-            onClick={ showProfilePicture }/>
+    const fullName = capitalize( user.firstName ) +" "+ user.name.toUpperCase();
 
-        <label htmlFor="user-profile-picture-file" className="user-profile-picture-edit-btn" title="modifier la photo de profil">
-            <img src={ editIcon } alt="" />
-        </label>
-        <input id="user-profile-picture-file" className="picture-upload-input" type="file" name="profilePicture" onChange={ handlePictureChange }/>
-    </div>
+    return <>
+        <div className="user-profile-picture">
+            <img 
+                src={ profilePicture || defaultProfilePicture } 
+                className="user-profile-picture-image" 
+                title="voir la photo"
+                onClick={ showProfilePicture }/>
+
+            <label htmlFor="user-profile-picture-file" className="user-profile-picture-edit-btn" title="modifier la photo de profil">
+                <img src={ editIcon } alt="" />
+            </label>
+            <input id="user-profile-picture-file" className="picture-upload-input" type="file" name="profilePicture" onChange={ handlePictureChange }/>
+        </div>
+        
+        <div className="profile-user-full-name" title={ fullName }>{ fullName}</div>
+    </>
 }
 
 
 /** nav */
-function ProfileNav({onMenuChange}){
+function ProfileNav({user, onMenuChange}){
     const [activeMenu, setActivatedMenu] = useState(PROFILE_MENU.INFO);
     
     const handleClick = function(e){
@@ -134,11 +148,20 @@ function ProfileNav({onMenuChange}){
         onMenuChange(menu);
     }
 
+    let artistMenu = ""
+    if(user.artist)
+        artistMenu = <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.ARTIST).toLocaleString()} onClick={ handleClick }>
+            <a href="#info" menu={ PROFILE_MENU.ARTIST }>Infos Artiste</a>
+        </li>
+
     return <nav className="profile-nav">
         <ul>
             <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.INFO).toLocaleString()} onClick={ handleClick }>
-                <a href="#info" menu={ PROFILE_MENU.INFO }>Mes informations</a>
+                <a href="#info" menu={ PROFILE_MENU.INFO }>Infos Général</a>
             </li>
+
+            { artistMenu }
+            
             <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.PUBLICATION).toLocaleString()} onClick={ handleClick }>
                 <a href="#publication" menu={ PROFILE_MENU.PUBLICATION }>Publications</a>
             </li>
@@ -151,12 +174,16 @@ function ProfileNav({onMenuChange}){
 
 
 /** content */
-function ProfileContent({activeMenu, user, onUserSave, onFieldChange, onCancel}){
+function ProfileContent({activeMenu, user, onUserSave, onArtistSave, onFieldChange, onCancel}){
     // activeMenu=PROFILE_MENU.INFO
     let menu = null;
     switch (activeMenu) {
         case PROFILE_MENU.INFO:
-            menu = <ProfileInfos user={ user } onUserSave={ onUserSave } onFieldChange={ onFieldChange } onCancel={ onCancel }/>
+            menu = <ProfileInfoUser user={ user } onUserSave={ onUserSave } onFieldChange={ onFieldChange } onCancel={ onCancel }/>
+            break;
+        case PROFILE_MENU.ARTIST:
+            if(user.artist)
+                menu = <ProfileInfoArtist artist={ user.artist } onArtistSave={ onArtistSave } onFieldChange={ onFieldChange } onCancel={ onCancel }/>
             break;
         case PROFILE_MENU.PUBLICATION:
             menu = <ProfilePublications user={ user }/>
@@ -173,7 +200,7 @@ function ProfileContent({activeMenu, user, onUserSave, onFieldChange, onCancel})
     </div>
 }
 
-function ProfileInfos({user, onUserSave}){
+function ProfileInfoUser({user, onUserSave}){
     const [readOnly, setReadOnly] = useState(true);
 
     const initialUser = {...user};
@@ -246,6 +273,52 @@ function ProfileInfos({user, onUserSave}){
         { button }
     </div>
 }
+
+function ProfileInfoArtist({artist, onArtistSave}){
+    const [readOnly, setReadOnly] = useState(true);
+
+    const initialArtist = {...artist,};
+
+    const [{stageName}, setArtist] = useState(artist);
+    
+    const editProfile = function(e){
+        setReadOnly(readOnly => false);
+    }
+
+    const handleProfileSave = function(e){
+        setReadOnly(readOnly => true);
+        onArtistSave({...artist, stageName});
+    }
+    const handleCancel = function(e){
+        setReadOnly(readOnly => true);
+        setArtist(artist => {
+            return {...initialArtist}
+        });
+    }
+   
+    const button = readOnly ?
+        <Button onClick={ editProfile } id="edit-profile-btn" className="edit-profile-btn">Modifier</Button> :
+
+        <div className="save-profile-btn-wrappe">
+            <Button onClick={ handleCancel } id="edit-profile-btn" className="edit-profile-btn">Annuler</Button>
+            <Button onClick={ handleProfileSave } id="edit-profile-btn" className="edit-profile-btn">Enregistrer</Button>
+        </div>
+
+    const handleChange = function(e){
+        const {name, value} = e.target;
+        setArtist(artist => {
+            return {...artist, [name]: value}
+        });
+    }
+
+    return <div className="profile-artist"> 
+        <Field name="stageName" label="Nom de scène" id="profile-stageName" onChange={ handleChange } readOnly={ readOnly } value={ stageName }/>
+
+        { button }
+    </div>
+}
+
+
 
 export function ImageViewer({src}){
     return <div className="image-viewer">
