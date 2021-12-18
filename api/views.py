@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework import permissions
 from rest_framework.generics import CreateAPIView
 from django.contrib.auth import get_user_model
-from api.serializer import UserSerializer, EmailValidationSerializer
+from api.serializer import FanSerializer, UserSerializer, EmailValidationSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -57,7 +57,14 @@ class ArtistViewSet(viewsets.ModelViewSet):
     queryset = Artist.objects.all()
     serializer_class = ArtistSerializer
 
-    filterset_fields  = ['stageName']
+    filterset_fields  = ['stageName', 'aaUser__id']
+    filter_backends = [DjangoFilterBackend]
+
+class FanViewSet(viewsets.ModelViewSet):
+    queryset = Fan.objects.all()
+    serializer_class = FanSerializer
+
+    filterset_fields  = ['aaUser__id']
     filter_backends = [DjangoFilterBackend]
 
 

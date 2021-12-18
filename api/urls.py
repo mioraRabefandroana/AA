@@ -4,11 +4,12 @@ from api.models import ArtistBadge, FanBadge
 
 
 from rest_framework import routers
-from api.views import ArtistViewSet, ArtistBadgeViewSet, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, ProfilePictureUploadView, RegisterView, TestViewSet, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet
+from api.views import ArtistViewSet, ArtistBadgeViewSet, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, FanViewSet, ProfilePictureUploadView, RegisterView, TestViewSet, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet
 
 router = routers.DefaultRouter()
 router.register('aauser', AAUserViewSet)
 router.register('artist', ArtistViewSet)
+router.register('fan', FanViewSet)
 router.register('administrator', AdministratorViewSet)
 router.register('publication', PublicationViewSet)
 router.register('page', PageViewSet)

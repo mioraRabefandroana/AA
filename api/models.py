@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from random import random
+
 # from multiselectfield import MultiSelectField
 
 class AAUser(models.Model):
@@ -39,11 +40,23 @@ class AAUser(models.Model):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.nom_complet()
+        return self.fullname()
     
     
-    def nom_complet(self):
+    def fullname(self):
         return self.firstName +' '+ self.name
+    
+    def get_artist(self):
+        try:
+            return Artist.objects.get(aaUser_id=self.id)
+        except Exception:
+            return None
+    
+    def get_fan(self):
+        try:
+            return Fan.objects.get(aaUser_id=self.id)
+        except Exception:
+            return None
 
 
 class ArtistType(models.Model):
