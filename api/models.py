@@ -51,7 +51,10 @@ class AAUser(models.Model):
             return Artist.objects.get(aaUser_id=self.id)
         except Exception:
             return None
-    
+
+    def get_username(self):
+        return self.user.username
+
     def get_fan(self):
         try:
             return Fan.objects.get(aaUser_id=self.id)
@@ -146,14 +149,30 @@ class Administrator(models.Model):
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)
 
+class Content(models.Model):
+    id = models.BigAutoField(primary_key=True)
+
+    CONTENT_TYPE = (
+        ('IMAGE', 'image'),
+        ('VIDEO', 'video'),
+        ('audio', 'audio'),        
+    )
+
+    type = models.CharField(choices=CONTENT_TYPE, max_length=100)
+    description = models.TextField(blank=True, null=True)
+    source = models.CharField(max_length=500, blank=True, null=True)
+
+    image = models.ImageField(upload_to="publication/", blank=True, null=True)
+
+    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
+    creationDate = models.DateTimeField(auto_now=True)
 
 class Publication(models.Model):
     id = models.BigAutoField(primary_key=True)
 
     text = models.TextField()
 
-    # TODO : foreign key many to one
-    # contents = 
+    contents = models.ManyToManyField(Content, blank=True, null=True)
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     publicationDate = models.DateTimeField(auto_now=True)
@@ -208,23 +227,6 @@ class BecomeMember(models.Model):
 
     remark = models.TextField()
 
-class Content(models.Model):
-    id = models.BigAutoField(primary_key=True)
-
-    CONTENT_TYPE = (
-        ('IMAGE', 'image'),
-        ('VIDEO', 'video'),
-        ('audio', 'audio'),        
-    )
-
-    type = models.CharField(choices=CONTENT_TYPE, max_length=100)
-    description = models.TextField()
-    source = models.CharField(max_length=500)
-
-    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
-    creationDate = models.DateTimeField(auto_now=True)
-
-    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
 
 
 class Action(models.Model):

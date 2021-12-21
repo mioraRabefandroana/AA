@@ -214,7 +214,16 @@ class RegisterView(views.APIView):
     def create_artist(self, aaUser):
         artist = Artist()
         artist.aaUser = aaUser
+        artist.stageName = aaUser.fullname()
         artist.save()
+        return artist
+
+    def create_page(self, aaUser):
+        page = Page()
+        page.owner = self.create_artist(aaUser)
+        page.name = aaUser.get_username() + "_page"
+        page.description = "la page de " + aaUser.get_username()
+        page.save()
 
     # create user (sys table)
     def create_user(self):        
@@ -250,7 +259,7 @@ class RegisterView(views.APIView):
         if self.user.get("accountType") == "fan":
             self.create_fan(aaUser)
         if self.user.get("accountType") == "artist":
-            self.create_artist(aaUser)
+            self.create_page(aaUser)
 
         return aaUser
 
@@ -375,6 +384,69 @@ class ProfilePictureUploadView(views.APIView):
         except Exception as error:
             print("/!\ /!\ upload error ==>", error)
             return Response({"message": "upload failed"})
+
+
+
+class NewPublicationView(views.APIView):
+
+    def get_content_filename(self,  contentId):
+        filename, ext = os.path.splitext(str(self.contentFile))    
+        filename = "content_{0}-image-{1}".format(contentId, ext)
+        return filename
+
+    def get_page_by_user(self, userId):
+        page = Page.objects.get(owner__aaUser__id=userId)
+        return page
+
+    def post(self, request):
+        try:
+            self.contentFile = request.FILES["image"]
+            userId = request.data.get("userId")
+            text = request.data.get("text")
+
+            # content
+            content = Content()
+            content.type = "image"
+            content.save() # save to get the id 
+            filename = self.get_content_filename(content.id)
+
+            content.image.save(
+                os.path.basename(filename),
+                File(self.contentFile)
+            )
+            content.save()
+
+            # publication
+            publication = Publication()
+            publication.text = text
+            publication.save()
+            publication.contents.add(content)
+            
+            # page
+            page = self.get_page_by_user(userId)
+            page.publications.add(publication)
+
+            # res = request.build_absolute_uri(content.image.url)
+            return Response({"publication": PublicationSerializer(publication).data})
+
+        except Exception as error:
+            print("/!\ /!\ upload error ==>", error)
+            return Response({"message": "upload failed"})
+
+
+class PublicationsGetter(views.APIView):
+
+    def get(self, request):
+        try:
+            publications = Publication.objects.all()
+            username = request.GET.get("username")
+            # TODO : séléction des publication en fonction de l'utilisateur
+
+            return Response(publications)
+
+        except Exception as error:
+            print("/!\ /!\ upload error ==>", error)
+            return Response([])
 
 
 ######################################################
