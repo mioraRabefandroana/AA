@@ -59,7 +59,7 @@ export async function logout(){
  * @returns 
  */
 export async function getAuthentifiedUser(username){
-    console.log(getHeaders());
+    // console.log(getHeaders());
     const requestOptions = {
         headers: getHeaders()
     };
@@ -175,37 +175,35 @@ function saveAuthentificationToken(token){
 export async function getAuthentifiedUserFromSession(){
     const token = getCookie("token");
     if(!token)
-        return [];
+        return null;
 
     console.log("TOKEN", token);
-    console.log("getHeaders()", getHeaders());
+    // console.log("getHeaders()", getHeaders());
     const requestOptions = {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify({token: token})
     };
 
-    // console.log("URL ===>", API_URLS.userByToken);
-    // debugger;
-    // return; //DEBUG
-
     const [user] = await fetch(API_URLS.userByToken, requestOptions)
-        .then(response => {
+    .then(response => {
             if(response.ok)
                 return response.json();
-        })
-        .then(data => {
+    })
+    .then(data => {
             return data;
             },
             (error)=>{
-                return [];        
-            })    
+                return null;        
+    })    
+
     if(user)
     {
         user.artist = await getArtistByUser(user)
         user.fan = await getFanByUser(user)
+        return user
     }
-    return user;
+    return null;
 }
 
 export async function getArtistByUser(user){
@@ -226,7 +224,6 @@ export async function getArtistByUser(user){
             (error)=>{
                 return [];        
             })    
-    console.log("ARTIST",API_URLS.artistByUserId(user.id), artist)
     return artist;
 }
 
@@ -305,7 +302,7 @@ export async function uploadImage(url, requestOptions){
                         throw new Error(ERROR_MSG.UPLOAD_FAILED);
                 })
 
-            console.log("res ==>", res)
+            // console.log("res ==>", res)
             return [res.filename, res.message];
         }
         catch(error){

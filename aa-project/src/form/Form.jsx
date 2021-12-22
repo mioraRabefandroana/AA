@@ -87,8 +87,12 @@ export function showModal(modal){
     ReactDOM.render(<Modal visible={ true }>{ modal }</Modal>, modalWrapper);
 }
 
-export function hideModal(){
+export function closeModal(){
     const modalWrapper = document.getElementById("modal-wrapper");
     modalWrapper.classList.remove("active-modal");
     ReactDOM.render(<></>, modalWrapper);
+}
+
+export function hideModal(){
+    closeModal();
 }

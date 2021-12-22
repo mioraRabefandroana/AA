@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Link } from "react-router-dom";
 import logo from '../logo.svg';
 import bellFilled from '../img/bell-filled.png';
 import messageFilled from '../img/message-filled.png';
@@ -22,14 +23,15 @@ import goupIcon from "../img/goup.png";
 
 import './Explore.css';
 
-import { Button, FloatButton, SearchBar } from '../form/Form';
+import { Button, FloatButton, SearchBar, showModal } from '../form/Form';
 import aaLogo from '../img/aa_logo.png';
 import jainImage from '../img/jain.jpg';
+import newIcon from '../img/croix-plus.png';
 
 import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, removeToken, getHeaders, API_URL, API_URLS } from '../Utilities';
 import tmpMenuIcon from '../img/super-star-2.jpg'
 import { CardList } from './Card';
-import { Publication } from './Publication';
+import { NewPublication, Publication } from './Publication';
 import { gotoExplore, gotoHome, gotoLogin, gotoProfile } from '../App';
 import { getTop5, loadExploreData } from './ExploreData'
 import { CURRENT_USER, getAuthentifiedUserFromSession, logout } from '../UserManager';
@@ -174,17 +176,17 @@ export function Explore({}){
     const [user, setUser] = useState(null);
 
     const rightMenu = user ? 
-        <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/> 
+        <ExploreRightMenu user={ user } notifications={ ["test"] } messages={ ["test"] }/> 
         : "";
     
     useEffect(async () => { 
-        console.log("auth user = ", user);
-        const data = await loadExploreData() ;
+        // console.log("auth user = ", user);
         if(!user)
         {
             const u = await getAuthentifiedUserFromSession(); 
-            setUser(oldUser => u);
+            setUser(oldUser => u); 
         }
+        const data = await loadExploreData({user}) ;
                        
     }, [])
 
@@ -346,7 +348,7 @@ function LeftSubMenuItem({menu}){
 }
 
 
-export function ExploreRightMenu({notifications, messages}){
+export function ExploreRightMenu({user, notifications, messages}){
     return <div className="explore-right-menu menu">
         <ul>
             <li>
@@ -354,6 +356,9 @@ export function ExploreRightMenu({notifications, messages}){
             </li>
             <li>
                 <MessageFloatButton messages={ messages }/>
+            </li>
+            <li>
+                <NewFloatButton user={ user }/>
             </li>
         </ul>
     </div>
@@ -381,4 +386,17 @@ function MessageFloatButton({messages}){
         onClick={ messageClick } 
         className="message-btn" 
         number={ messageNumber }/>
+}
+
+function NewFloatButton({user}){
+    const handleClick = function(e){
+        showModal(<NewPublication user={user}/>)
+    };
+    const title = "Créer du contenu";
+    // plusIcon
+    return <FloatButton 
+        icon={ newIcon } 
+        title={ title } 
+        onClick={ handleClick } 
+        className="new-btn"/>
 }

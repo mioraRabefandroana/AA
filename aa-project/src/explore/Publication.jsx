@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import likeLineIcon from '../img/heart-line.svg';
 import likeFilledIcon from '../img/heart-filled.svg';
 import commentLineIcon from '../img/comment-line.png';
@@ -7,7 +7,9 @@ import shareLineIcon from '../img/share-line.png';
 import shareFilledIcon from '../img/share-filled.png';
 
 import './Publication.css';
-import { cuniqid, PUBLICATION_CONTENT_TYPE, shortenNumber } from '../Utilities';
+import { cuniqid, ERROR_MSG, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
+import { Button, closeModal } from '../form/Form';
+import { createNewPublication } from './PulicationManager';
 
 export function Publication({publication}){
     return <div className="publication">  
@@ -17,7 +19,7 @@ export function Publication({publication}){
 }
 
 function PublicationContentWrapper({publication}){
-    const likesNumber = publication.likes.length;
+    const likesNumber = publication.likes ? publication.likes.length : 0;
     return <div className="publication-content-wrapper">
         <PublicationContent 
             name={ publication.name } 
@@ -157,5 +159,71 @@ function PublisherName({badges, children}){
 function Publisher({publisher}){
     return <div className="publication-publisher">
         <img src={ publisher.image } alt={ publisher.name } />
+    </div>
+}
+
+
+export function NewPublication({user}){
+    const [publication, setPublication] = useState(null);
+    const publicationImg = useRef(null)
+    const handleChange = function(e){  
+        // value
+        const {name, value} = e.target;
+        setPublication(p => ({...p, [name]: value}) );
+        console.log({name, value})
+    }
+
+    const handleFileChange = function(e){  
+        // file
+        const file = e.target.files ? e.target.files[0] : null;
+        if( file )
+        {
+            setPublication(p => ({...p, image: file}));
+            // debugger;
+            // preview image
+            publicationImg.current.src = URL.createObjectURL(file)
+            return;
+        }
+        else
+            publicationImg.current.src = ""
+    }
+
+    const handleClick = async function(){
+        console.log(publication);
+        const res = await createNewPublication(publication, user.id);
+        if(res.publication)
+        {
+            alert(SUCCESS_MSG.NEW_PUBLICATION_SUCCESS);
+            closeModal();
+        }
+        else
+        {
+            alert(ERROR_MSG.NEW_PUBLICATION_FAILED);
+        }
+    }
+    // debugger;
+    const publisher ={...user, image: user.profilePicture}
+    return <div className="new-publication"> 
+        <label>
+            <input type="file" id="new-publication-input-image" name="image" onChange={ handleFileChange }/>
+            <div htmlFor="new-publication-input-image" className="new-publication-content" title="ajouter une image">
+                <img ref={ publicationImg } className="new-publication-image" src=""/>
+            </div>
+        </label> 
+        
+        <div className="new-publication-text-wrapper">
+            <textarea 
+                name="text" 
+                id="new-publication-text" 
+                className="new-publication-text"
+                placeholder="votre texte ici"
+                onChange={ handleChange }>
+
+            </textarea>
+        </div>
+        <Publisher publisher={ publisher }/>  
+        <div className="new-publication-btns-wrapper">
+            <Button id="new-publication-btn" className="new-publication-btn" onClick={ handleClick }>Poster</Button>
+        </div> 
     </div>
 }

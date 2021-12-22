@@ -40,25 +40,20 @@ export const API_URLS = {
   "artisteUrl": API_URL_ORIGIN+"artist/",
   "test": API_URL_ORIGIN+"test/",
 
-  "userByusername" : function(username){
-      return API_URL_ORIGIN+"aauser/?user__username=" + username;
-  },
-  "artistByUserId" : function(userId){
-      return API_URL_ORIGIN+"artist/?aaUser__id=" + userId;
-  },
-  "fanByUserId" : function(userId){
-      return API_URL_ORIGIN+"fan/?aaUser__id=" + userId;
-  },
-  "updateUser" : function(userId){
-      return API_URL_ORIGIN+"aauser/" + userId +"/";
-  },
-  "updateArtist" : function(artistId){
-      return API_URL_ORIGIN+"artist/" + artistId +"/";
-  },
+  "userByusername" : (username) => API_URL_ORIGIN+"aauser/?user__username=" + username,
+  "artistByUserId" : (userId) => API_URL_ORIGIN+"artist/?aaUser__id=" + userId,
+  "fanByUserId" : (userId) => API_URL_ORIGIN+"fan/?aaUser__id=" + userId,
+  "updateUser" : (userId) => API_URL_ORIGIN+"aauser/" + userId +"/",
+  "updateArtist" : (artistId) => API_URL_ORIGIN+"artist/" + artistId +"/",
+
+  "publications" : (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
+  "userPublications" : (userId) => API_URL_ORIGIN+"api/user/publication/?userId=" + userId,
+
   "userByToken" : API_URL_ORIGIN+"api/user/token/",
   "userRegister" : API_URL_ORIGIN+"api/user/register/",
   "coverPictureUpload" : API_URL_ORIGIN+"api/user/upload/cover/",
-  "profilePictureUpload" : API_URL_ORIGIN+"api/user/upload/profile/"
+  "profilePictureUpload" : API_URL_ORIGIN+"api/user/upload/profile/",
+  "newPublication" : API_URL_ORIGIN+"api/publication/new/"
 };
 
 export const TOKENS = {
@@ -84,7 +79,12 @@ export const ERROR_MSG = {
     USER_REGISTER_FAILED: "Echec de la création du compte",
     USER_UPDATE_FAILED: "Echec de la mise à jour des informations",
     ARTIST_UPDATE_FAILED: "Echec de la mise à jour des informations",
-    UPLOAD_FAILED: "Echec de l'importation du fichier"
+    UPLOAD_FAILED: "Echec de l'importation du fichier",
+    NEW_PUBLICATION_FAILED: "Echec de la publication"
+}
+
+export const SUCCESS_MSG = {  
+  NEW_PUBLICATION_SUCCESS: "Publication posté avec succès!"
 }
 
 export function shortenNumber(number){

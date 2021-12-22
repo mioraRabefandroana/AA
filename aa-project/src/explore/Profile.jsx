@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Field, showModal, TextAreaField } from "../form/Form";
 import './Profile.css';
 import { ExploreHeader, ExploreRightMenu } from "./Explore";
@@ -7,6 +7,7 @@ import defaultCoverPicture from "../img/default-cover-picture.png";
 import defaultProfilePicture from "../img/user.png";
 import editIcon from "../img/edit-icon.png";
 import { capitalize } from "../Utilities";
+import { getUserPublications } from "./PulicationManager";
 
 export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
     const [menu, setMenu] = useState(activeMenu);
@@ -35,7 +36,7 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
         <div className="profile-content-wrapper">
             <ProfileContent user={ user } activeMenu={ menu }  onUserSave={ handleUserSave } onArtistSave={ handleArtistSave } />
         </div>
-        <ExploreRightMenu notifications={ ["test"] } messages={ ["test"] }/>
+        <ExploreRightMenu user={ user } notifications={ ["test"] } messages={ ["test"] }/>
         <ProfileFooter user={ user }/>
     </div>
 }
@@ -111,6 +112,7 @@ function ProfilePicture({user}){
     const showProfilePicture = function(e){
         if(!user.profilePicture)
             return;
+
         showModal( <ImageViewer src={ user.profilePicture }/> );
     }
 
@@ -328,16 +330,15 @@ export function ImageViewer({src}){
 
 
 function ProfilePublications({user}){
-    const publications = getUserPublications(user)
+    const [publications, setPublications] = useState([])
+    useEffect(async () => {
+        const userPublications = await getUserPublications(user);
+        setPublications(p => userPublications);
+    }, [])
+    
     return <div className="profile-publications">
-        { publications }
+        { JSON.stringify(publications) }
     </div>
-}
-
-function getUserPublications(user){
-    // TODO : récupérer les vraies publications pour l'utilisateur
-    let publications = Array.from(Array(10).keys())
-    return publications.map(i => "publication "+i);
 }
 
 

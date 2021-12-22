@@ -180,6 +180,8 @@
     grid-area: r_menu;
     padding-top: 24px;
     padding-right: 20px;
+
+    z-index: 10; /* on top of top5*/
 }
 .explore-right-menu ul{
     display: grid;
@@ -189,4 +191,11 @@
 
 .message-btn img{
     transform: translate(0px, 4px);
+}
+.new-btn{
+    background-color: #0072ff;
+    border: 4px solid white;
+}
+.new-btn img{
+    transform: translate(0px, 2px);
 }

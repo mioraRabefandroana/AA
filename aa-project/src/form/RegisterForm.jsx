@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { useState } from 'react';
-import { registerUser, saveCurrentUser } from '../UserManager';
+import { login, registerUser, saveCurrentUser } from '../UserManager';
 import { gotoExplore, gotoProfile, root } from '../App';
 import { FormMessage } from './LoginForm';
 import './RegisterForm.css'
@@ -16,6 +16,8 @@ export function RegisterForm({}){
         const {name, value} = e.target;
         setUser(user => {
             user = {...user, [name]: value}
+            console.log("++new :", {[name]: value})
+            console.log(user)
             return user;
         })
     }
@@ -32,6 +34,7 @@ export function RegisterForm({}){
 
             setmessage(msg => "");
             saveCurrentUser(user);
+            await login(user.username, user.password);
             ReactDOM.render(<RegisterSuccess user={ user }/>, root)
             
         }
@@ -46,21 +49,21 @@ export function RegisterForm({}){
             <h2>Inscription</h2>
             <FormMessage>{ msg }</FormMessage>
         </div>
-        <RegisterAccountTypeField onChange={ handleChange } value={ user.accountType }/>
-        <RegisterTextField name="name" label="Nom" id="register-name" onChange={ handleChange } value={ user.name }/>
-        <RegisterTextField name="firstName" label="Prénoms" id="register-firstName" onChange={ handleChange } value={ user.firstName }/>
-        <RegisterTextField name="username" label="pseudo" id="register-username" onChange={ handleChange } value={ user.username }/>
-        <RegisterSexeField name="sex" id="register-sex" label="Sexe" onChange={ handleChange }  value={ user.sex }/>
-        <RegisterMailField name="email" label="E-mail" id="register-email" onChange={ handleChange } value={ user.email }/>
-        <RegisterTextField name="tel" label="Téléphone" id="register-telephone" onChange={ handleChange } value={ user.tel }/>
+        <RegisterAccountTypeField onChange={ handleChange }  value={ user.accountType }/>
+        <RegisterTextField name="name" label="Nom" id="register-name" onChange={ handleChange } />
+        <RegisterTextField name="firstName" label="Prénoms" id="register-firstName" onChange={ handleChange }/>
+        <RegisterTextField name="username" label="pseudo" id="register-username" onChange={ handleChange }/>
+        <RegisterSexeField name="sex" id="register-sex" label="Sexe" onChange={ handleChange } />
+        <RegisterMailField name="email" label="E-mail" id="register-email" onChange={ handleChange } />
+        <RegisterTextField name="tel" label="Téléphone" id="register-telephone" onChange={ handleChange } />
 
-        <RegisterDateField name="dateOfBirth" label="Date de naissance" id="register-dateOfBirth" onChange={ handleChange } value={ user.dateOfBirth }/>
-        <RegisterTextField name="placeOfBirth" label="Lieu de naissance" id="register-placeOfBirth" onChange={ handleChange } value={ user.placeOfBirth }/>
-        <RegisterTextField name="address" label="Adresse" id="register-address" onChange={ handleChange } value={ user.address }/>
+        <RegisterDateField name="dateOfBirth" label="Date de naissance" id="register-dateOfBirth" onChange={ handleChange }/>
+        <RegisterTextField name="placeOfBirth" label="Lieu de naissance" id="register-placeOfBirth" onChange={ handleChange } />
+        <RegisterTextField name="address" label="Adresse" id="register-address" onChange={ handleChange }/>
 
         <br />
-        <RegisterPasswordField name="password" label="mot de passe" id="register-mot_de_passe" onChange={ handleChange } value={ user.password }/>
-        <RegisterPasswordField name="passwordConfirm" label="confirmation mot de passe" id="register-mot_de_passe" onChange={ handleChange } value={ user.passwordConfirm }/>
+        <RegisterPasswordField name="password" label="mot de passe" id="register-mot_de_passe" onChange={ handleChange } />
+        <RegisterPasswordField name="passwordConfirm" label="confirmation mot de passe" id="register-mot_de_passe" onChange={ handleChange } />
         {/* <RegisterTextField label="Photo de profil" id="register-photo_de_profil"/>
         <RegisterTextField label="Photo de couverture" id="register-photo_de_couverture"/> */}
 
