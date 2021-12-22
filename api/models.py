@@ -177,6 +177,8 @@ class Publication(models.Model):
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     publicationDate = models.DateTimeField(auto_now=True)
 
+    userPublisher = models.ForeignKey(AAUser, on_delete=models.CASCADE)
+    
     def __str__(self):
         return self.text
 

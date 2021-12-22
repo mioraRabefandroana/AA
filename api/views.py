@@ -400,27 +400,29 @@ class NewPublicationView(views.APIView):
 
     def post(self, request):
         try:
-            self.contentFile = request.FILES["image"]
             userId = request.data.get("userId")
             text = request.data.get("text")
-
-            # content
-            content = Content()
-            content.type = "image"
-            content.save() # save to get the id 
-            filename = self.get_content_filename(content.id)
-
-            content.image.save(
-                os.path.basename(filename),
-                File(self.contentFile)
-            )
-            content.save()
 
             # publication
             publication = Publication()
             publication.text = text
+            publication.userPublisher = AAUser.objects.get(id=userId)
             publication.save()
-            publication.contents.add(content)
+
+            # content
+            if( request.FILES and request.FILES["image"]):
+                self.contentFile = request.FILES["image"]
+                content = Content()
+                content.type = "image"
+                content.save() # save to get the id 
+                filename = self.get_content_filename(content.id)
+
+                content.image.save(
+                    os.path.basename(filename),
+                    File(self.contentFile)
+                )
+                content.save()
+                publication.contents.add(content)
             
             # page
             page = self.get_page_by_user(userId)
@@ -434,18 +436,34 @@ class NewPublicationView(views.APIView):
             return Response({"message": "upload failed"})
 
 
-class PublicationsGetter(views.APIView):
+class PublicPublicationsGetter(views.APIView):
 
     def get(self, request):
         try:
             publications = Publication.objects.all()
-            username = request.GET.get("username")
+            userId = request.GET.get("userId")
             # TODO : séléction des publication en fonction de l'utilisateur
 
             return Response(publications)
 
         except Exception as error:
             print("/!\ /!\ upload error ==>", error)
+            return Response([])
+
+class UserPublicationsGetter(views.APIView):
+
+    def get(self, request):
+        try:
+            publications = Publication.objects.all()
+            userId = request.GET.get("userId")
+            publications = Publication.objects.filter(userPublisher__id=userId).order_by("-publicationDate")
+            # print(PublicationSerializer(publications, many=True).data)
+            # TODO : séléction des publication en fonction de l'utilisateur
+
+            return Response( PublicationSerializer(publications, many=True).data )
+
+        except Exception as error:
+            print("/!\ /!\ error ==>", error)
             return Response([])
 
 
