@@ -5,6 +5,7 @@ import commentLineIcon from '../img/comment-line.png';
 import commentFiledIcon from '../img/comment-filled.png';
 import shareLineIcon from '../img/share-line.png';
 import shareFilledIcon from '../img/share-filled.png';
+import defaultProfilePicture from "../img/user.png";
 
 import './Publication.css';
 import { cuniqid, ERROR_MSG, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
@@ -20,15 +21,18 @@ export function Publication({publication}){
 
 function PublicationContentWrapper({publication}){
     const likesNumber = publication.likes ? publication.likes.length : 0;
+
+    const contentImageSrc = (publication.contents && publication.contents.length > 0 ) ? publication.contents[0].image : null;
+
     return <div className="publication-content-wrapper">
-        <PublicationContent 
-            name={ publication.name } 
-            type={ publication.type } 
-            src={ publication.src }/>
+        
+        { contentImageSrc ? <PublicationContent src={ contentImageSrc }/> : "" }
 
         <div className="publication-details-wrapper">     
             <div className="publication-details publication-details-name-and-likes">
-                <PublisherName badges={publication.publisher.badges}>{ publication.publisher.name }</PublisherName>
+                {/* #TODO : récupérer les bages : front + backend */}
+                {/* <PublisherName badges={publication.userPublisher.badges}>{ publication.publisher.name }</PublisherName> */}
+                <PublisherName badges={[]}>{ publication.userPublisher.fullname }</PublisherName>
                 <PublicationLikes likesNumber={ likesNumber }/>
             </div>       
             <div className="publication-details publication-details-text-and-liked">
@@ -37,7 +41,7 @@ function PublicationContentWrapper({publication}){
             </div>
         </div>
 
-        <Publisher publisher={ publication.publisher }/>        
+        <Publisher publisher={ publication.userPublisher }/>        
     </div>
 }
 
@@ -104,22 +108,23 @@ function UserBadge({name, icon}){
         alt={ name }/>
 }
 
-function PublicationContent({name, type, src}){
-    let content = null;
-    switch(type){
-        case PUBLICATION_CONTENT_TYPE.image:
-            content = <PublicationImage src={ src } name={ name }/>;
-            break;
-        default:
+function PublicationContent({src}){
+    // let content = null;
+    // switch(type){
+    //     case PUBLICATION_CONTENT_TYPE.image:
+    //         content = <PublicationImage src={ src } />;
+    //         break;
+    //     default:
 
-    }
+    // }
+    const content = <PublicationImage src={ src } />;
     return <div className="publication-content">
         { content }
     </div>
 }
 
 function PublicationImage({src, name}){
-    return <img src={ src } alt={ name } className="publication-image" />
+    return <img src={ src } className="publication-image" />
 }
 
 function PublicationText({children}){
@@ -157,8 +162,9 @@ function PublisherName({badges, children}){
 }
 
 function Publisher({publisher}){
+    console.log("----------------------", publisher)
     return <div className="publication-publisher">
-        <img src={ publisher.image } alt={ publisher.name } />
+        <img src={ publisher.profilePicture || defaultProfilePicture } alt={ publisher.name } />
     </div>
 }
 

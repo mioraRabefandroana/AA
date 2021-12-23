@@ -47,7 +47,7 @@ export const API_URLS = {
   "updateArtist" : (artistId) => API_URL_ORIGIN+"artist/" + artistId +"/",
 
   "publications" : (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
-  "userPublications" : (userId) => API_URL_ORIGIN+"api/user/publication/?userId=" + userId,
+  "userPublications" : (userId) => API_URL_ORIGIN+"userpublication/?userPublisher__id" + userId,
 
   "userByToken" : API_URL_ORIGIN+"api/user/token/",
   "userRegister" : API_URL_ORIGIN+"api/user/register/",

@@ -34,10 +34,9 @@ export async function createNewPublication(publication, userId){
 export async function getUserPublications(user){
     const requestOptions = {
         method: 'GET',
-        headers: getHeaders()//,
-        // body: JSON.stringify()
+        headers: getHeaders()
     };
-debugger;
+    
     const res = await fetch(API_URLS.userPublications(user.id), requestOptions)
         .then(response => {
             if(response.ok)

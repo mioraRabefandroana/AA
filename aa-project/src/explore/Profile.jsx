@@ -8,6 +8,7 @@ import defaultProfilePicture from "../img/user.png";
 import editIcon from "../img/edit-icon.png";
 import { capitalize } from "../Utilities";
 import { getUserPublications } from "./PulicationManager";
+import { Publication } from "./Publication";
 
 export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
     const [menu, setMenu] = useState(activeMenu);
@@ -333,11 +334,13 @@ function ProfilePublications({user}){
     const [publications, setPublications] = useState([])
     useEffect(async () => {
         const userPublications = await getUserPublications(user);
+        console.log("PUBLICATIONS ", userPublications);
+        // return;
         setPublications(p => userPublications);
     }, [])
     
     return <div className="profile-publications">
-        { JSON.stringify(publications) }
+        { publications.map(p => (<Publication publication={ p } />))}
     </div>
 }
 

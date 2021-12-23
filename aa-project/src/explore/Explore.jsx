@@ -292,7 +292,8 @@ function ExploreContent({topArtists, publications}){
             <CardList artists={ topArtists } id="top-5"/>
             <div className="publications-wrapper">
             { 
-                publications.map(publication => <Publication publication={ publication } key={ cuniqid(publication.name) }/>)
+            // DEBUG : à decommenter
+                // publications.map(publication => <Publication publication={ publication } key={ cuniqid(publication.name) }/>)
             }
 
             {/* { <Publication publication={ publications[0] }/> } */}
