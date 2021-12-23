@@ -30,7 +30,7 @@ class AAUser(models.Model):
     # profilePicture  = models.CharField(max_length=1000, blank=True, null=True)
     # coverPicture = models.CharField(max_length=1000, blank=True, null=True)
     profilePicture  = models.ImageField(upload_to="profilePicture/", blank=True, null=True)
-    coverPicture  = models.ImageField(upload_to="coverPicture/".format(id), blank=True, null=True)
+    coverPicture  = models.ImageField(upload_to="coverPicture/", blank=True, null=True)
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)
@@ -44,6 +44,9 @@ class AAUser(models.Model):
     
     
     def fullname(self):
+        return self.firstName +' '+ self.name
+    
+    def get_fullname(self):
         return self.firstName +' '+ self.name
     
     def get_artist(self):
@@ -181,6 +184,10 @@ class Publication(models.Model):
     
     def __str__(self):
         return self.text
+    
+    # TODO : récupérer les commentaires pour la publication
+    def get_comments(self):
+        return []
 
 
 class Page(models.Model):

@@ -45,7 +45,7 @@ class AAUserViewSet(viewsets.ModelViewSet):
     # filter_class = ModelFilter
 
     # permissions
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     filterset_fields  = ['id','name', 'firstName', 'user__username']
     filter_backends = [DjangoFilterBackend]
@@ -95,9 +95,21 @@ class AdministratorViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
+# Public access
 class PublicationViewSet(viewsets.ModelViewSet):
     queryset = Publication.objects.all()
     serializer_class = PublicationSerializer
+
+    # permissions
+    # permission_classes = (IsAuthenticated,)
+
+# user (publisher) publications
+# Restricted access : authentified user only
+class UserPublicationViewSet(viewsets.ModelViewSet):
+    queryset = Publication.objects.all().order_by("-publicationDate")
+    serializer_class = PublicationSerializer
+    
+    filterset_fields  = ['id', 'userPublisher__id']
 
     # permissions
     permission_classes = (IsAuthenticated,)
@@ -448,22 +460,6 @@ class PublicPublicationsGetter(views.APIView):
 
         except Exception as error:
             print("/!\ /!\ upload error ==>", error)
-            return Response([])
-
-class UserPublicationsGetter(views.APIView):
-
-    def get(self, request):
-        try:
-            publications = Publication.objects.all()
-            userId = request.GET.get("userId")
-            publications = Publication.objects.filter(userPublisher__id=userId).order_by("-publicationDate")
-            # print(PublicationSerializer(publications, many=True).data)
-            # TODO : séléction des publication en fonction de l'utilisateur
-
-            return Response( PublicationSerializer(publications, many=True).data )
-
-        except Exception as error:
-            print("/!\ /!\ error ==>", error)
             return Response([])
 
 

@@ -36,12 +36,18 @@ class AAUserSerializer(serializers.ModelSerializer):
 
     # dateOfBirth = serializers.DateField(source='dateOfBirth')
     username = serializers.CharField(source="user.username")    
+    fullname = serializers.CharField(source="get_fullname")
+    profilePicture_url = serializers.SerializerMethodField()
 
     class Meta:
         model = AAUser
         # exclude = ['dateOfBirth']
         fields = '__all__'
 
+    def get_profilePicture_url(self, aaUser):
+        request = self.context.get('request')
+        # photo_url = aaUser.profilePicture.url
+        return request.build_absolute_uri(aaUser.profilePicture.url)
 
 class AdministratorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,10 +56,13 @@ class AdministratorSerializer(serializers.ModelSerializer):
 
 
 class PublicationSerializer(serializers.ModelSerializer):
+    # comments = serializers.CharField(source="get_comments")    
+    # TODO : récupérer les vrais commentaires
+    comments = serializers.JSONField(source="get_comments")    
     class Meta:
         model = Publication
         fields = '__all__'
-        depth = 1
+        depth = 2
 
 
 class PageSerializer(serializers.ModelSerializer):
