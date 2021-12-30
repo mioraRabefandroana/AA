@@ -6,12 +6,14 @@ import { updateArtist, updateUser, uploadCoverPicture, uploadImage, uploadProfil
 import defaultCoverPicture from "../img/default-cover-picture.png";
 import defaultProfilePicture from "../img/user.png";
 import editIcon from "../img/edit-icon.png";
-import { capitalize } from "../Utilities";
+import { capitalize, PROFILE_MENU } from "../Utilities";
 import { getUserPublications } from "./PulicationManager";
 import { Publication } from "./Publication";
 
-export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
+export function Profile({user, header=true, activeMenu=PROFILE_MENU.PUBLICATION}){
+    debugger;
     const [menu, setMenu] = useState(activeMenu);
+    const [publications, setPublications] = useState([]);
 
     const handleUserSave = function(user){     
         // submit update user
@@ -24,29 +26,38 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.INFO}){
         updateArtist(artist);
     }
     
+    /** menu change handler */
     const menuHandleChange = function(activeMenu){
         setMenu(menu => activeMenu);
     }
+
+    /** after publication created handler */
+    const handleNewPublicationCreated = async function(publication){
+        setPublications(p => [publication, ...p]);
+        setMenu(menu => PROFILE_MENU.PUBLICATION);
+    }
+
+    /** on menu change to publication , get publications */
+    useEffect(async ()=>{
+        if(menu == PROFILE_MENU.PUBLICATION )
+        {
+            const userPublications = await getUserPublications(user);
+            setPublications(p => userPublications);
+        }
+    },[menu]);
 
     return <div className="user-profile">
         {/* {JSON.stringify(user)} */}
 
         { header ? <ExploreHeader user={ user }/> : ""}
         <ProfileHeader user={ user }/>
-        <ProfileNav user={ user } onMenuChange={ menuHandleChange }/>
+        <ProfileNav user={ user } activeMenu={ menu } onMenuChange={ menuHandleChange }/>
         <div className="profile-content-wrapper">
-            <ProfileContent user={ user } activeMenu={ menu }  onUserSave={ handleUserSave } onArtistSave={ handleArtistSave } />
+            <ProfileContent user={ user } publications={ publications } activeMenu={ menu }  onUserSave={ handleUserSave } onArtistSave={ handleArtistSave } />
         </div>
-        <ExploreRightMenu user={ user } notifications={ ["test"] } messages={ ["test"] }/>
+        <ExploreRightMenu user={ user } notifications={ ["test"] } messages={ ["test"] } onNewPublicationCreated={ handleNewPublicationCreated }/>
         <ProfileFooter user={ user }/>
     </div>
-}
-
-const PROFILE_MENU = {
-    INFO: "info",
-    ARTIST: "artist",
-    PUBLICATION: "publication",
-    WORK: "work"
 }
 
 /** header */
@@ -139,15 +150,9 @@ function ProfilePicture({user}){
 
 
 /** nav */
-function ProfileNav({user, onMenuChange}){
-    const [activeMenu, setActivatedMenu] = useState(PROFILE_MENU.INFO);
-    
+function ProfileNav({user, activeMenu, onMenuChange}){
     const handleClick = function(e){
-        e.preventDefault();
         const menu  = e.target.getAttribute("menu");
-        if(!menu)
-            return;
-        setActivatedMenu(activeMenu => menu);
         onMenuChange(menu);
     }
 
@@ -159,25 +164,27 @@ function ProfileNav({user, onMenuChange}){
 
     return <nav className="profile-nav">
         <ul>
+            <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.PUBLICATION).toLocaleString()} onClick={ handleClick }>
+                <a href="#publication" menu={ PROFILE_MENU.PUBLICATION }>Publications</a>
+            </li>
+
+            <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.WORK).toLocaleString()} onClick={ handleClick }>
+                <a href="#work" menu={ PROFILE_MENU.WORK }>Mes ouvrages</a>
+            </li>
+
             <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.INFO).toLocaleString()} onClick={ handleClick }>
                 <a href="#info" menu={ PROFILE_MENU.INFO }>Infos Général</a>
             </li>
 
             { artistMenu }
             
-            <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.PUBLICATION).toLocaleString()} onClick={ handleClick }>
-                <a href="#publication" menu={ PROFILE_MENU.PUBLICATION }>Publications</a>
-            </li>
-            <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.WORK).toLocaleString()} onClick={ handleClick }>
-                <a href="#work" menu={ PROFILE_MENU.WORK }>Mes ouvrages</a>
-            </li>
         </ul>
     </nav>
 }
 
 
-/** content */
-function ProfileContent({activeMenu, user, onUserSave, onArtistSave, onFieldChange, onCancel}){
+/** profile content */
+function ProfileContent({activeMenu, user, publications=[], onUserSave, onArtistSave, onFieldChange, onCancel}){
     // activeMenu=PROFILE_MENU.INFO
     let menu = null;
     switch (activeMenu) {
@@ -189,7 +196,7 @@ function ProfileContent({activeMenu, user, onUserSave, onArtistSave, onFieldChan
                 menu = <ProfileInfoArtist artist={ user.artist } onArtistSave={ onArtistSave } onFieldChange={ onFieldChange } onCancel={ onCancel }/>
             break;
         case PROFILE_MENU.PUBLICATION:
-            menu = <ProfilePublications user={ user }/>
+            menu = <ProfilePublications user={ user } publications={ publications }/>
             break;
         case PROFILE_MENU.WORK:
             menu = <ProfileWorks user={ user }/>
@@ -329,18 +336,15 @@ export function ImageViewer({src}){
     </div>
 }
 
-
-function ProfilePublications({user}){
-    const [publications, setPublications] = useState([])
-    useEffect(async () => {
-        const userPublications = await getUserPublications(user);
-        console.log("PUBLICATIONS ", userPublications);
-        // return;
-        setPublications(p => userPublications);
-    }, [])
-    
+/**
+ * profile publications
+ *  user publications list
+ * @param {*} param0 
+ * @returns 
+ */
+function ProfilePublications({user, publications=[]}){
     return <div className="profile-publications">
-        { publications.map(p => (<Publication publication={ p } />))}
+        { publications.map(p => (<Publication publication={ p } key={ p.id } />))}
     </div>
 }
 

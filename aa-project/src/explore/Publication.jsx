@@ -8,9 +8,10 @@ import shareFilledIcon from '../img/share-filled.png';
 import defaultProfilePicture from "../img/user.png";
 
 import './Publication.css';
-import { cuniqid, ERROR_MSG, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
+import { cuniqid, ERROR_MSG, PROFILE_MENU, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
 import { Button, closeModal } from '../form/Form';
 import { createNewPublication } from './PulicationManager';
+import { gotoProfile } from '../App';
 
 export function Publication({publication}){
     return <div className="publication">  
@@ -23,7 +24,7 @@ function PublicationContentWrapper({publication}){
     const likesNumber = publication.likes ? publication.likes.length : 0;
 
     const contentImageSrc = (publication.contents && publication.contents.length > 0 ) ? publication.contents[0].image : null;
-
+    const publisherFullName = publication.userPublisher.firstName + " " + publication.userPublisher.name;
     return <div className="publication-content-wrapper">
         
         { contentImageSrc ? <PublicationContent src={ contentImageSrc }/> : "" }
@@ -32,7 +33,7 @@ function PublicationContentWrapper({publication}){
             <div className="publication-details publication-details-name-and-likes">
                 {/* #TODO : récupérer les bages : front + backend */}
                 {/* <PublisherName badges={publication.userPublisher.badges}>{ publication.publisher.name }</PublisherName> */}
-                <PublisherName badges={[]}>{ publication.userPublisher.fullname }</PublisherName>
+                <PublisherName badges={[]}>{ publisherFullName }</PublisherName>
                 <PublicationLikes likesNumber={ likesNumber }/>
             </div>       
             <div className="publication-details publication-details-text-and-liked">
@@ -162,14 +163,13 @@ function PublisherName({badges, children}){
 }
 
 function Publisher({publisher}){
-    console.log("----------------------", publisher)
     return <div className="publication-publisher">
         <img src={ publisher.profilePicture || defaultProfilePicture } alt={ publisher.name } />
     </div>
 }
 
 
-export function NewPublication({user}){
+export function NewPublication({user, onNewPublicationCreated}){
     const [publication, setPublication] = useState(null);
     const publicationImg = useRef(null)
     const handleChange = function(e){  
@@ -187,19 +187,22 @@ export function NewPublication({user}){
             setPublication(p => ({...p, image: file}));
             // debugger;
             // preview image
-            publicationImg.current.src = URL.createObjectURL(file)
+            publicationImg.current.src = URL.createObjectURL(file);
             return;
         }
         else
-            publicationImg.current.src = ""
+            publicationImg.current.src = "";
     }
 
+    /** submit new publication */
     const handleClick = async function(){
         console.log(publication);
         const res = await createNewPublication(publication, user.id);
         if(res.publication)
         {
-            alert(SUCCESS_MSG.NEW_PUBLICATION_SUCCESS);
+            const newPublication = {...res.publication, userPublisher: user};
+            onNewPublicationCreated(newPublication);
+            // alert(SUCCESS_MSG.NEW_PUBLICATION_SUCCESS);
             closeModal();
         }
         else

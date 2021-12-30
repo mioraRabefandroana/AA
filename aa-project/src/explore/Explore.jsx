@@ -28,7 +28,7 @@ import aaLogo from '../img/aa_logo.png';
 import jainImage from '../img/jain.jpg';
 import newIcon from '../img/croix-plus.png';
 
-import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, removeToken, getHeaders, API_URL, API_URLS } from '../Utilities';
+import { cuniqid, PRODUCT_TYPE, PUBLICATION_CONTENT_TYPE, BADGE, removeToken, getHeaders, API_URL, API_URLS, PROFILE_MENU } from '../Utilities';
 import tmpMenuIcon from '../img/super-star-2.jpg'
 import { CardList } from './Card';
 import { NewPublication, Publication } from './Publication';
@@ -175,8 +175,13 @@ const LEFT_MENUS = [
 export function Explore({}){
     const [user, setUser] = useState(null);
 
+    const onNewPublicationCreated = function(publication){        
+        const activeMenu = PROFILE_MENU.PUBLICATION;
+        gotoProfile({user, activeMenu});
+    }
+
     const rightMenu = user ? 
-        <ExploreRightMenu user={ user } notifications={ ["test"] } messages={ ["test"] }/> 
+        <ExploreRightMenu user={ user } notifications={ ["test"] } messages={ ["test"] } onNewPublicationCreated={ onNewPublicationCreated } /> 
         : "";
     
     useEffect(async () => { 
@@ -349,7 +354,7 @@ function LeftSubMenuItem({menu}){
 }
 
 
-export function ExploreRightMenu({user, notifications, messages}){
+export function ExploreRightMenu({user, notifications, messages, onNewPublicationCreated}){
     return <div className="explore-right-menu menu">
         <ul>
             <li>
@@ -359,7 +364,7 @@ export function ExploreRightMenu({user, notifications, messages}){
                 <MessageFloatButton messages={ messages }/>
             </li>
             <li>
-                <NewFloatButton user={ user }/>
+                <NewFloatButton user={ user } onNewPublicationCreated={onNewPublicationCreated}/>
             </li>
         </ul>
     </div>
@@ -389,9 +394,9 @@ function MessageFloatButton({messages}){
         number={ messageNumber }/>
 }
 
-function NewFloatButton({user}){
+function NewFloatButton({user, onNewPublicationCreated}){
     const handleClick = function(e){
-        showModal(<NewPublication user={user}/>)
+        showModal(<NewPublication {...{user, onNewPublicationCreated}}/>)
     };
     const title = "Créer du contenu";
     // plusIcon

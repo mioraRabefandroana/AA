@@ -87,6 +87,17 @@ export const SUCCESS_MSG = {
   NEW_PUBLICATION_SUCCESS: "Publication posté avec succès!"
 }
 
+
+
+export const PROFILE_MENU = {
+  INFO: "info",
+  ARTIST: "artist",
+  PUBLICATION: "publication",
+  WORK: "work"
+}
+
+
+
 export function shortenNumber(number){
   // #TODO : formater le nombre envoyer. ex: 12000 => 12K
   // return number;

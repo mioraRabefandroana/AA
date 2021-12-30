@@ -31,6 +31,7 @@ export function gotoExplore({user})
     ReactDOM.render(<Explore user={ user }/>, root);
 }
 export function gotoProfile({children, activeMenu, user}){
+    debugger;
     ReactDOM.render(<Profile activeMenu={ activeMenu } user={ user }>{ children }</Profile> , root);
 }
 
