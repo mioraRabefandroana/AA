@@ -62,7 +62,7 @@ class PublicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publication
         fields = '__all__'
-        depth = 2
+        depth = 1
 
 
 class PageSerializer(serializers.ModelSerializer):
