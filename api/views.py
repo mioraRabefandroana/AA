@@ -102,7 +102,7 @@ class AdministratorViewSet(viewsets.ModelViewSet):
 
 # Public access
 class PublicationViewSet(viewsets.ModelViewSet):
-    queryset = Publication.objects.all()
+    queryset = Publication.objects.all().order_by("-id")
     serializer_class = PublicationSerializer    
     filterset_fields  = ['id']
 
@@ -459,7 +459,9 @@ class NewPublicationView(views.APIView):
             print("/!\ /!\ new publication error ==>", error)
             return Response({"message": "upload failed"})
 
-
+"""
+get user publications
+"""
 class PublicPublicationsGetter(views.APIView):
 
     def get(self, request):
@@ -473,6 +475,8 @@ class PublicPublicationsGetter(views.APIView):
         except Exception as error:
             print("/!\ /!\ PublicPublicationsGetter upload error ==>", error)
             return Response([])
+
+# class ExplorePublicationsByUserView(views.APIView):
 
 
 ######################################################
