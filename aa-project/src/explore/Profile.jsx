@@ -12,8 +12,9 @@ import { Publication } from "./Publication";
 
 export function Profile({defaultUser, header=true, activeMenu=PROFILE_MENU.PUBLICATION}){
     // debugger;
-    const [menu, setMenu] = useState(activeMenu);
     const [user, setUser] = useState(defaultUser);
+    activeMenu = user.artist ? activeMenu : PROFILE_MENU.INFO;
+    const [menu, setMenu] = useState( activeMenu );
     const [publications, setPublications] = useState([]);
 
     /** on user updated*/
@@ -52,6 +53,7 @@ export function Profile({defaultUser, header=true, activeMenu=PROFILE_MENU.PUBLI
         if(menu == PROFILE_MENU.PUBLICATION )
         {
             const userPublications = await getUserPublications(user);
+            console.log("USER PUBLICATION : ", userPublications)
             setPublications(p => userPublications);
         }
     },[menu]);
@@ -130,16 +132,16 @@ function ProfilePicture({user, onUserUpdate}){
         
         
         console.log("new 0 :", filename)
-        user = {...user, profilePictureUrl: filename};
+        user = {...user, profilePicture: filename};
         console.log("new 1:", user.profilePicture)
         onUserUpdate(user);
     }
 
     const showProfilePicture = function(e){
-        if(!user.profilePictureUrl)
+        if(!user.profilePicture)
             return;
 
-        showModal( <ImageViewer src={ user.profilePictureUrl }/> );
+        showModal( <ImageViewer src={ user.profilePicture }/> );
     }
 
     const fullName = capitalize( user.firstName ) +" "+ user.name.toUpperCase();
@@ -147,7 +149,7 @@ function ProfilePicture({user, onUserUpdate}){
     return <>
         <div className="user-profile-picture">
             <img 
-                src={ user.profilePictureUrl || defaultProfilePicture } 
+                src={ user.profilePicture || defaultProfilePicture } 
                 className="user-profile-picture-image" 
                 title="voir la photo"
                 onClick={ showProfilePicture }/>
@@ -171,25 +173,33 @@ function ProfileNav({user, activeMenu, onMenuChange}){
     }
 
     let artistMenu = ""
+    let workMenu = ""
+    let publicationMenu = ""
     if(user.artist)
+    {
         artistMenu = <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.ARTIST).toLocaleString()} onClick={ handleClick }>
             <a href="#info" menu={ PROFILE_MENU.ARTIST }>Infos Artiste</a>
         </li>
 
+        
+        workMenu = <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.WORK).toLocaleString()} onClick={ handleClick }>
+            <a href="#work" menu={ PROFILE_MENU.WORK }>Mes ouvrages</a>
+        </li>
+
+        publicationMenu = <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.PUBLICATION).toLocaleString()} onClick={ handleClick }>
+            <a href="#publication" menu={ PROFILE_MENU.PUBLICATION }>Publications</a>
+        </li>
+    }
+    
+        
+
     return <nav className="profile-nav">
         <ul>
-            <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.PUBLICATION).toLocaleString()} onClick={ handleClick }>
-                <a href="#publication" menu={ PROFILE_MENU.PUBLICATION }>Publications</a>
-            </li>
-
-            <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.WORK).toLocaleString()} onClick={ handleClick }>
-                <a href="#work" menu={ PROFILE_MENU.WORK }>Mes ouvrages</a>
-            </li>
-
+            { publicationMenu }
+            { workMenu }
             <li className="profile-nav-item" active={ (activeMenu === PROFILE_MENU.INFO).toLocaleString()} onClick={ handleClick }>
                 <a href="#info" menu={ PROFILE_MENU.INFO }>Infos Général</a>
             </li>
-
             { artistMenu }
             
         </ul>
@@ -210,10 +220,12 @@ function ProfileContent({activeMenu, user, publications=[], onUserSave, onArtist
                 menu = <ProfileInfoArtist artist={ user.artist } onArtistSave={ onArtistSave } onFieldChange={ onFieldChange } onCancel={ onCancel }/>
             break;
         case PROFILE_MENU.PUBLICATION:
-            menu = <ProfilePublications user={ user } publications={ publications }/>
+            if(user.artist)
+                menu = <ProfilePublications user={ user } publications={ publications }/>
             break;
         case PROFILE_MENU.WORK:
-            menu = <ProfileWorks user={ user }/>
+            if(user.artist)
+                menu = <ProfileWorks user={ user }/>
             break;
     
         default:
@@ -357,24 +369,9 @@ export function ImageViewer({src}){
  * @returns 
  */
 function ProfilePublications({user, publications=[]}){
-    console.log("-ProfilePublications", publications);
-
-    // const [pubs, setPubs] = useState(publications);
-    // setPubs(ps => {
-    //     ps.map(p => {
-    //         p.userPublisher = user;
-    //         return p;
-    //     })
-    // })
-
-    // for(ocnst publication of publications)
-    // {
-    //     publication.userPublisher = user;
-    // }
-
     return <div className="profile-publications">
         { 
-            publications.map(p => (<Publication publication={ p } publisher={ user } key={ p.id } />))
+            publications.map(p => (<Publication publication={ p } user={ user } publisher={ user } key={ p.id } />))
         }
     </div>
 }

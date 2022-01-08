@@ -1,5 +1,10 @@
 import { getHeaders, API_URLS, ERROR_MSG, setCookie, getCookie, removeToken } from './Utilities';
 
+
+export function getUserFullName(user){
+    return user.firstName + " " + user.name;
+}
+
 /**
  * login user with username and password
  * @param {*} username 

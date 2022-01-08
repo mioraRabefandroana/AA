@@ -24,21 +24,23 @@ export async function createNewPublication(publication, userId){
             return data;
             },
             (error)=>{
-                return null
-                // throw new Error(ERROR_MSG.NEW_PUBLICATION_FAILED);
+                return [null]
             })
     return {
         publication: res
     };
 }
 
-
+/**
+ * get user's publications
+ * @param {*} user 
+ * @returns 
+ */
 export async function getUserPublications(user){
     const requestOptions = {
         method: 'GET',
         headers: getHeaders()
     };
-    
     const res = await fetch(API_URLS.userPublications(user.id), requestOptions)
         .then(response => {
             if(response.ok)
@@ -54,9 +56,97 @@ export async function getUserPublications(user){
             })
         
     return res;
+}
 
+/**
+ * like a publication
+ * @param {*} publication 
+ * @param {*} user 
+ * @returns 
+ */
+export async function likePublication(publication, user){
+    console.log("liked")
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({
+                publication: publication.id,
+                user: user.id
+            })
+        };
 
-    // TODO : récupérer les vraies publications pour l'utilisateur
-    let publications = Array.from(Array(10).keys())
-    return publications.map(i => "publication "+i);
+        const [res] = await fetch(API_URLS.likePublication, requestOptions)
+            .then(response => {
+                if(response.ok)
+                    return response.json();
+            })
+            .then(data => {
+                return data;
+                },
+                (error)=>{
+                    return [null];
+                })
+        return res;
+    }
+    catch(error){
+        console.log("error LIKE : ", error )
+        return null;
+    }
+}
+
+/**
+ * unlike a publication
+ * @param {*} publication 
+ * @param {*} user 
+ * @returns 
+ */
+export async function unlikePublication(publication, user){
+    console.log("UNliked")
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({
+                publication: publication.id,
+                user: user.id
+            })
+        };
+
+        const [res] = await fetch(API_URLS.unlikePublication, requestOptions)
+            .then(response => {
+                if(response.ok)
+                    return response.json();
+            })
+            .then(data => {
+                return data;
+                },
+                (error)=>{
+                    return [null];
+                })
+        return res;
+    }
+    catch(error){
+        console.log("error UNLIKE : ", error )
+        return null;
+    }
+}
+
+/**
+ * does the user liked the given publication ?
+ */
+export function isPublicationLikedByUser(publication, user){
+    // debugger;
+    if(!user && !user["id"])
+        return false;
+    // debugger;
+    for(let like of publication.likes)
+    {
+        if(like.user.id == user.id)
+        {
+            console.log("pub ",publication.id," liked");
+            return true;
+        }
+    }
+    return false;
 }

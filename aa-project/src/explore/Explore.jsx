@@ -203,7 +203,7 @@ export function Explore({}){
     return <div id="explore">
         <ExploreHeader user={ user }/>        
         <ExploreLeftMenu/>
-        <ExploreContent topArtists={ TOP_ARTISTS } publications={ publications }/>    
+        <ExploreContent user={ user } topArtists={ TOP_ARTISTS } publications={ publications }/>    
         { rightMenu }
         <ExploreFooter/>
     </div>;
@@ -295,14 +295,14 @@ function UserInfo({user}){
     </div>
 }
 
-function ExploreContent({topArtists, publications}){
+function ExploreContent({topArtists, publications, user}){
     console.log("PUBLICATIONS : ", publications);
 
     return <div id="explore-content" className="content">
             <CardList artists={ topArtists } id="top-5"/>
             <div className="publications-wrapper">
             { 
-                publications.map(publication => <Publication publication={ publication } key={ cuniqid(publication.name) }/>)
+                publications.map(publication => <Publication publication={ publication } user={ user } key={ cuniqid(publication.name) }/>)
             }
 
             {/* { <Publication publication={ publications[0] }/> } */}

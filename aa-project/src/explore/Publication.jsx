@@ -10,17 +10,27 @@ import defaultProfilePicture from "../img/user.png";
 import './Publication.css';
 import { cuniqid, ERROR_MSG, PROFILE_MENU, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
 import { Button, closeModal } from '../form/Form';
-import { createNewPublication } from './PulicationManager';
+import { createNewPublication, isPublicationLikedByUser, likePublication, unlikePublication } from './PulicationManager';
 import { gotoProfile } from '../App';
 
-export function Publication({publication, publisher}){
+export function Publication({publication, publisher, user}){
+    const[isLiked, setIsLiked] = useState( isPublicationLikedByUser(publication, user) )
+    const [updatedPublication, setPublication] = useState(publication)
+    const handleLike = async function(liked){        
+        const pub = (!isLiked) ? await likePublication(updatedPublication, user) : await unlikePublication(updatedPublication, user);
+        if(pub)
+        {
+            setPublication(p => pub);
+            setIsLiked(i => !isLiked)
+        } 
+    }
     return <div className="publication">  
-        <PublicationContentWrapper publication={ publication } publisher={ publisher }/>
-        <PublicationCommentsWrapper comments={ publication.comments }/>
+        <PublicationContentWrapper publication={ updatedPublication } publisher={ publisher } isLiked={ isLiked } onLiked={ handleLike }/>
+        <PublicationCommentsWrapper comments={ updatedPublication.comments }/>
     </div>
 }
 
-function PublicationContentWrapper({publication, publisher}){
+function PublicationContentWrapper({publication, publisher, isLiked, onLiked}){
     const likesNumber = publication.likes ? publication.likes.length : 0;
     publisher = publisher || publication.userPublisher;
     const contentImageSrc = (publication.contents && publication.contents.length > 0 ) ? publication.contents[0].image : null;
@@ -38,7 +48,7 @@ function PublicationContentWrapper({publication, publisher}){
             </div>       
             <div className="publication-details publication-details-text-and-liked">
                 <PublicationText>{ publication.text }</PublicationText>            
-                <LikeButton liked={ publication.liked }/>
+                <LikeButton isLiked={ isLiked } onLiked={ onLiked }/>
             </div>
         </div>
 
@@ -134,17 +144,18 @@ function PublicationText({children}){
     </div>
 }
 
-function LikeButton({liked}){
-    const likeIcon = liked ? likeFilledIcon : likeLineIcon;
-    const likeTitle = liked ? "unlike" : "like";
-    return <button className="like-btn" title={ likeTitle }>
+function LikeButton({isLiked, onLiked}){
+    const likeIcon = isLiked ? likeFilledIcon : likeLineIcon;
+    const likeTitle = isLiked ? "unlike" : "like";
+    return <button className="like-btn" title={ likeTitle } onClick={ onLiked }>
         <img src={ likeIcon } alt="like" />
     </button>
 }
 
 function PublicationLikes({likesNumber}){
     const numbers = shortenNumber(likesNumber);
-    return <div className="publication-likes" title={ numbers }>
+    const likeTitle = (numbers == 0 ) ? "Soyez le premier à liker ce post" : numbers+ " likes";
+    return <div className="publication-likes" title={ likeTitle } >
         <img src={ likeFilledIcon } alt="like" />
         <div className="publication-likes-number">
             { numbers }
@@ -164,7 +175,7 @@ function PublisherName({badges, children}){
 
 function Publisher({publisher}){
     return <div className="publication-publisher">
-        <img src={ publisher.profilePictureUrl || defaultProfilePicture } alt={ publisher.name } />
+        <img src={ publisher.profilePicture || defaultProfilePicture } alt={ publisher.name } />
     </div>
 }
 
@@ -211,7 +222,7 @@ export function NewPublication({user, onNewPublicationCreated}){
         }
     }
     // debugger;
-    const publisher ={...user, image: user.profilePictureUrl}
+    const publisher ={...user, image: user.profilePicture}
     return <div className="new-publication"> 
         <label>
             <input type="file" id="new-publication-input-image" name="image" onChange={ handleFileChange }/>
