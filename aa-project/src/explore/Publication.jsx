@@ -13,18 +13,18 @@ import { Button, closeModal } from '../form/Form';
 import { createNewPublication } from './PulicationManager';
 import { gotoProfile } from '../App';
 
-export function Publication({publication}){
+export function Publication({publication, publisher}){
     return <div className="publication">  
-        <PublicationContentWrapper publication={ publication }/>
+        <PublicationContentWrapper publication={ publication } publisher={ publisher }/>
         <PublicationCommentsWrapper comments={ publication.comments }/>
     </div>
 }
 
-function PublicationContentWrapper({publication}){
+function PublicationContentWrapper({publication, publisher}){
     const likesNumber = publication.likes ? publication.likes.length : 0;
-
+    publisher = publisher || publication.userPublisher;
     const contentImageSrc = (publication.contents && publication.contents.length > 0 ) ? publication.contents[0].image : null;
-    const publisherFullName = publication.userPublisher.firstName + " " + publication.userPublisher.name;
+    const publisherFullName = publisher.firstName + " " + publisher.name;
     return <div className="publication-content-wrapper">
         
         { contentImageSrc ? <PublicationContent src={ contentImageSrc }/> : "" }
@@ -42,7 +42,7 @@ function PublicationContentWrapper({publication}){
             </div>
         </div>
 
-        <Publisher publisher={ publication.userPublisher }/>        
+        <Publisher publisher={ publisher }/>        
     </div>
 }
 
@@ -164,7 +164,7 @@ function PublisherName({badges, children}){
 
 function Publisher({publisher}){
     return <div className="publication-publisher">
-        <img src={ publisher.profilePicture || defaultProfilePicture } alt={ publisher.name } />
+        <img src={ publisher.profilePictureUrl || defaultProfilePicture } alt={ publisher.name } />
     </div>
 }
 
@@ -176,7 +176,7 @@ export function NewPublication({user, onNewPublicationCreated}){
         // value
         const {name, value} = e.target;
         setPublication(p => ({...p, [name]: value}) );
-        console.log({name, value})
+        // console.log({name, value})
     }
 
     const handleFileChange = function(e){  
@@ -196,7 +196,7 @@ export function NewPublication({user, onNewPublicationCreated}){
 
     /** submit new publication */
     const handleClick = async function(){
-        console.log(publication);
+        console.log("New publication : ",publication);
         const res = await createNewPublication(publication, user.id);
         if(res.publication)
         {
@@ -211,7 +211,7 @@ export function NewPublication({user, onNewPublicationCreated}){
         }
     }
     // debugger;
-    const publisher ={...user, image: user.profilePicture}
+    const publisher ={...user, image: user.profilePictureUrl}
     return <div className="new-publication"> 
         <label>
             <input type="file" id="new-publication-input-image" name="image" onChange={ handleFileChange }/>

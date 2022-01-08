@@ -185,25 +185,43 @@ export async function getAuthentifiedUserFromSession(){
         body: JSON.stringify({token: token})
     };
 
-    const [user] = await fetch(API_URLS.userByToken, requestOptions)
-    .then(response => {
-            if(response.ok)
-                return response.json();
-    })
-    .then(data => {
-            return data;
-            },
-            (error)=>{
-                return null;        
-    })    
+    try{
+        // const res = await fetch(API_URLS.userByToken, requestOptions)
+        // .then(response => {
+        //         if(response.ok)
+        //             return response.json();
+        // })
+        // .then(data => {
+        //         return data;
+        //         },
+        //         (error)=>{
+        //             return null;        
+        // })    
+        // console.log("----", res);
+        const [user] = await fetch(API_URLS.userByToken, requestOptions)
+        .then(response => {
+                if(response.ok)
+                    return response.json();
+        })
+        .then(data => {
+                return data;
+                },
+                (error)=>{
+                    return null;        
+        })    
 
-    if(user)
-    {
-        user.artist = await getArtistByUser(user)
-        user.fan = await getFanByUser(user)
-        return user
+        if(user)
+        {
+            user.artist = await getArtistByUser(user)
+            user.fan = await getFanByUser(user)
+            return user
+        }
+        return null;
     }
-    return null;
+    catch(error){
+        console.log("error auth session => ", error)
+        return null;
+    }
 }
 
 export async function getArtistByUser(user){

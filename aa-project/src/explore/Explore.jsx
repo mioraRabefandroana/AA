@@ -248,7 +248,7 @@ function NavMenuItem({menu}){
 }
 
 function UserInfo({user}){
-    console.log(">>>",user);
+    console.log("USER >>>",user);
     const className = (user) ? "user-info-btn" : "nav-connexion-btn";
     const text = (user) ? user.username : "Se connecter";
     const icon = (user) ? ( (user.image) ? user.image : defaultUserIcon ) : null;
@@ -291,7 +291,7 @@ function UserInfo({user}){
 }
 
 function ExploreContent({topArtists, publications}){
-    console.log(publications);
+    console.log("PUBLICATIONS : ", publications);
 
     return <div id="explore-content" className="content">
             <CardList artists={ topArtists } id="top-5"/>
@@ -355,6 +355,13 @@ function LeftSubMenuItem({menu}){
 
 
 export function ExploreRightMenu({user, notifications, messages, onNewPublicationCreated}){
+    
+    let newBtn = "";
+    if( "artist" in user && user.artist && "id" in user.artist )
+    {
+        newBtn = <li> <NewFloatButton user={ user } onNewPublicationCreated={onNewPublicationCreated}/> </li>;
+    }
+
     return <div className="explore-right-menu menu">
         <ul>
             <li>
@@ -363,9 +370,10 @@ export function ExploreRightMenu({user, notifications, messages, onNewPublicatio
             <li>
                 <MessageFloatButton messages={ messages }/>
             </li>
-            <li>
-                <NewFloatButton user={ user } onNewPublicationCreated={onNewPublicationCreated}/>
-            </li>
+            {
+                newBtn
+            }
+            
         </ul>
     </div>
 }

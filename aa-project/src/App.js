@@ -32,7 +32,7 @@ export function gotoExplore({user})
 }
 export function gotoProfile({children, activeMenu, user}){
     debugger;
-    ReactDOM.render(<Profile activeMenu={ activeMenu } user={ user }>{ children }</Profile> , root);
+    ReactDOM.render(<Profile activeMenu={ activeMenu } defaultUser={ user }>{ children }</Profile> , root);
 }
 
 export function gotoLogin(){

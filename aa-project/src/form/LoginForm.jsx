@@ -49,9 +49,9 @@ export function LoginForm(){
         <UserField onChange={ handleUsernameChange } value={ username }/>
         <PasswordField onChange={ handlePasswordChange } value={ password }/>
         <Button className="login-connexion-btn" onClick={ logUser }>connexion</Button>
-        <div className="login-register-btn-wrapper">
+        {/* <div className="login-register-btn-wrapper"> */}
             <RegisterButton onClick={ register }/>
-        </div>
+        {/* </div> */}
     </form>
 }
 
@@ -106,12 +106,14 @@ function PasswordField({onChange, value}){
 }
 
 function RegisterButton({onClick}){
-    const handleClick = function(e){
-        e.preventDefault();
-        onClick(e);
-    }
-    const registerBtnText = "S'enregistrer";
-    return <a href="#register" className="login-register-btn" onClick={ handleClick }>
-        { registerBtnText }
-    </a>
+    const registerBtnText = "Créer mon compte";
+    // const handleClick = function(e){
+    //     e.preventDefault();
+    //     onClick(e);
+    // }
+    // return <a href="#register" className="login-register-btn" onClick={ handleClick }>
+    //     { registerBtnText }
+    // </a>
+
+    return <Button className="login-register-btn" onClick={ onClick }>{ registerBtnText }</Button>
 }

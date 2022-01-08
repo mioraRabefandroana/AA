@@ -15,7 +15,7 @@ export async function createNewPublication(publication, userId){
         body: formData
     };
 
-    const res = await fetch(API_URLS.newPublication, requestOptions)
+    const [res] = await fetch(API_URLS.newPublication, requestOptions)
         .then(response => {
             if(response.ok)
                 return response.json();
@@ -27,7 +27,9 @@ export async function createNewPublication(publication, userId){
                 return null
                 // throw new Error(ERROR_MSG.NEW_PUBLICATION_FAILED);
             })
-    return res;
+    return {
+        publication: res
+    };
 }
 
 
@@ -46,7 +48,7 @@ export async function getUserPublications(user){
             return data;
             },
             (error)=>{
-                console.log("error =>", error);
+                console.log("error getUserPublications =>", error);
                 return [];
                 // throw new Error(ERROR_MSG.ARTIST_UPDATE_FAILED);
             })

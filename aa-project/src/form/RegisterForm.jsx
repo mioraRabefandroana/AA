@@ -7,7 +7,6 @@ import { gotoExplore, gotoProfile, root } from '../App';
 import { FormMessage } from './LoginForm';
 import './RegisterForm.css'
 import { Field } from './Form';
-import { Profile } from '../explore/Profile';
 export function RegisterForm({}){
     const [user, setUser] = useState({});
     const [msg, setmessage] = useState("")
@@ -16,8 +15,8 @@ export function RegisterForm({}){
         const {name, value} = e.target;
         setUser(user => {
             user = {...user, [name]: value}
-            console.log("++new :", {[name]: value})
-            console.log(user)
+            console.log("++new user register :", {[name]: value})
+            console.log("new User : ", user)
             return user;
         })
     }
@@ -39,12 +38,12 @@ export function RegisterForm({}){
             
         }
         catch(error){
-            console.log(error)
+            console.log("ERROR REGISTER FORM : ",error)
             setmessage(msg => error.message)
         }
     }
 
-    return <form action="" id="register-form">
+    return <form action="" id="register-form" onSubmit={ submitUser }>
         <div id="register-form-header">
             <h2>Inscription</h2>
             <FormMessage>{ msg }</FormMessage>

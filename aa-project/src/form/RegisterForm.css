@@ -62,3 +62,11 @@
 .chosen-account-type{
     background: #c72bc2;
 }
+
+.login-register-btn{
+    background: gold;
+    color: black;
+}
+.login-register-btn:hover{
+    color: white !important;
+}

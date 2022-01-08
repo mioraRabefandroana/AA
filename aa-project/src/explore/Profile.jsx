@@ -10,18 +10,27 @@ import { capitalize, PROFILE_MENU } from "../Utilities";
 import { getUserPublications } from "./PulicationManager";
 import { Publication } from "./Publication";
 
-export function Profile({user, header=true, activeMenu=PROFILE_MENU.PUBLICATION}){
-    debugger;
+export function Profile({defaultUser, header=true, activeMenu=PROFILE_MENU.PUBLICATION}){
+    // debugger;
     const [menu, setMenu] = useState(activeMenu);
+    const [user, setUser] = useState(defaultUser);
     const [publications, setPublications] = useState([]);
+
+    /** on user updated*/
+    const handleUserUpdate = function(user){
+        console.log("USER UPDATED");
+        console.log(user);
+        setUser(u => user);
+    }
 
     const handleUserSave = function(user){     
         // submit update user
         updateUser(user);
+        handleUserUpdate(user);
     }
 
     const handleArtistSave = function(artist){     
-        console.log("---handleArtistSave")
+        // console.log("---handleArtistSave")
         // submit updated artist
         updateArtist(artist);
     }
@@ -37,6 +46,7 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.PUBLICATION}
         setMenu(menu => PROFILE_MENU.PUBLICATION);
     }
 
+
     /** on menu change to publication , get publications */
     useEffect(async ()=>{
         if(menu == PROFILE_MENU.PUBLICATION )
@@ -50,7 +60,7 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.PUBLICATION}
         {/* {JSON.stringify(user)} */}
 
         { header ? <ExploreHeader user={ user }/> : ""}
-        <ProfileHeader user={ user }/>
+        <ProfileHeader user={ user } onUserUpdate={ handleUserUpdate } />
         <ProfileNav user={ user } activeMenu={ menu } onMenuChange={ menuHandleChange }/>
         <div className="profile-content-wrapper">
             <ProfileContent user={ user } publications={ publications } activeMenu={ menu }  onUserSave={ handleUserSave } onArtistSave={ handleArtistSave } />
@@ -61,11 +71,11 @@ export function Profile({user, header=true, activeMenu=PROFILE_MENU.PUBLICATION}
 }
 
 /** header */
-function ProfileHeader({user}){
+function ProfileHeader({user, onUserUpdate}){
     return <div className="user-profile-header">
         <CoverPicture user={ user }/>
         <div className="user-profile-picture-wrapper">
-            <ProfilePicture user={ user }/>
+            <ProfilePicture user={ user } onUserUpdate={ onUserUpdate }/>
         </div>
     </div>
 }
@@ -103,10 +113,10 @@ function CoverPicture({user}){
     </div>
 }
 
-function ProfilePicture({user}){
-    
-    const [profilePicture, setProfilePicture] = useState(user.profilePicture)
+// TODO : Modifier cover picture par coverPictureURL
 
+function ProfilePicture({user, onUserUpdate}){
+    console.log("render---pdp")
     const handlePictureChange = async function(e){
         const profilePictureFile = e.target.files[0];
         if(!profilePictureFile)
@@ -118,14 +128,18 @@ function ProfilePicture({user}){
             alert(message);
         }
         
-        setProfilePicture(profilePicture => filename);
+        
+        console.log("new 0 :", filename)
+        user = {...user, profilePictureUrl: filename};
+        console.log("new 1:", user.profilePicture)
+        onUserUpdate(user);
     }
 
     const showProfilePicture = function(e){
-        if(!user.profilePicture)
+        if(!user.profilePictureUrl)
             return;
 
-        showModal( <ImageViewer src={ user.profilePicture }/> );
+        showModal( <ImageViewer src={ user.profilePictureUrl }/> );
     }
 
     const fullName = capitalize( user.firstName ) +" "+ user.name.toUpperCase();
@@ -133,7 +147,7 @@ function ProfilePicture({user}){
     return <>
         <div className="user-profile-picture">
             <img 
-                src={ profilePicture || defaultProfilePicture } 
+                src={ user.profilePictureUrl || defaultProfilePicture } 
                 className="user-profile-picture-image" 
                 title="voir la photo"
                 onClick={ showProfilePicture }/>
@@ -343,8 +357,25 @@ export function ImageViewer({src}){
  * @returns 
  */
 function ProfilePublications({user, publications=[]}){
+    console.log("-ProfilePublications", publications);
+
+    // const [pubs, setPubs] = useState(publications);
+    // setPubs(ps => {
+    //     ps.map(p => {
+    //         p.userPublisher = user;
+    //         return p;
+    //     })
+    // })
+
+    // for(ocnst publication of publications)
+    // {
+    //     publication.userPublisher = user;
+    // }
+
     return <div className="profile-publications">
-        { publications.map(p => (<Publication publication={ p } key={ p.id } />))}
+        { 
+            publications.map(p => (<Publication publication={ p } publisher={ user } key={ p.id } />))
+        }
     </div>
 }
 

@@ -23,6 +23,6 @@ async function getTop5(){
         .then(res => res.json())
         .then(data => data,
         (error) => {
-            console.log("Erreur", error)
+            console.log("Erreur TOP5", error)
         })
 }
