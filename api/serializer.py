@@ -1,5 +1,5 @@
 from django.db.models import fields
-from api.models import Administrator, Artist, ArtistBadge, Fan, FanBadge, Content, BecomeMember, FanClub, Page, Publication, Test, ArtistType, AAUser, EmailValidation
+from api.models import Administrator, Artist, ArtistBadge, Fan, FanBadge, Content, BecomeMember, FanClub, Like, Page, Publication, Test, ArtistType, AAUser, EmailValidation
 from rest_framework import serializers
 
 from django.contrib.auth import get_user_model
@@ -40,34 +40,34 @@ class AAUserSerializer(serializers.ModelSerializer):
     # profilePictureUrl = serializers.CharField(source="get_profilePicture_url")
     # coverPictureUrl = serializers.CharField(source="get_coverPicture_url")
 
-    profilePictureUrl = serializers.SerializerMethodField()
-    coverPictureUrl = serializers.SerializerMethodField()
+    # profilePictureUrl = serializers.SerializerMethodField()
+    # coverPictureUrl = serializers.SerializerMethodField()
     class Meta:
         model = AAUser
-        exclude = ['profilePicture', 'coverPicture']
-        # fields = '__all__'
+        # exclude = ['profilePicture', 'coverPicture']        
+        depth = 1 
+        fields = '__all__'
     
+    # def get_profilePictureUrl(self, aaUser):
+    #     if(not aaUser.profilePicture):
+    #         return None
+    #     request = self.context.get('request')
+    #     photo_url = aaUser.profilePicture.url
+
+    #     if(photo_url):
+    #         return request.build_absolute_uri(photo_url)
+    #     return None
     
-    def get_profilePictureUrl(self, aaUser):
-        if(not aaUser.profilePicture):
-            return None
-        request = self.context.get('request')
-        photo_url = aaUser.profilePicture.url
+    # def get_coverPictureUrl(self, aaUser):
+    #     if(not aaUser.coverPicture):
+    #         return None
 
-        if(photo_url):
-            return request.build_absolute_uri(photo_url)
-        return None
-    
-    def get_coverPictureUrl(self, aaUser):
-        if(not aaUser.coverPicture):
-            return None
+    #     request = self.context.get('request')
+    #     photo_url = aaUser.coverPicture.url
 
-        request = self.context.get('request')
-        photo_url = aaUser.coverPicture.url
-
-        if(photo_url):
-            return request.build_absolute_uri(photo_url)
-        return None
+    #     if(photo_url):
+    #         return request.build_absolute_uri(photo_url)
+    #     return None
 
     # def get_profilePicture_url(self, aaUser):
     #     request = self.context.get('request')
@@ -78,17 +78,33 @@ class AdministratorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Administrator
         fields = '__all__'
+    
+
+class LikeSerializer(serializers.ModelSerializer):
+    # user = serializers.SerializerMethodField() 
+    user = AAUserSerializer(source="aaUser")
+    class Meta:
+        model = Like
+        # fields = '__all__'
+        exclude = ['aaUser',]
+        depth = 1
+
+    # def get_user(self, aaUser):
+    #     return AAUserSerializer(aaUser, context=self.context ).data
 
 
 class PublicationSerializer(serializers.ModelSerializer):
     # comments = serializers.CharField(source="get_comments")    
     # TODO : récupérer les vrais commentaires
-    comments = serializers.JSONField(source="get_comments")    
+    comments = serializers.JSONField(source="get_comments")   
+    likes = serializers.SerializerMethodField()
     class Meta:
         model = Publication
         fields = '__all__'
         depth = 1
-
+    
+    def get_likes(self, publication):        
+        return LikeSerializer(publication.get_likes(), many=True, context=self.context ).data
 
 class PageSerializer(serializers.ModelSerializer):
     class Meta:

@@ -12,11 +12,11 @@ from rest_framework.decorators import api_view
 from rest_framework import permissions
 from rest_framework.generics import CreateAPIView
 from django.contrib.auth import get_user_model
-from api.serializer import FanSerializer, UserSerializer, EmailValidationSerializer
+from api.serializer import FanSerializer, LikeSerializer, UserSerializer, EmailValidationSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from api.models import Artist, ArtistBadge, FanBadge, Content, BecomeMember, Fan, FanClub, Page, Publication, Test, ArtistType, UserAuthentification, AAUser, Administrator, EmailValidation
+from api.models import Artist, ArtistBadge, FanBadge, Content, BecomeMember, Fan, FanClub, Like, Page, Publication, Test, ArtistType, UserAuthentification, AAUser, Administrator, EmailValidation
 from api.serializer import AdministratorSerializer, ArtistSerializer, ArtistBadgeSerializer, FanBadgeSerializer, ContentSerializer, BecomeMemberSerializer, FanClubSerializer, PageSerializer, PublicationSerializer, TestSerializer, ArtistTypeSerializer, UserAuthentificationSerializer, AAUserSerializer
 
 # from django.contrib.auth.models import User
@@ -57,6 +57,16 @@ class AAUserViewSet(viewsets.ModelViewSet):
         context = super(AAUserViewSet, self).get_serializer_context()
         context.update({"request": self.request})
         return context
+
+
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    # permissions
+    # permission_classes = (IsAuthenticated,)
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields  = ['id','publication__id', 'aaUser__id']
 
 
 class ArtistViewSet(viewsets.ModelViewSet):
@@ -474,6 +484,76 @@ class PublicPublicationsGetter(views.APIView):
 
         except Exception as error:
             print("/!\ /!\ PublicPublicationsGetter upload error ==>", error)
+            return Response([])
+
+""""
+like a publication
+=> return the liked publication (with the extra like)
+"""
+class LikePubicationView(views.APIView):
+
+    def publication_url(self, id):
+        publicationUrl = "/publication/?id="+ str(id)
+        return publicationUrl
+
+    def userAlreadyLikedThisPublication(self, aaUser, publication):
+        likes = publication.get_likes()
+        for like in likes:
+            if( aaUser == like.aaUser):
+                return True
+        return False
+
+    def post(self, request):
+        try:
+            aaUserId = request.data.get("user")
+            publicationId = request.data.get("publication")
+
+            aaUser = AAUser.objects.get(id=aaUserId)
+            publication = Publication.objects.get(id=publicationId)
+            
+            # make sure user did not like the post yet
+            if( not self.userAlreadyLikedThisPublication(aaUser, publication) ):
+                like = Like()
+                like.publication = publication
+                like.aaUser = aaUser
+                like.save()
+
+            return response.HttpResponseRedirect(redirect_to= self.publication_url(publication.id))
+            # return Response({"publication": PublicationSerializer(publication).data})
+
+        except Exception as error:
+            print("/!\ /!\ Like a publication error ==>", error)
+            return Response([])
+
+""""
+UNlike a publication
+=> return the UNliked publication (with the extra like)
+"""
+class UnlikePubicationView(views.APIView):
+
+    def publication_url(self, id):
+        publicationUrl = "/publication/?id="+ str(id)
+        return publicationUrl
+
+    def userAlreadyLikedThisPublication(self, aaUser, publication):
+        likes = publication.get_likes()
+        for like in likes:
+            if( aaUser == like.aaUser):
+                return True
+        return False
+
+    def post(self, request):
+        try:
+            aaUserId = request.data.get("user")
+            publicationId = request.data.get("publication")
+
+            like = Like.objects.get(publication_id=publicationId, aaUser_id=aaUserId)
+            like.delete()
+
+            return response.HttpResponseRedirect(redirect_to= self.publication_url(publicationId))
+
+        except Exception as error:
+            print("/!\ /!\ Unlike a publication error ==>", error)
             return Response([])
 
 # class ExplorePublicationsByUserView(views.APIView):

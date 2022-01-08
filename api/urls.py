@@ -4,7 +4,7 @@ from api.models import ArtistBadge, FanBadge
 
 
 from rest_framework import routers
-from api.views import ArtistViewSet, ArtistBadgeViewSet, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, FanViewSet, NewPublicationView, ProfilePictureUploadView, PublicPublicationsGetter, RegisterView, TestViewSet, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet, UserPublicationViewSet
+from api.views import ArtistViewSet, ArtistBadgeViewSet, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, FanViewSet, LikePubicationView, LikeViewSet, NewPublicationView, ProfilePictureUploadView, PublicPublicationsGetter, RegisterView, TestViewSet, UnlikePubicationView, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet, UserPublicationViewSet
 
 router = routers.DefaultRouter()
 router.register('aauser', AAUserViewSet)
@@ -20,6 +20,8 @@ router.register('badge/fan', FanBadgeViewSet)
 router.register('validationemail', EmailValidationViewSet)
 router.register('test', TestViewSet)
 
+router.register('like', LikeViewSet)
+
 #>> TODO : à enlever après dévéloppement complet
 router.register('becomemember', BecomeMemberViewSet)
 router.register('content', ContentViewSet)
@@ -33,6 +35,8 @@ urlpatterns = [
     path('user/upload/profile/', ProfilePictureUploadView.as_view(), name="api_profile_picture_upload"),
     path('publications/', PublicPublicationsGetter.as_view(), name="api_publication_getter"),
     path('publication/new/', NewPublicationView.as_view(), name="api_new_publication"),
+    path('publication/like/', LikePubicationView.as_view(), name="api_like_a_publication"),
+    path('publication/unlike/', UnlikePubicationView.as_view(), name="api_unlike_a_publication"),
 ]
 
 

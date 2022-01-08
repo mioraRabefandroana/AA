@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from random import random
 
+
 # from multiselectfield import MultiSelectField
 
 class AAUser(models.Model):
@@ -51,9 +52,6 @@ class AAUser(models.Model):
         if self.coverPicture and hasattr(self.coverPicture, 'url'):
             return self.coverPicture.url
         return None
-    
-    def fullname(self):
-        return self.firstName +' '+ self.name
     
     def get_fullname(self):
         return self.firstName +' '+ self.name
@@ -179,18 +177,30 @@ class Content(models.Model):
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)
 
+
 class Publication(models.Model):
     id = models.BigAutoField(primary_key=True)
-
     text = models.TextField()
-
     contents = models.ManyToManyField(Content, blank=True, null=True)
 
     # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     publicationDate = models.DateTimeField(auto_now=True)
-
     userPublisher = models.ForeignKey(AAUser, on_delete=models.CASCADE)
+
+    # @property
+    # def likes(self):
+    #     return Like.objects.get(publication_id=self.id)
     
+    def get_likes(self):
+        # return []
+        try:
+            from api.models import Like
+            # from api.serializer import LikeSerializer
+            return Like.objects.filter(publication_id=self.id)
+        except Exception as e:
+            print(">>>>> get like error", e)
+            return []
+
     def __str__(self):
         return self.text
     
@@ -198,6 +208,11 @@ class Publication(models.Model):
     def get_comments(self):
         return []
 
+class Like(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    aaUser = models.ForeignKey(AAUser, on_delete=models.CASCADE)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now=True)
 
 class Page(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -240,7 +255,6 @@ class BecomeMember(models.Model):
     fan = models.ForeignKey(Fan, on_delete=models.CASCADE)
     fanClub = models.ForeignKey(FanClub, on_delete=models.CASCADE)
 
-    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     inscriptionDate = models.DateTimeField(auto_now=True)
 
     remark = models.TextField()
