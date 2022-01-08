@@ -26,6 +26,7 @@ import django_filters
 from django.contrib.sites.models import Site
 from django.core.files import File
 from django.conf import settings
+from datetime import datetime
 
 
 # class ModelFilter(django_filters.FilterSet):
@@ -51,6 +52,11 @@ class AAUserViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
 
     search_fields = ['name']
+
+    def get_serializer_context(self):
+        context = super(AAUserViewSet, self).get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
 
 class ArtistViewSet(viewsets.ModelViewSet):
@@ -90,7 +96,6 @@ class FanBadgeViewSet(viewsets.ModelViewSet):
 class AdministratorViewSet(viewsets.ModelViewSet):
     queryset = Administrator.objects.all()
     serializer_class = AdministratorSerializer
-
     # permissions
     permission_classes = (IsAuthenticated,)
 
@@ -98,7 +103,8 @@ class AdministratorViewSet(viewsets.ModelViewSet):
 # Public access
 class PublicationViewSet(viewsets.ModelViewSet):
     queryset = Publication.objects.all()
-    serializer_class = PublicationSerializer
+    serializer_class = PublicationSerializer    
+    filterset_fields  = ['id']
 
     # permissions
     # permission_classes = (IsAuthenticated,)
@@ -265,6 +271,8 @@ class RegisterView(views.APIView):
         aaUser.address = self.user.get("address")
         aaUser.dateOfBirth = self.user.get("dateOfBirth")
         aaUser.placeOfBirth = self.user.get("placeOfBirth")
+        aaUser.profilePicture = None
+        aaUser.coverPicture = None
         aaUser.save()
 
         #create specific account for the user
@@ -347,7 +355,7 @@ class CoverPictureUploadView(views.APIView):
 
     def get_cover_upload_filename(self,  userId):
         filename, ext = os.path.splitext(str(self.coverPictureFile))    
-        filename = "user_{0}-cover{1}".format(userId, ext)
+        filename = "user_{0}-cover{1}{2}".format(userId, datetime.today().strftime('%d-%m-%Y-%H-%M-%S'), ext)
         return filename
 
     def post(self, request):
@@ -367,7 +375,7 @@ class CoverPictureUploadView(views.APIView):
             return Response({"filename": imageUrl})
 
         except Exception as error:
-            print("/!\ /!\ upload error ==>", error)
+            print("/!\ /!\ cover picture upload error ==>", error)
             return Response({"message": "upload failed"})
 
 
@@ -375,7 +383,7 @@ class ProfilePictureUploadView(views.APIView):
 
     def get_profile_upload_filename(self,  userId):
         filename, ext = os.path.splitext(str(self.profilePictureFile))    
-        filename = "user_{0}-profile{1}".format(userId, ext)
+        filename = "user_{0}-profile-{1}{2}".format(userId, datetime.today().strftime('%d-%m-%Y-%H-%M-%S'), ext)
         return filename
 
     def post(self, request):
@@ -394,7 +402,7 @@ class ProfilePictureUploadView(views.APIView):
             return Response({"filename": imageUrl})
 
         except Exception as error:
-            print("/!\ /!\ upload error ==>", error)
+            print("/!\ /!\ pdo upload error ==>", error)
             return Response({"message": "upload failed"})
 
 
@@ -409,6 +417,10 @@ class NewPublicationView(views.APIView):
     def get_page_by_user(self, userId):
         page = Page.objects.get(owner__aaUser__id=userId)
         return page
+    
+    def publication_url(self, id):
+        publicationUrl = "/publication/?id="+ str(id)
+        return publicationUrl
 
     def post(self, request):
         try:
@@ -440,11 +452,11 @@ class NewPublicationView(views.APIView):
             page = self.get_page_by_user(userId)
             page.publications.add(publication)
 
-            # res = request.build_absolute_uri(content.image.url)
-            return Response({"publication": PublicationSerializer(publication).data})
+            return response.HttpResponseRedirect(redirect_to= self.publication_url(publication.id))
+            # return Response({"publication": PublicationSerializer(publication).data})
 
         except Exception as error:
-            print("/!\ /!\ upload error ==>", error)
+            print("/!\ /!\ new publication error ==>", error)
             return Response({"message": "upload failed"})
 
 
@@ -459,7 +471,7 @@ class PublicPublicationsGetter(views.APIView):
             return Response(publications)
 
         except Exception as error:
-            print("/!\ /!\ upload error ==>", error)
+            print("/!\ /!\ PublicPublicationsGetter upload error ==>", error)
             return Response([])
 
 

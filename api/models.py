@@ -42,6 +42,15 @@ class AAUser(models.Model):
     def __str__(self):
         return self.fullname()
     
+    def get_profilePicture_url(self):
+        if self.profilePicture and hasattr(self.profilePicture, 'url'):
+            return self.profilePicture.url
+        return None
+
+    def get_coverPicture_url(self):
+        if self.coverPicture and hasattr(self.coverPicture, 'url'):
+            return self.coverPicture.url
+        return None
     
     def fullname(self):
         return self.firstName +' '+ self.name

@@ -35,5 +35,5 @@ urlpatterns = [
     # path('user/token/', views.obtain_auth_token), # get user by passed token
     path('api/', include('api.urls')),
     path('', include(router.urls)),
-    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT,})
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT,}),
 ]

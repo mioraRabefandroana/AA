@@ -37,17 +37,42 @@ class AAUserSerializer(serializers.ModelSerializer):
     # dateOfBirth = serializers.DateField(source='dateOfBirth')
     username = serializers.CharField(source="user.username")    
     fullname = serializers.CharField(source="get_fullname")
-    profilePicture_url = serializers.SerializerMethodField()
+    # profilePictureUrl = serializers.CharField(source="get_profilePicture_url")
+    # coverPictureUrl = serializers.CharField(source="get_coverPicture_url")
 
+    profilePictureUrl = serializers.SerializerMethodField()
+    coverPictureUrl = serializers.SerializerMethodField()
     class Meta:
         model = AAUser
-        # exclude = ['dateOfBirth']
-        fields = '__all__'
-
-    def get_profilePicture_url(self, aaUser):
+        exclude = ['profilePicture', 'coverPicture']
+        # fields = '__all__'
+    
+    
+    def get_profilePictureUrl(self, aaUser):
+        if(not aaUser.profilePicture):
+            return None
         request = self.context.get('request')
-        # photo_url = aaUser.profilePicture.url
-        return request.build_absolute_uri(aaUser.profilePicture.url)
+        photo_url = aaUser.profilePicture.url
+
+        if(photo_url):
+            return request.build_absolute_uri(photo_url)
+        return None
+    
+    def get_coverPictureUrl(self, aaUser):
+        if(not aaUser.coverPicture):
+            return None
+
+        request = self.context.get('request')
+        photo_url = aaUser.coverPicture.url
+
+        if(photo_url):
+            return request.build_absolute_uri(photo_url)
+        return None
+
+    # def get_profilePicture_url(self, aaUser):
+    #     request = self.context.get('request')
+    #     # photo_url = aaUser.profilePicture.url
+    #     return request.build_absolute_uri(aaUser.profilePicture.url)
 
 class AdministratorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -81,9 +106,22 @@ class BecomeMemberSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ContentSerializer(serializers.ModelSerializer):
+    imageUrl = serializers.SerializerMethodField()
     class Meta:
         model = Content
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['image']
+    
+    
+    def get_imageUrl(self, content):
+        if(not content.image):
+            return None
+        request = self.context.get('request')
+        photo_url = content.image.url
+
+        if(photo_url):
+            return request.build_absolute_uri(photo_url)
+        return None
 
 class ArtistTypeSerializer(serializers.ModelSerializer):
     class Meta:
