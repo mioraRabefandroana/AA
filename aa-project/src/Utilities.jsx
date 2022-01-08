@@ -35,25 +35,28 @@ export const BADGE = {
 
 export const API_URL_ORIGIN = "http://localhost:8000/"
 export const API_URLS = {
-  "apiLoginUrl": API_URL_ORIGIN+"user/login/",
-  "apiLogoutUrl": API_URL_ORIGIN+"user/logout/",
-  "artisteUrl": API_URL_ORIGIN+"artist/",
-  "test": API_URL_ORIGIN+"test/",
+    "apiLoginUrl": API_URL_ORIGIN+"user/login/",
+    "apiLogoutUrl": API_URL_ORIGIN+"user/logout/",
+    "artisteUrl": API_URL_ORIGIN+"artist/",
+    "test": API_URL_ORIGIN+"test/",
 
-  "userByusername" : (username) => API_URL_ORIGIN+"aauser/?user__username=" + username,
-  "artistByUserId" : (userId) => API_URL_ORIGIN+"artist/?aaUser__id=" + userId,
-  "fanByUserId" : (userId) => API_URL_ORIGIN+"fan/?aaUser__id=" + userId,
-  "updateUser" : (userId) => API_URL_ORIGIN+"aauser/" + userId +"/",
-  "updateArtist" : (artistId) => API_URL_ORIGIN+"artist/" + artistId +"/",
+    "userByusername" : (username) => API_URL_ORIGIN+"aauser/?user__username=" + username,
+    "artistByUserId" : (userId) => API_URL_ORIGIN+"artist/?aaUser__id=" + userId,
+    "fanByUserId" : (userId) => API_URL_ORIGIN+"fan/?aaUser__id=" + userId,
+    "updateUser" : (userId) => API_URL_ORIGIN+"aauser/" + userId +"/",
+    "updateArtist" : (artistId) => API_URL_ORIGIN+"artist/" + artistId +"/",
 
-  "publications" : (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
-  "userPublications" : (userId) => API_URL_ORIGIN+"userpublication/?userPublisher__id" + userId,
+    "publications" : (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
+    "userPublications" : (userId) => API_URL_ORIGIN+"userpublication/?userPublisher__id" + userId,
 
-  "userByToken" : API_URL_ORIGIN+"api/user/token/",
-  "userRegister" : API_URL_ORIGIN+"api/user/register/",
-  "coverPictureUpload" : API_URL_ORIGIN+"api/user/upload/cover/",
-  "profilePictureUpload" : API_URL_ORIGIN+"api/user/upload/profile/",
-  "newPublication" : API_URL_ORIGIN+"api/publication/new/"
+    "explorePublicationsByUser": (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
+    "explorePublications": API_URL_ORIGIN+"publication/",
+
+    "userByToken" : API_URL_ORIGIN+"api/user/token/",
+    "userRegister" : API_URL_ORIGIN+"api/user/register/",
+    "coverPictureUpload" : API_URL_ORIGIN+"api/user/upload/cover/",
+    "profilePictureUpload" : API_URL_ORIGIN+"api/user/upload/profile/",
+    "newPublication" : API_URL_ORIGIN+"api/publication/new/"
 };
 
 export const TOKENS = {
@@ -80,7 +83,8 @@ export const ERROR_MSG = {
     USER_UPDATE_FAILED: "Echec de la mise à jour des informations",
     ARTIST_UPDATE_FAILED: "Echec de la mise à jour des informations",
     UPLOAD_FAILED: "Echec de l'importation du fichier",
-    NEW_PUBLICATION_FAILED: "Echec de la publication"
+    NEW_PUBLICATION_FAILED: "Echec de la publication",
+    PUBLICATIONS_FETCH_FAILED: "Echec de la récupération des publications"
 }
 
 export const SUCCESS_MSG = {  

@@ -33,7 +33,7 @@ import tmpMenuIcon from '../img/super-star-2.jpg'
 import { CardList } from './Card';
 import { NewPublication, Publication } from './Publication';
 import { gotoExplore, gotoHome, gotoLogin, gotoProfile } from '../App';
-import { getTop5, loadExploreData } from './ExploreData'
+import { getTop5, loadExploreData, getExplorePublications } from './ExploreData'
 import { CURRENT_USER, getAuthentifiedUserFromSession, logout } from '../UserManager';
 
 // #TODO : récuperer les top artists depuis la BD
@@ -174,6 +174,7 @@ const LEFT_MENUS = [
 
 export function Explore({}){
     const [user, setUser] = useState(null);
+    const [publications, setPublications] = useState([]);
 
     const onNewPublicationCreated = function(publication){        
         const activeMenu = PROFILE_MENU.PUBLICATION;
@@ -191,14 +192,18 @@ export function Explore({}){
             const u = await getAuthentifiedUserFromSession(); 
             setUser(oldUser => u); 
         }
-        const data = await loadExploreData({user}) ;
+
+        let explorePublications = await getExplorePublications({user});
+        setPublications(publications => explorePublications);
+        console.log("explorePublications > ", explorePublications);
+        // const data = await loadExploreData({user}) ;
                        
     }, [])
 
     return <div id="explore">
         <ExploreHeader user={ user }/>        
         <ExploreLeftMenu/>
-        <ExploreContent topArtists={ TOP_ARTISTS } publications={ PUBLICATIONS }/>    
+        <ExploreContent topArtists={ TOP_ARTISTS } publications={ publications }/>    
         { rightMenu }
         <ExploreFooter/>
     </div>;
@@ -297,8 +302,7 @@ function ExploreContent({topArtists, publications}){
             <CardList artists={ topArtists } id="top-5"/>
             <div className="publications-wrapper">
             { 
-            // DEBUG : à decommenter
-                // publications.map(publication => <Publication publication={ publication } key={ cuniqid(publication.name) }/>)
+                publications.map(publication => <Publication publication={ publication } key={ cuniqid(publication.name) }/>)
             }
 
             {/* { <Publication publication={ publications[0] }/> } */}

@@ -1,4 +1,4 @@
-import { API_URLS, getHeaders } from "../Utilities"
+import { API_URLS, ERROR_MSG, getHeaders } from "../Utilities"
 
 export async function loadExploreData({user}){
     const top5 = await getTop5();
@@ -10,6 +10,41 @@ export async function loadExploreData({user}){
     }
 }
 
+/**
+ * get explore publications (on explore page) based on user (subscribed)
+ * @param {*} param0 
+ */
+export async function getExplorePublications({user})
+{
+    let url = (user) ? API_URLS.explorePublicationsByUser(user.id) : API_URLS.explorePublications;
+
+    const requestOptions = {
+        headers: getHeaders()
+    };
+
+    try{
+        const res = await fetch(url, requestOptions)
+        .then(response => {
+            if(response.ok)
+                return response.json();
+            throw new Error(ERROR_MSG.PUBLICATIONS_FETCH_FAILED)
+        })
+        .then(data => {
+            return data;
+            },
+            (error)=>{
+                throw new Error(ERROR_MSG.PUBLICATIONS_FETCH_FAILED);
+            })
+
+        return res;
+    }
+    catch(error)
+    {
+        console.log("fetching publication error :", error);
+        return [];
+    }
+    
+}
 
 async function getPublications({user}){
     // const url = (user) ? 
