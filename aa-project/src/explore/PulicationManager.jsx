@@ -1,3 +1,4 @@
+import { isAuthenticated } from "../UserManager";
 import { API_URLS, ERROR_MSG, getHeaders } from "../Utilities";
 
 export async function createNewPublication(publication, userId){    
@@ -137,16 +138,47 @@ export async function unlikePublication(publication, user){
  */
 export function isPublicationLikedByUser(publication, user){
     // debugger;
-    if(!user && !user["id"])
+    if(!isAuthenticated(user))
         return false;
     // debugger;
     for(let like of publication.likes)
     {
         if(like.user.id == user.id)
         {
-            console.log("pub ",publication.id," liked");
+            // console.log("pub ",publication.id," liked");
             return true;
         }
     }
     return false;
+}
+
+
+export async function commentPublication(publication, user, text){
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({
+                publication: publication.id,
+                user: user.id,
+                text
+            })
+        };
+        const [res] = await fetch(API_URLS.commentPublication, requestOptions)
+            .then(response => {
+                if(response.ok)
+                    return response.json();
+            })
+            .then(data => {
+                return data;
+                },
+                (error)=>{
+                    return [null];
+                })
+        return res;
+    }
+    catch(error){
+        console.log("error COMMENT : ", error )
+        return null;
+    }
 }

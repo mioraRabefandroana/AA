@@ -83,6 +83,14 @@
     border: unset;
     cursor: pointer;
 }
+
+.user-info-btn span{
+    color: black;
+    background-color: white;
+    padding: 1px 7px;
+    border-radius: 10px;
+}
+
 .user-info-btn *{
     margin: auto;
 }
@@ -91,6 +99,8 @@
 }
 .user-info-btn img{
     width: 45px;
+    height: 45px;
+    border-radius: 45px;
 }
 /** LEFT MENU *********************************************/
 .left-menu{

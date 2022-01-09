@@ -169,8 +169,9 @@
 
 .publication-comments-details{
     display: grid;
-    grid-template-columns: max-content max-content;
+    grid-template-columns: max-content max-content 1fr;
     grid-column-gap: 5px;
+    align-items: end;
 }
 
 
@@ -214,6 +215,7 @@
 }
 .comment-publish-time{
     grid-area: time;
+    font-size: 8px;
 }
 .comment-text{
     grid-area: comment;
@@ -231,6 +233,9 @@
     border-bottom-right-radius: 5px;
 
     box-shadow: 1px 3px 4px 0px #767474a1;
+
+    max-height: 100px;
+    overflow-y: auto;
 }
 
 .comment-text p{
@@ -268,6 +273,9 @@
     grid-auto-flow: row;
     grid-auto-rows: max-content;
     grid-row-gap: 10px;
+
+    max-height: 327px;
+    overflow-y: auto;
 }
 
 
@@ -332,12 +340,14 @@
 
 
 .cshare-btn img,
-.comment-btn img{
+.comment-btn img,
+.new-comment-btn img{
     width: 25px;
 }
 
 .comment-btn ,
-.cshare-btn{
+.cshare-btn,
+.new-comment-btn{
     cursor: pointer;
 }
 
@@ -359,3 +369,36 @@
     text-align: center;
 }
 
+.new-comment{
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    grid-column-gap: 5px;
+}
+.new-comment textarea{
+    resize: vertical;
+    border: 1px solid silver;
+    border-radius: 10px
+}
+:root{
+    --c_violet: #6b2687
+}
+.subscribe-btn,
+.unsubscribe-btn{    
+    border: 1px solid var(--c_violet);
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 10px;
+    border-radius: 7px;
+    padding: 0px 5px;
+}
+
+.subscribe-btn,
+.unsubscribe-btn:hover{
+    color: var(--c_violet);
+    background-color: white;
+}
+.subscribe-btn:hover,
+.unsubscribe-btn{
+    background-color: var(--c_violet);
+    color: white;
+}

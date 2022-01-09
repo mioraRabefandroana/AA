@@ -14,7 +14,7 @@ export function Button({icon, children, onClick, id, className}){
 
     return <button id={ id } className={ btnClassName } onClick={ handleClick } title={ children }>
         { btnIcon }
-        { children }
+        <span>{ children }</span>
     </button>
 }
 

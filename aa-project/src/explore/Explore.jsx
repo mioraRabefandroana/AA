@@ -256,7 +256,7 @@ function UserInfo({user}){
     console.log("USER >>>",user);
     const className = (user) ? "user-info-btn" : "nav-connexion-btn";
     const text = (user) ? user.username : "Se connecter";
-    const icon = (user) ? ( (user.image) ? user.image : defaultUserIcon ) : null;
+    const icon = (user) ? ( (user.profilePicture) ? user.profilePicture : defaultUserIcon ) : null;
 
     const handleClick = function(){
         if(user)

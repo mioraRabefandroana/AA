@@ -6,12 +6,14 @@ import commentFiledIcon from '../img/comment-filled.png';
 import shareLineIcon from '../img/share-line.png';
 import shareFilledIcon from '../img/share-filled.png';
 import defaultProfilePicture from "../img/user.png";
+import submitCommentIcon from "../img/paper-plane-solid.svg";
 
 import './Publication.css';
 import { cuniqid, ERROR_MSG, PROFILE_MENU, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
 import { Button, closeModal } from '../form/Form';
-import { createNewPublication, isPublicationLikedByUser, likePublication, unlikePublication } from './PulicationManager';
+import { commentPublication, createNewPublication, isPublicationLikedByUser, likePublication, unlikePublication } from './PulicationManager';
 import { gotoProfile } from '../App';
+import { isAuthenticated, isUserSubscribed, subscribeToPublisher, unSubscribeFromPublisher } from '../UserManager';
 
 export function Publication({publication, publisher, user}){
     const[isLiked, setIsLiked] = useState( isPublicationLikedByUser(publication, user) )
@@ -24,17 +26,54 @@ export function Publication({publication, publisher, user}){
             setIsLiked(i => !isLiked)
         } 
     }
+
+    const handleComment = async function(text){
+        // console.log("comment submitted : ", text);
+        const pub = await commentPublication(updatedPublication, user, text);
+        if(pub)
+        {
+            setPublication(p => pub);
+            console.log("publication commentée : ", pub);
+        } 
+    }
+
+
+    const [isSubscribed, setIsSubscribed] = useState( isUserSubscribed(user, publication.publisher) );
+    const handleSubscribe = async function(){
+        if(!isAuthenticated(user))
+        {
+            alert("Veuillez vous connectez pour s'abonner à cette page.")
+            return;
+        }
+
+        const res = await subscribeToPublisher(user, publication.publisher); 
+        setIsSubscribed(res);      
+    }
+    const handleUnSubscribe = async function(){
+        const res = await unSubscribeFromPublisher(user, publication.publisher);
+        setIsSubscribed(!res); 
+    }
+
     return <div className="publication">  
-        <PublicationContentWrapper publication={ updatedPublication } publisher={ publisher } isLiked={ isLiked } onLiked={ handleLike }/>
-        <PublicationCommentsWrapper comments={ updatedPublication.comments }/>
+        <PublicationContentWrapper 
+            user={ user } 
+            publication={ updatedPublication } 
+            publisher={ publisher } 
+            isSubscribed= { isSubscribed }
+            isLiked={ isLiked } 
+            onLiked={ handleLike } 
+            onSubscribe={ handleSubscribe } 
+            onUnSubscribe={ handleUnSubscribe }/>
+        <PublicationCommentsWrapper comments={ updatedPublication.comments } onNewCommentSubmitted={ handleComment } allowComment={ isAuthenticated(user) } />
     </div>
 }
 
-function PublicationContentWrapper({publication, publisher, isLiked, onLiked}){
+function PublicationContentWrapper({publication, user, publisher, isLiked, onLiked, isSubscribed, onSubscribe, onUnSubscribe}){
     const likesNumber = publication.likes ? publication.likes.length : 0;
-    publisher = publisher || publication.userPublisher;
+    publisher = publisher || publication.publisher;
     const contentImageSrc = (publication.contents && publication.contents.length > 0 ) ? publication.contents[0].image : null;
     const publisherFullName = publisher.firstName + " " + publisher.name;
+
     return <div className="publication-content-wrapper">
         
         { contentImageSrc ? <PublicationContent src={ contentImageSrc }/> : "" }
@@ -42,8 +81,16 @@ function PublicationContentWrapper({publication, publisher, isLiked, onLiked}){
         <div className="publication-details-wrapper">     
             <div className="publication-details publication-details-name-and-likes">
                 {/* #TODO : récupérer les bages : front + backend */}
-                {/* <PublisherName badges={publication.userPublisher.badges}>{ publication.publisher.name }</PublisherName> */}
-                <PublisherName badges={[]}>{ publisherFullName }</PublisherName>
+                {/* <PublisherName badges={publication.publisher.badges}>{ publication.publisher.name }</PublisherName> */}
+                <PublisherName 
+                    user={ user } 
+                    publisher={ publisher } 
+                    badges={[]} 
+                    isSubscribed={ isSubscribed } 
+                    onSubscribe={ onSubscribe } 
+                    onUnSubscribe={ onUnSubscribe }>
+                        { publisherFullName }
+                </PublisherName>
                 <PublicationLikes likesNumber={ likesNumber }/>
             </div>       
             <div className="publication-details publication-details-text-and-liked">
@@ -56,26 +103,64 @@ function PublicationContentWrapper({publication, publisher, isLiked, onLiked}){
     </div>
 }
 
-function PublicationCommentsWrapper({comments}){
-    // console.log(comments);
+function PublicationCommentsWrapper({comments, onNewCommentSubmitted, allowComment}){
+    const [isCommenting, setIsCommenting ] = useState(false)
+    const handleCommenting = function(){
+        if(!allowComment)
+        {
+            alert("Veuillez vous connectez pour ajouter un commentaire.");
+            return;
+        }
+        setIsCommenting(i => !isCommenting);
+    }
+
+    const handleCommentSubmit = function(text){
+        onNewCommentSubmitted(text);
+        setIsCommenting(i => false);
+    }
+
     return <div className="publication-comments-wrapper">
         <div className="publication-comments">
         {
-            comments.map( comment =>  <Comment comment={ comment } key={ cuniqid(comment.author.name) }/>)
-        
+            comments.map( comment =>  <Comment comment={ comment } key={ cuniqid(comment.author.id) }/>)        
         }        
         </div>
         <div className="publication-comments-details">
-            <CommentButton commented={ false } commentNumber={ 100 }/>
-            <ShareButton shared={ false } shareNumber={ 100 } />
+            <CommentButton commented={ false } commentNumber={ comments.length } onCommenting={ handleCommenting }/>
+            <ShareButton shared={ false } shareNumber={ 0 } />
+            {
+                (allowComment && isCommenting) ? <NewCommentField onNewCommentSubmitted={ handleCommentSubmit } /> : ""
+            }
+            
         </div>
     </div>
 }
 
-function CommentButton({commented, commentNumber}){
+function NewCommentField({onNewCommentSubmitted}){
+    const [text, setCommentText] = useState("")
+    const handleCommentSubmit = function(){
+        if(text.trim())
+        {
+            onNewCommentSubmitted(text);
+        }
+    }
+    const handleChange = function (e){
+        console.log("New commentaire :", e.target.value);
+        setCommentText(t => e.target.value);
+    }
+
+    return <div className="new-comment" valid={ (!!text).toString() }>
+        <textarea name="new-comment" id="" value={ text } onChange={ handleChange }></textarea>
+        <button className="new-comment-btn">
+            <img src={submitCommentIcon} alt="" onClick={ handleCommentSubmit }/>
+        </button>
+    </div>
+}
+
+function CommentButton({commented, commentNumber, onCommenting}){
     const commentIcon = commented ? commentFiledIcon : commentLineIcon;
     return <div className="comment-btn-wrapper">
-        <button className="comment-btn">
+        <button className="comment-btn" onClick={ onCommenting }>
             <img src={ commentIcon } alt="comment" />
         </button>
         <div className="comment-number">{ shortenNumber(commentNumber) }</div>
@@ -97,17 +182,17 @@ function Comment({comment}){
     const badges = (comment.author.badges) ? 
         comment.author.badges.map(
             badge => <UserBadge name={ badge.name } icon={ badge.icon } key={ cuniqid(badge.name) }/>
-        ) : "";
+        ) : "";    
     return <div className="comment">
-        <img src={ comment.author.image } alt={ comment.author.name } className="comment-author-image" />
+        <img src={ comment.author.profilePicture || defaultProfilePicture } alt={ comment.author.name } className="comment-author-image" />
         <div className="comment-author-name">
             { comment.author.name }
             { badges }
         </div>
-        <div className="comment-publish-time">{ comment.publishTime }</div>
+        <div className="comment-publish-time" title={ comment.publishTime }>{ comment.publishTime }</div>
         <div className="comment-text">
             <div className="comment-beak"></div>
-            <p> { comment.text } </p>
+            <div> { comment.text.split('\n').map(c => (<div className="comment-line" key={ cuniqid(c) }>{c}</div>) ) } </div>
         </div>
     </div>
 }
@@ -120,14 +205,6 @@ function UserBadge({name, icon}){
 }
 
 function PublicationContent({src}){
-    // let content = null;
-    // switch(type){
-    //     case PUBLICATION_CONTENT_TYPE.image:
-    //         content = <PublicationImage src={ src } />;
-    //         break;
-    //     default:
-
-    // }
     const content = <PublicationImage src={ src } />;
     return <div className="publication-content">
         { content }
@@ -163,13 +240,17 @@ function PublicationLikes({likesNumber}){
     </div>
 }
 
-function PublisherName({badges, children}){
+function PublisherName({user, publisher, badges, children, isSubscribed, onSubscribe, onUnSubscribe}){
     const badgeElts = (badges && badges.length > 0)? 
         badges.map(badge => <UserBadge name={ badge.name } icon={ badge.icon } key={ cuniqid(badge.name) }/>)
         : "";
+    const subscribeButton = !isSubscribed ? 
+        <button className="subscribe-btn" onClick={ onSubscribe } title="s'abonner"> s'abonner </button> :
+        <button className="unsubscribe-btn" onClick={ onUnSubscribe } title="se desabonner">aboné(e)</button>
     return <div className="publication-publisher-name">
         { children }
         { badgeElts }
+        { (user && user.id==publisher.id) ? "" : subscribeButton }
     </div>
 }
 
@@ -211,7 +292,7 @@ export function NewPublication({user, onNewPublicationCreated}){
         const res = await createNewPublication(publication, user.id);
         if(res.publication)
         {
-            const newPublication = {...res.publication, userPublisher: user};
+            const newPublication = {...res.publication, publisher: user};
             onNewPublicationCreated(newPublication);
             // alert(SUCCESS_MSG.NEW_PUBLICATION_SUCCESS);
             closeModal();

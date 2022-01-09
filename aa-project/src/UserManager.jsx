@@ -58,6 +58,11 @@ export async function logout(){
 }
 
 
+export function isAuthenticated(user){
+    return !!(user && user["id"]);
+}
+
+
 /**
  * get authentified user data
  * @param {*} username 
@@ -183,7 +188,6 @@ export async function getAuthentifiedUserFromSession(){
         return null;
 
     console.log("TOKEN", token);
-    // console.log("getHeaders()", getHeaders());
     const requestOptions = {
         method: 'POST',
         headers: getHeaders(),
@@ -191,18 +195,6 @@ export async function getAuthentifiedUserFromSession(){
     };
 
     try{
-        // const res = await fetch(API_URLS.userByToken, requestOptions)
-        // .then(response => {
-        //         if(response.ok)
-        //             return response.json();
-        // })
-        // .then(data => {
-        //         return data;
-        //         },
-        //         (error)=>{
-        //             return null;        
-        // })    
-        // console.log("----", res);
         const [user] = await fetch(API_URLS.userByToken, requestOptions)
         .then(response => {
                 if(response.ok)
@@ -332,4 +324,90 @@ export async function uploadImage(url, requestOptions){
             return [null, error.message]
         }
             
+}
+
+
+
+
+/**
+ * subscribe to a publisher (artist)
+ * @param {*} user 
+ * @param {*} publisher 
+ * @returns 
+ */
+export async function subscribeToPublisher(user, publisher){
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({
+                subscriber: user.id,
+                subscribed: publisher.id
+            })
+        };
+
+        const res = await fetch(API_URLS.subscribe, requestOptions)
+            .then(response => {
+                if(response.ok)
+                    return response.json();
+            })
+            .then(data => {
+                return data;
+                },
+                (error)=>{
+                    // return false;
+                    throw Error(error)
+                })
+        return res;
+    }
+    catch(error){
+        console.log("error SUBSCRIBE : ", error )
+        return false;
+    }
+}
+/**
+ * unsubscribe from publisher
+ * @param {*} user 
+ * @param {*} publisher 
+ */
+export async function unSubscribeFromPublisher(user, publisher){
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({
+                subscriber: user.id,
+                subscribed: publisher.id
+            })
+        };
+
+        const res = await fetch(API_URLS.unSubscribe, requestOptions)
+            .then(response => {
+                if(response.ok)
+                    return response.json();
+            })
+            .then(data => {
+                return data;
+                },
+                (error)=>{
+                    // return false;
+                    throw Error(error)
+                })
+        return res;
+    }
+    catch(error){
+        console.log("error UNSUBSCRIBE : ", error )
+        return false;
+    }
+}
+
+export function isUserSubscribed(user, publisher){
+    try{
+        let res = ( publisher.subscribers.indexOf(user.id) != -1 );
+        return res;
+    }
+    catch(error){ 
+        console.log("ERROR isUserSubscribed ", error)
+        return false; 
+    }
 }

@@ -42,7 +42,10 @@ export function RegisterForm({}){
             setmessage(msg => error.message)
         }
     }
-
+    const abort = function(e){
+        e.preventDefault();
+        document.location.reload();
+    }
     return <form action="" id="register-form" onSubmit={ submitUser }>
         <div id="register-form-header">
             <h2>Inscription</h2>
@@ -67,7 +70,7 @@ export function RegisterForm({}){
         <RegisterTextField label="Photo de couverture" id="register-photo_de_couverture"/> */}
 
         <div id="register-form-footer">
-            <button className="btn" id="register-cancel-btn">annuler</button>
+            <button className="btn" id="register-cancel-btn" onClick={ abort }>annuler</button>
             <button className="btn" id="register-submit-btn" onClick={ submitUser }>Créer mon compte</button>
         </div>
     </form>

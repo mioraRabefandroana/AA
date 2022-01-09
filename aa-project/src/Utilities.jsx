@@ -47,13 +47,17 @@ export const API_URLS = {
     "updateArtist" : (artistId) => API_URL_ORIGIN+"artist/" + artistId +"/",
 
     "publications" : (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
-    "userPublications" : (userId) => API_URL_ORIGIN+"userpublication/?userPublisher__id=" + userId,
+    "userPublications" : (userId) => API_URL_ORIGIN+"userpublication/?publisher__id=" + userId,
 
     "explorePublicationsByUser": (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
     "explorePublications": API_URL_ORIGIN+"publication/",
 
     "likePublication": API_URL_ORIGIN+"api/publication/like/",
     "unlikePublication": API_URL_ORIGIN+"api/publication/unlike/",
+    "commentPublication": API_URL_ORIGIN+"api/publication/comment/",
+
+    "subscribe": API_URL_ORIGIN+"api/user/subscribe/",
+    "unSubscribe": API_URL_ORIGIN+"api/user/unsubscribe/",
 
     "userByToken" : API_URL_ORIGIN+"api/user/token/",
     "userRegister" : API_URL_ORIGIN+"api/user/register/",
