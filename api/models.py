@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from random import random
@@ -41,7 +42,7 @@ class AAUser(models.Model):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.fullname()
+        return self.get_fullname()
     
     def get_profilePicture_url(self):
         if self.profilePicture and hasattr(self.profilePicture, 'url'):
@@ -70,6 +71,22 @@ class AAUser(models.Model):
             return Fan.objects.get(aaUser_id=self.id)
         except Exception:
             return None
+    
+    def get_subscribers(self):
+        try:
+            from api.models import Subscribe
+            return [ subscriber.subscriber.name for subscriber in Subscribe.objects.filter(subscribed_id=self.id) ] #.order_by("-id")
+        except Exception as e:
+            print(">>>>> get subscribers error", e)
+            return []
+    
+    def get_subscriberIds(self):
+        try:
+            from api.models import Subscribe
+            return [ subscriber.subscriber.id for subscriber in Subscribe.objects.filter(subscribed_id=self.id) ] #.order_by("-id")
+        except Exception as e:
+            print(">>>>> get subscribers error", e)
+            return []
 
 
 class ArtistType(models.Model):
@@ -187,32 +204,54 @@ class Publication(models.Model):
     publicationDate = models.DateTimeField(auto_now=True)
     userPublisher = models.ForeignKey(AAUser, on_delete=models.CASCADE)
 
-    # @property
-    # def likes(self):
-    #     return Like.objects.get(publication_id=self.id)
-    
+    def __str__(self):
+        return self.text
+
     def get_likes(self):
         # return []
         try:
             from api.models import Like
-            # from api.serializer import LikeSerializer
-            return Like.objects.filter(publication_id=self.id)
+            return Like.objects.filter(publication_id=self.id).order_by("-id")
         except Exception as e:
-            print(">>>>> get like error", e)
+            print(">>>>> get likes error", e)
+            return []
+    
+    def get_comments(self):
+        try:
+            from api.models import Comment
+            return Comment.objects.filter(publication_id=self.id).order_by("-id")
+        except Exception as e:
+            print(">>>>> get comments error", e)
             return []
 
-    def __str__(self):
-        return self.text
-    
-    # TODO : récupérer les commentaires pour la publication
-    def get_comments(self):
-        return []
 
 class Like(models.Model):
     id = models.BigAutoField(primary_key=True)
     aaUser = models.ForeignKey(AAUser, on_delete=models.CASCADE)
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now=True)
+
+class Comment(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    text = models.TextField()
+    aaUser = models.ForeignKey(AAUser, on_delete=models.CASCADE)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now=True)
+
+    def get_publishTime(self):
+        return self.date.strftime("%d/%m/%Y %H:%M")
+
+class Subscribe(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    # the subscriber : user that subscribe [fan]
+    subscriber = models.ForeignKey(AAUser, on_delete=models.CASCADE, related_name='the_fan')
+
+    # the user that has been subscribed [artist]
+    subscribed = models.ForeignKey(AAUser, on_delete=models.CASCADE, related_name="the_artist")
+
+    date = models.DateTimeField(auto_now=True)
+    def __str__(self) -> str:
+        return 
 
 class Page(models.Model):
     id = models.BigAutoField(primary_key=True)

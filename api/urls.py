@@ -1,10 +1,10 @@
 from django.db import router
 from django.urls import path, include
-from api.models import ArtistBadge, FanBadge
+from api.models import ArtistBadge, FanBadge, Subscribe
 
 
 from rest_framework import routers
-from api.views import ArtistViewSet, ArtistBadgeViewSet, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, FanViewSet, LikePubicationView, LikeViewSet, NewPublicationView, ProfilePictureUploadView, PublicPublicationsGetter, RegisterView, TestViewSet, UnlikePubicationView, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet, UserPublicationViewSet
+from api.views import ArtistViewSet, ArtistBadgeViewSet, CommentPubicationView, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, FanViewSet, LikePubicationView, LikeViewSet, NewPublicationView, ProfilePictureUploadView, PublicPublicationsGetter, RegisterView, SubscribeView, TestViewSet, UnSubscribeView, UnlikePubicationView, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet, UserPublicationViewSet
 
 router = routers.DefaultRouter()
 router.register('aauser', AAUserViewSet)
@@ -18,6 +18,8 @@ router.register('fanclub', FanClubViewSet)
 router.register('badge/artist', ArtistBadgeViewSet)
 router.register('badge/fan', FanBadgeViewSet)
 router.register('validationemail', EmailValidationViewSet)
+
+
 router.register('test', TestViewSet)
 
 router.register('like', LikeViewSet)
@@ -37,6 +39,9 @@ urlpatterns = [
     path('publication/new/', NewPublicationView.as_view(), name="api_new_publication"),
     path('publication/like/', LikePubicationView.as_view(), name="api_like_a_publication"),
     path('publication/unlike/', UnlikePubicationView.as_view(), name="api_unlike_a_publication"),
+    path('publication/comment/', CommentPubicationView.as_view(), name="api_comment_a_publication"),
+    path('user/subscribe/', SubscribeView.as_view(), name="api_comment_a_publication"),
+    path('user/unsubscribe/', UnSubscribeView.as_view(), name="api_comment_a_publication"),
 ]
 
 

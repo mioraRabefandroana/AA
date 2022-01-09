@@ -12,11 +12,11 @@ from rest_framework.decorators import api_view
 from rest_framework import permissions
 from rest_framework.generics import CreateAPIView
 from django.contrib.auth import get_user_model
-from api.serializer import FanSerializer, LikeSerializer, UserSerializer, EmailValidationSerializer
+from api.serializer import CommentSerializer, FanSerializer, LikeSerializer, UserSerializer, EmailValidationSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from api.models import Artist, ArtistBadge, FanBadge, Content, BecomeMember, Fan, FanClub, Like, Page, Publication, Test, ArtistType, UserAuthentification, AAUser, Administrator, EmailValidation
+from api.models import Artist, ArtistBadge, Comment, FanBadge, Content, BecomeMember, Fan, FanClub, Like, Page, Publication, Subscribe, Test, ArtistType, UserAuthentification, AAUser, Administrator, EmailValidation
 from api.serializer import AdministratorSerializer, ArtistSerializer, ArtistBadgeSerializer, FanBadgeSerializer, ContentSerializer, BecomeMemberSerializer, FanClubSerializer, PageSerializer, PublicationSerializer, TestSerializer, ArtistTypeSerializer, UserAuthentificationSerializer, AAUserSerializer
 
 # from django.contrib.auth.models import User
@@ -242,7 +242,7 @@ class RegisterView(views.APIView):
     def create_artist(self, aaUser):
         artist = Artist()
         artist.aaUser = aaUser
-        artist.stageName = aaUser.fullname()
+        artist.stageName = aaUser.get_fullname()
         artist.save()
         return artist
 
@@ -535,13 +535,6 @@ class UnlikePubicationView(views.APIView):
         publicationUrl = "/publication/?id="+ str(id)
         return publicationUrl
 
-    def userAlreadyLikedThisPublication(self, aaUser, publication):
-        likes = publication.get_likes()
-        for like in likes:
-            if( aaUser == like.aaUser):
-                return True
-        return False
-
     def post(self, request):
         try:
             aaUserId = request.data.get("user")
@@ -555,6 +548,99 @@ class UnlikePubicationView(views.APIView):
         except Exception as error:
             print("/!\ /!\ Unlike a publication error ==>", error)
             return Response([])
+
+""""
+Comment a publication
+=> return the UNliked publication (with the extra like)
+"""
+class CommentPubicationView(views.APIView):
+
+    def publication_url(self, id):
+        publicationUrl = "/publication/?id="+ str(id)
+        return publicationUrl
+
+    def post(self, request):
+        try:
+            aaUserId = request.data.get("user")
+            publicationId = request.data.get("publication")
+            text = request.data.get("text")
+
+            print("------------------------text:",text)
+
+            comment = Comment()
+            comment.aaUser = AAUser.objects.get(id=aaUserId)
+            comment.publication = Publication.objects.get(id=publicationId)
+            comment.text = text
+            comment.save()
+
+            return response.HttpResponseRedirect(redirect_to= self.publication_url(publicationId))
+
+        except Exception as error:
+            print("/!\ /!\ COMMENT a publication error ==>", error)
+            return Response([])
+
+""""
+Subscribe to an artist (aaUser)
+=> return True | False
+"""
+class SubscribeView(views.APIView):
+
+    def publication_url(self, id):
+        publicationUrl = "/publication/?id="+ str(id)
+        return publicationUrl
+
+    def userAlreadySubscribed(self, subscriber, subscribed):
+        subscriberIds = subscribed.get_subscriberIds()
+        return ( subscriber.id in subscriberIds )
+
+    def post(self, request):
+        # try:
+        print("--SUBSCRIBE")
+        subscriberId = request.data.get("subscriber")
+        subscribedId = request.data.get("subscribed")
+                    
+        subscriber = AAUser.objects.get(id=subscriberId)
+        subscribed = AAUser.objects.get(id=subscribedId)
+
+        print(subscriber.id, subscribed)
+
+        if( not self.userAlreadySubscribed(subscriber, subscribed) ):
+            subscribe = Subscribe()
+            subscribe.subscriber = subscriber
+            subscribe.subscribed = subscribed
+            subscribe.save()
+        else:
+            print(">>>> user already subscribed!")
+            return Response(True) 
+
+        return Response(True) 
+
+        # except Exception as error:
+        #     print("/!\ /!\ SUBSCRIBE error ==>", error)
+        #     return Response(False)
+
+
+
+""""
+UnSubscribe From an artist (aaUser)
+=> return True | False
+"""
+class UnSubscribeView(views.APIView):
+    def post(self, request):
+        try:
+            print("--UNSUBSCRIBE")
+            subscriberId = request.data.get("subscriber")
+            subscribedId = request.data.get("subscribed")
+
+            subscribe = Subscribe.objects.get(subscriber_id=subscriberId, subscribed_id=subscribedId)
+            subscribe.delete()
+
+            return Response(True)
+
+        except Exception as error:
+            print("/!\ /!\ UNSUBSCRIBE error ==>", error)
+            return Response(True)
+
 
 # class ExplorePublicationsByUserView(views.APIView):
 
