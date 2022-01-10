@@ -4,6 +4,8 @@
     grid-template-areas: "pub pub""img text";
     grid-template-columns: max-content 1fr;
     grid-row-gap: 5px;
+
+    cursor: pointer;
 }
 .publication-content-wrapper *{
 }
@@ -392,12 +394,12 @@
     padding: 0px 5px;
 }
 
-.subscribe-btn,
-.unsubscribe-btn:hover{
+.subscribe-btn{
+/* .unsubscribe-btn:hover{ */
     color: var(--c_violet);
     background-color: white;
 }
-.subscribe-btn:hover,
+/* .subscribe-btn:hover, */
 .unsubscribe-btn{
     background-color: var(--c_violet);
     color: white;

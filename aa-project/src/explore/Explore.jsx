@@ -200,10 +200,46 @@ export function Explore({}){
                        
     }, [])
 
+    
+    const handleSubscribe = function(){
+        console.log("xxxxxxxxxxx handleSubscribe");
+        setPublications(ps => {
+            return ps.map(p => {
+                // if(p.publisher.id == publisher.id)
+                //     p.publisher = {...p.publisher, ...publisher};
+                // add current user into subscriber list
+                p.publisher.subscribers = [...p.publisher.subscribers, user.id]
+                return p;
+            })
+        })
+    }
+    
+    const handleUnSubscribe = function(){
+        console.log("Uxxxxxxxxxxx handleUnSubscribe");
+        setPublications(ps => {
+            return ps.map(p => {                
+                // // remove current user from subscriber list
+                // console.log("BEFORE",user.id, p.publisher.subscribers);
+                // console.log("AFTER", p.publisher.subscribers.filter(sId => {
+                //     console.log(sId,'vs', u.id, ' = ', sId!=sId)
+                //     return sId!=u.id;
+                // }));
+
+                p.publisher.subscribers = p.publisher.subscribers.filter(i => i!=user.id);
+                return p;
+            })
+        })
+    }
+
     return <div id="explore">
         <ExploreHeader user={ user }/>        
         <ExploreLeftMenu/>
-        <ExploreContent user={ user } topArtists={ TOP_ARTISTS } publications={ publications }/>    
+        <ExploreContent 
+            user={ user } 
+            topArtists={ TOP_ARTISTS } 
+            publications={ publications } 
+            onSubscribe={ handleSubscribe }
+            onUnSubscribe={ handleUnSubscribe }/>    
         { rightMenu }
         <ExploreFooter/>
     </div>;
@@ -295,14 +331,18 @@ function UserInfo({user}){
     </div>
 }
 
-function ExploreContent({topArtists, publications, user}){
+function ExploreContent({topArtists, publications, user, onSubscribe, onUnSubscribe}){
     console.log("PUBLICATIONS : ", publications);
-
     return <div id="explore-content" className="content">
             <CardList artists={ topArtists } id="top-5"/>
             <div className="publications-wrapper">
             { 
-                publications.map(publication => <Publication publication={ publication } user={ user } key={ cuniqid(publication.name) }/>)
+                publications.map(publication => <Publication 
+                    publication={ publication } 
+                    user={ user } 
+                    onSubscribe={ onSubscribe }
+                    onUnSubscribe={ onUnSubscribe }
+                    key={ cuniqid(publication.name) }/>)
             }
 
             {/* { <Publication publication={ publications[0] }/> } */}

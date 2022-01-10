@@ -10,12 +10,19 @@ import submitCommentIcon from "../img/paper-plane-solid.svg";
 
 import './Publication.css';
 import { cuniqid, ERROR_MSG, PROFILE_MENU, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
-import { Button, closeModal } from '../form/Form';
+import { Button, closeModal, showModal } from '../form/Form';
 import { commentPublication, createNewPublication, isPublicationLikedByUser, likePublication, unlikePublication } from './PulicationManager';
 import { gotoProfile } from '../App';
 import { isAuthenticated, isUserSubscribed, subscribeToPublisher, unSubscribeFromPublisher } from '../UserManager';
 
-export function Publication({publication, publisher, user}){
+export function Publication({
+    publication, 
+    publisher, 
+    user, 
+    // isSubscribed,
+    onSubscribe=()=>{},
+    onUnSubscribe=()=>{}
+}){
     const[isLiked, setIsLiked] = useState( isPublicationLikedByUser(publication, user) )
     const [updatedPublication, setPublication] = useState(publication)
     const handleLike = async function(liked){        
@@ -48,11 +55,17 @@ export function Publication({publication, publisher, user}){
 
         const res = await subscribeToPublisher(user, publication.publisher); 
         setIsSubscribed(res);      
+
+        onSubscribe(publication.publisher);
     }
     const handleUnSubscribe = async function(){
         const res = await unSubscribeFromPublisher(user, publication.publisher);
         setIsSubscribed(!res); 
+
+        onUnSubscribe(publication.publisher);
     }
+
+    console.log([publication.publisher.name,publication.text, " : ",isSubscribed]);
 
     return <div className="publication">  
         <PublicationContentWrapper 
@@ -74,9 +87,13 @@ function PublicationContentWrapper({publication, user, publisher, isLiked, onLik
     const contentImageSrc = (publication.contents && publication.contents.length > 0 ) ? publication.contents[0].image : null;
     const publisherFullName = publisher.firstName + " " + publisher.name;
 
+    const handleContentClick = function(){
+        showModal(<Publication publication={publication} user={user} /> );
+    }
+
     return <div className="publication-content-wrapper">
         
-        { contentImageSrc ? <PublicationContent src={ contentImageSrc }/> : "" }
+        { contentImageSrc ? <PublicationContent src={ contentImageSrc } onContentClick={ handleContentClick }/> : "" }
 
         <div className="publication-details-wrapper">     
             <div className="publication-details publication-details-name-and-likes">
@@ -204,9 +221,9 @@ function UserBadge({name, icon}){
         alt={ name }/>
 }
 
-function PublicationContent({src}){
+function PublicationContent({src, onContentClick}){
     const content = <PublicationImage src={ src } />;
-    return <div className="publication-content">
+    return <div className="publication-content" onClick={ onContentClick }>
         { content }
     </div>
 }
