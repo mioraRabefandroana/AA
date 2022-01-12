@@ -201,7 +201,7 @@ class RegisterView(views.APIView):
         try:
             get_user_model().objects.get(username=self.user.get("username"))
             return True
-        except BaseException:
+        except Exception:
             return False
     
     def user_exists_by_email(self):
