@@ -34,7 +34,7 @@ import { CardList } from './Card';
 import { NewPublication, Publication } from './Publication';
 import { gotoExplore, gotoHome, gotoLogin, gotoProfile } from '../App';
 import { getTop5, loadExploreData, getExplorePublications } from './ExploreData'
-import { CURRENT_USER, getAuthentifiedUserFromSession, logout } from '../UserManager';
+import { getAuthentifiedUserFromSession, logout } from '../UserManager';
 
 // #TODO : récuperer les top artists depuis la BD
 const TOP_ARTISTS = [
@@ -59,59 +59,11 @@ const TOP_ARTISTS = [
     }
 ]
 
-// #TODO : temporary top_artist list
+// #TODO : top_artist
 const n = 5;
 for(let i=0; i<(n-1); i++)
 {
     TOP_ARTISTS.push(TOP_ARTISTS[0]);
-}
-
-
-const PUBLICATIONS = [
-    {
-        name: "jain-publication",
-
-        text: "Lorem ipsum dolor sit amet. Id dicta accusamus in itaque reprehenderit ad magni deleniti velit voluptas est nisi obcaecati et magnam consequatur eos architecto cupiditate.",
-        publisher: {
-            name: "Jain",
-            image: jainImage,
-            badges: [BADGE.star, BADGE.superstar]
-        },
-        
-        type: PUBLICATION_CONTENT_TYPE.image,
-        src: tmpMenuIcon,
-
-        likes: [...Array(10).keys()],
-
-        comments: [
-            {
-                text : "Lorem ipsum dolor sit amet. Ut mollitia eius ut facilis reiciendis et dolor quaerat ex rerum natus ex veniam aliquid qui quod quia",
-                publishTime : "2min",
-                author: {
-                    name: "Parry Hotter",
-                    image: logo,
-                    badges: [BADGE.star]
-                }
-            },
-            {
-                text : "Lorem ipsum dolor sit amet. Ut mollitia eius ut facilis reiciendis et dolor quaerat ex rerum natus ex veniam aliquid qui quod quia",
-                publishTime : "2min",
-                author: {
-                    name: "Parry Hotter",
-                    image: logo,
-                    badges: [BADGE.star]
-                }
-            }
-        ]
-    }
-]
-PUBLICATIONS.push(PUBLICATIONS[0])
-PUBLICATIONS.push(PUBLICATIONS[0])
-
-
-const USER = {
-    name: "username",
-    image: defaultUserIcon
 }
 
 
@@ -187,45 +139,43 @@ export function Explore({}){
     
     useEffect(async () => { 
         // console.log("auth user = ", user);
+        let explorePublications = []
+        debugger;
         if(!user)
         {
             const u = await getAuthentifiedUserFromSession(); 
-            setUser(oldUser => u); 
+            if(u)
+            {
+                setUser(oldUser => u);
+            } 
+            
+            explorePublications = await getExplorePublications({user: u});
+            setPublications(publications => explorePublications);
         }
-
-        let explorePublications = await getExplorePublications({user});
+        else
+            explorePublications = await getExplorePublications({user});
         setPublications(publications => explorePublications);
-        console.log("explorePublications > ", explorePublications);
-        // const data = await loadExploreData({user}) ;
                        
     }, [])
 
     
-    const handleSubscribe = function(){
-        console.log("xxxxxxxxxxx handleSubscribe");
+    const handleSubscribe = function(publisher){
         setPublications(ps => {
             return ps.map(p => {
-                // if(p.publisher.id == publisher.id)
-                //     p.publisher = {...p.publisher, ...publisher};
-                // add current user into subscriber list
-                p.publisher.subscribers = [...p.publisher.subscribers, user.id]
+                if(publisher.id == p.publisher.id){
+                    p.publisher.subscribers = [...p.publisher.subscribers, user.id];
+                }
                 return p;
             })
         })
     }
     
-    const handleUnSubscribe = function(){
-        console.log("Uxxxxxxxxxxx handleUnSubscribe");
+    const handleUnSubscribe = function(publisher){
         setPublications(ps => {
-            return ps.map(p => {                
-                // // remove current user from subscriber list
-                // console.log("BEFORE",user.id, p.publisher.subscribers);
-                // console.log("AFTER", p.publisher.subscribers.filter(sId => {
-                //     console.log(sId,'vs', u.id, ' = ', sId!=sId)
-                //     return sId!=u.id;
-                // }));
-
-                p.publisher.subscribers = p.publisher.subscribers.filter(i => i!=user.id);
+            return ps.map(p => {      
+                if(publisher.id == p.publisher.id){
+                    p.publisher.subscribers = p.publisher.subscribers.filter(i => i!=user.id);
+                }
                 return p;
             })
         })
@@ -245,12 +195,12 @@ export function Explore({}){
     </div>;
 }
 
-export function ExploreHeader({user}){
+export function ExploreHeader({user, onProfileChange=()=>{}}){
     return <nav id="explore-nav" className="nav top-nav">
         <ExploreIcon/>
         <ExplorerMenu/>
         <SearchBar id="explore-search-bar"/>
-        <UserInfo user={ user }/>
+        <UserInfo user={ user } onProfileChange={ onProfileChange }/>
     </nav>
 }
 
@@ -288,15 +238,20 @@ function NavMenuItem({menu}){
     </a>
 }
 
-function UserInfo({user}){
+function UserInfo({user, onProfileChange}){
     console.log("USER >>>",user);
     const className = (user) ? "user-info-btn" : "nav-connexion-btn";
     const text = (user) ? user.username : "Se connecter";
     const icon = (user) ? ( (user.profilePicture) ? user.profilePicture : defaultUserIcon ) : null;
 
     const handleClick = function(){
-        if(user)
-            gotoProfile({user});
+        if(user){
+            gotoProfile({
+                user, 
+                viewer: user
+            });
+            onProfileChange({user, viewer: user});
+        }
         else
             gotoLogin();
     }

@@ -30,9 +30,15 @@ export function gotoExplore({user})
 {
     ReactDOM.render(<Explore user={ user }/>, root);
 }
-export function gotoProfile({children, activeMenu, user}){
-    debugger;
-    ReactDOM.render(<Profile activeMenu={ activeMenu } defaultUser={ user }>{ children }</Profile> , root);
+export function gotoProfile({children, activeMenu, user, viewer}){
+    // console.log("user ", user.id, "viewer", (viewer? viewer.id : null))
+    // debugger;
+    ReactDOM.render(<Profile 
+        activeMenu={ activeMenu } 
+        defaultUser={ user }        
+        viewer = {viewer}>
+            { children }
+    </Profile> , root);
 }
 
 export function gotoLogin(){

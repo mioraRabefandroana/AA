@@ -16,7 +16,10 @@ export async function loadExploreData({user}){
  */
 export async function getExplorePublications({user})
 {
+    debugger;
     let url = (user) ? API_URLS.explorePublicationsByUser(user.id) : API_URLS.explorePublications;
+
+    console.log("~###########################################url publications :", url)
 
     const requestOptions = {
         headers: getHeaders()

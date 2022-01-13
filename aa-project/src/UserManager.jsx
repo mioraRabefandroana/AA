@@ -264,6 +264,33 @@ export async function getFanByUser(user){
     return fan;
 }
 
+export async function getUserInfo(userId){
+    
+    const requestOptions = {
+        method: 'GET',
+        headers: getHeaders()
+    };
+
+    const [user] = await fetch(API_URLS.userInfoById(userId), requestOptions)
+        .then(response => {
+            if(response.ok)
+                return response.json();
+        })
+        .then(data => {
+            return data;
+            },
+            (error)=>{
+                return [];        
+            })   
+
+        if(user)
+        {
+            user.artist = await getArtistByUser(user);
+            user.fan = await getFanByUser(user);
+            return user;
+        }
+        return null; 
+}
 
 export async function uploadCoverPicture(pictureFile, userId){
 

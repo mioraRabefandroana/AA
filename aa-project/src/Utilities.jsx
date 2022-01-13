@@ -41,13 +41,14 @@ export const API_URLS = {
     "test": API_URL_ORIGIN+"test/",
 
     "userByusername" : (username) => API_URL_ORIGIN+"aauser/?user__username=" + username,
+    "userInfoById" : (userId) => API_URL_ORIGIN+"aauser/?id=" + userId,
     "artistByUserId" : (userId) => API_URL_ORIGIN+"artist/?aaUser__id=" + userId,
     "fanByUserId" : (userId) => API_URL_ORIGIN+"fan/?aaUser__id=" + userId,
     "updateUser" : (userId) => API_URL_ORIGIN+"aauser/" + userId +"/",
     "updateArtist" : (artistId) => API_URL_ORIGIN+"artist/" + artistId +"/",
 
     "publications" : (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
-    "userPublications" : (userId) => API_URL_ORIGIN+"userpublication/?publisher__id=" + userId,
+    "userPublications" : (userId) => API_URL_ORIGIN+"userpublication/?userPublisher__id=" + userId,
 
     "explorePublicationsByUser": (userId) => API_URL_ORIGIN+"api/publications/?userId=" + userId,
     "explorePublications": API_URL_ORIGIN+"publication/",
@@ -154,4 +155,20 @@ export function removeToken(){
 
 export function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+export function formatDateHour(dateHour){
+    console.log(dateHour)
+    let date = dateHour.substr(0, 10);
+    let d = date.split("-");
+    date = d[2]+"/"+d[1]+"/"+d[0];
+
+    let hour = dateHour.substr(11, 5);
+
+    return {
+        full: date+" "+hour,
+        date: date,
+        hour: hour,
+        str: "le "+date+" à "+hour
+    }
 }

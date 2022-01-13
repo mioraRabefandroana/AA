@@ -71,7 +71,13 @@
 .publication-details-name-and-likes,
 .publication-details-text-and-liked{
     display: grid;
-    grid-template-columns: 1fr max-content;
+    grid-template-columns: 1fr max-content max-content;
+}
+
+.publication-date{
+    font-size: 8px;
+    align-self: center;
+    margin-right: 7px;
 }
 
 .publication-publisher{

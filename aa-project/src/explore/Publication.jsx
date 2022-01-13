@@ -9,11 +9,11 @@ import defaultProfilePicture from "../img/user.png";
 import submitCommentIcon from "../img/paper-plane-solid.svg";
 
 import './Publication.css';
-import { cuniqid, ERROR_MSG, PROFILE_MENU, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
+import { cuniqid, ERROR_MSG, formatDateHour, PROFILE_MENU, PUBLICATION_CONTENT_TYPE, shortenNumber, SUCCESS_MSG } from '../Utilities';
 import { Button, closeModal, showModal } from '../form/Form';
 import { commentPublication, createNewPublication, isPublicationLikedByUser, likePublication, unlikePublication } from './PulicationManager';
 import { gotoProfile } from '../App';
-import { isAuthenticated, isUserSubscribed, subscribeToPublisher, unSubscribeFromPublisher } from '../UserManager';
+import { getAuthentifiedUserFromSession, getUserInfo, isAuthenticated, isUserSubscribed, subscribeToPublisher, unSubscribeFromPublisher } from '../UserManager';
 
 export function Publication({
     publication, 
@@ -35,12 +35,10 @@ export function Publication({
     }
 
     const handleComment = async function(text){
-        // console.log("comment submitted : ", text);
         const pub = await commentPublication(updatedPublication, user, text);
         if(pub)
         {
             setPublication(p => pub);
-            console.log("publication commentée : ", pub);
         } 
     }
 
@@ -65,7 +63,7 @@ export function Publication({
         onUnSubscribe(publication.publisher);
     }
 
-    console.log([publication.publisher.name,publication.text, " : ",isSubscribed]);
+    // console.log([publication.publisher.name,publication.text, " : ",isSubscribed]);
 
     return <div className="publication">  
         <PublicationContentWrapper 
@@ -108,6 +106,7 @@ function PublicationContentWrapper({publication, user, publisher, isLiked, onLik
                     onUnSubscribe={ onUnSubscribe }>
                         { publisherFullName }
                 </PublisherName>
+                <span className="publication-date" title={ "publiée "+ formatDateHour(publication.publicationDate).str }>{ formatDateHour(publication.publicationDate).full }</span>
                 <PublicationLikes likesNumber={ likesNumber }/>
             </div>       
             <div className="publication-details publication-details-text-and-liked">
@@ -162,7 +161,7 @@ function NewCommentField({onNewCommentSubmitted}){
         }
     }
     const handleChange = function (e){
-        console.log("New commentaire :", e.target.value);
+        // console.log("New commentaire :", e.target.value);
         setCommentText(t => e.target.value);
     }
 
@@ -264,8 +263,18 @@ function PublisherName({user, publisher, badges, children, isSubscribed, onSubsc
     const subscribeButton = !isSubscribed ? 
         <button className="subscribe-btn" onClick={ onSubscribe } title="s'abonner"> s'abonner </button> :
         <button className="unsubscribe-btn" onClick={ onUnSubscribe } title="se desabonner">aboné(e)</button>
+    
+
+    const handleClick = async function(e){
+        const updatedPublisher = await getUserInfo(publisher.id);
+        gotoProfile({
+            user: updatedPublisher, 
+            viewer: await getAuthentifiedUserFromSession()
+        })
+    }
+    
     return <div className="publication-publisher-name">
-        { children }
+        <span onClick={ handleClick }> { children } </span>
         { badgeElts }
         { (user && user.id==publisher.id) ? "" : subscribeButton }
     </div>
@@ -282,10 +291,8 @@ export function NewPublication({user, onNewPublicationCreated}){
     const [publication, setPublication] = useState(null);
     const publicationImg = useRef(null)
     const handleChange = function(e){  
-        // value
         const {name, value} = e.target;
         setPublication(p => ({...p, [name]: value}) );
-        // console.log({name, value})
     }
 
     const handleFileChange = function(e){  
@@ -294,7 +301,6 @@ export function NewPublication({user, onNewPublicationCreated}){
         if( file )
         {
             setPublication(p => ({...p, image: file}));
-            // debugger;
             // preview image
             publicationImg.current.src = URL.createObjectURL(file);
             return;
@@ -305,7 +311,7 @@ export function NewPublication({user, onNewPublicationCreated}){
 
     /** submit new publication */
     const handleClick = async function(){
-        console.log("New publication : ",publication);
+        // console.log("New publication : ",publication);
         const res = await createNewPublication(publication, user.id);
         if(res.publication)
         {

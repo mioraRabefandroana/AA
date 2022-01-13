@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { useState } from 'react';
-import { login, registerUser, saveCurrentUser } from '../UserManager';
+import { getAuthentifiedUser, getAuthentifiedUserFromSession, login, registerUser, saveCurrentUser } from '../UserManager';
 import { gotoExplore, gotoProfile, root } from '../App';
 import { FormMessage } from './LoginForm';
 import './RegisterForm.css'
@@ -24,17 +24,25 @@ export function RegisterForm({}){
     const submitUser = async function(e){
         e.preventDefault();
         try{
-            const {success, field, message} = await registerUser(user);
+            // const res = await registerUser(user)
+            const {success, field, message} =  await registerUser(user);
             if(!success)
             {
                 setmessage(msg => message);
                 return;
             }
 
+
             setmessage(msg => "");
-            saveCurrentUser(user);
             await login(user.username, user.password);
-            ReactDOM.render(<RegisterSuccess user={ user }/>, root)
+            
+            const newUser = await getAuthentifiedUserFromSession(user.username);
+
+            // const newUser = res.user
+            // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            // console.log(newUser)
+            // setUser(u => newUser)
+            ReactDOM.render(<RegisterSuccess user={ newUser }/>, root)
             
         }
         catch(error){
