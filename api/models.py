@@ -68,6 +68,7 @@ class AAUser(models.Model):
 
     def get_fan(self):
         try:
+            from api.models import Fan
             return Fan.objects.get(aaUser_id=self.id)
         except Exception:
             return None
@@ -84,9 +85,62 @@ class AAUser(models.Model):
         try:
             from api.models import Subscribe
             return [ subscriber.subscriber.id for subscriber in Subscribe.objects.filter(subscribed_id=self.id) ] #.order_by("-id")
-        except Exception as e:
-            print(">>>>> get subscribers error", e)
+        except Exception as error:
+            print(">>>>> get subscribers error", error)
             return []
+    
+    """
+    get all user artist that current use has been subscribed
+    """
+    def get_subsriptions(self):
+        try:
+            from api.models import Subscribe
+            return [ subscribe.subscribed for subscribe in Subscribe.objects.filter(subscriber_id=self.id).order_by("-id") ]
+        except Exception as error:
+            print(">>>>> get_subsribedList", error)
+            return []            
+
+    """
+    get user publications
+    """
+    def get_publications(self):
+        try:
+            from api.models import Publication
+            return Publication.objects.filter(userPublisher_id=self.id).order_by("-id")
+        except Exception as error:
+            print("No publications yet for user ", self.id, error)
+            return []
+
+    """
+    get publication related to the user : by subscribed first then the rest
+    """
+    def get_proposed_publications(self):  
+        # HERE
+        try:
+            subscriptions = self.get_subsriptions()
+            
+            pubIds = []
+            for s in subscriptions:
+                ps = s.get_publications()
+                for p in ps:
+                    pubIds.append(p.id)
+
+            pubIds.sort()
+            publications = []
+            for pubId in pubIds:
+                try:
+                    publications.append( Publication.objects.get(id=pubId) )
+                except Exception:
+                    pass
+            
+            morePublications = Publication.objects.all().order_by("-id")
+            morePublications = [p  for p in morePublications if p.id not in pubIds ]
+
+            return publications + morePublications
+
+        except Exception as error:
+            print(">>>>> get_proposed_publications", error)
+            return []  
 
 
 class ArtistType(models.Model):

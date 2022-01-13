@@ -128,7 +128,7 @@ class UserPublicationViewSet(viewsets.ModelViewSet):
     filterset_fields  = ['id', 'userPublisher__id']
 
     # permissions
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
 
 class PageViewSet(viewsets.ModelViewSet):
@@ -338,10 +338,9 @@ class RegisterView(views.APIView):
 
         print(' after activation : ', aaUser.user.is_active)
 
-
-
         return Response({
-            "success": True
+            "success": True,
+            "user": AAUserSerializer( AAUser.objects.get(id=aaUser.id), context={"request": request} ).data
         }) 
 
 
@@ -472,18 +471,19 @@ class NewPublicationView(views.APIView):
 """
 get user publications
 """
-class PublicPublicationsGetter(views.APIView):
+class PublicPublicationsGetterView(views.APIView):
 
     def get(self, request):
         try:
             publications = Publication.objects.all()
             userId = request.GET.get("userId")
-            # TODO : séléction des publication en fonction de l'utilisateur
+            u = AAUser.objects.get(id=userId)
+            publications = u.get_proposed_publications()
 
-            return Response(publications)
+            return Response( PublicationSerializer(publications, many=True, context={"request": request}).data )
 
         except Exception as error:
-            print("/!\ /!\ PublicPublicationsGetter upload error ==>", error)
+            print("/!\ /!\ PublicPublicationsGetterView error ==>", error)
             return Response([])
 
 """"

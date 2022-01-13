@@ -4,7 +4,7 @@ from api.models import ArtistBadge, FanBadge, Subscribe
 
 
 from rest_framework import routers
-from api.views import ArtistViewSet, ArtistBadgeViewSet, CommentPubicationView, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, FanViewSet, LikePubicationView, LikeViewSet, NewPublicationView, ProfilePictureUploadView, PublicPublicationsGetter, RegisterView, SubscribeView, TestViewSet, UnSubscribeView, UnlikePubicationView, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet, UserPublicationViewSet
+from api.views import ArtistViewSet, ArtistBadgeViewSet, CommentPubicationView, CoverPictureUploadView, FanBadgeViewSet, CreateUserView, FanViewSet, LikePubicationView, LikeViewSet, NewPublicationView, ProfilePictureUploadView, PublicPublicationsGetterView, RegisterView, SubscribeView, TestViewSet, UnSubscribeView, UnlikePubicationView, UserAuthentificationView, AAUserByTokenView, AAUserViewSet, AdministratorViewSet, ContentViewSet, BecomeMemberViewSet, FanClubViewSet, PageViewSet, PublicationViewSet, EmailValidationViewSet, UserPublicationViewSet
 
 router = routers.DefaultRouter()
 router.register('aauser', AAUserViewSet)
@@ -35,7 +35,7 @@ urlpatterns = [
     path('user/token/', AAUserByTokenView.as_view(), name="api_get_user_by_token"),
     path('user/upload/cover/', CoverPictureUploadView.as_view(), name="api_cover_picture_upload"),
     path('user/upload/profile/', ProfilePictureUploadView.as_view(), name="api_profile_picture_upload"),
-    path('publications/', PublicPublicationsGetter.as_view(), name="api_publication_getter"),
+    path('publications/', PublicPublicationsGetterView.as_view(), name="api_publication_getter"),
     path('publication/new/', NewPublicationView.as_view(), name="api_new_publication"),
     path('publication/like/', LikePubicationView.as_view(), name="api_like_a_publication"),
     path('publication/unlike/', UnlikePubicationView.as_view(), name="api_unlike_a_publication"),
