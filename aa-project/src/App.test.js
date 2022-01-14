@@ -35,12 +35,8 @@ describe("Test de connexion", async () => {
                 {target: {value: u.password}}
             )
 
-            console.log([inputUsername.value, inputPassword.value]);
             let loginBtn = document.querySelector(".login-connexion-btn") 
             
-            // await act(async ()=>{
-            //     await fireEvent.click(loginBtn);
-            // })
             await fireEvent.click(loginBtn);
 
             if(!u.success){
@@ -181,7 +177,7 @@ test("Test S'abonner/Se desabonner", async () => {
     expect(publications.length > 0).toBe(true);
     let publication = publications[0];
 
-    jest.spyOn(window, 'alert').mockImplementation(() => {console.log("ALLLLEEERRT");});
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
     const mockSubscribe = jest.fn(p=>{});
     const mockUnSubscribe = jest.fn(p=>{});
 
@@ -228,7 +224,7 @@ test("Test Liker/Unliker", async () => {
     expect(publications.length > 0).toBe(true);
     let publication = publications[0];
 
-    jest.spyOn(window, 'alert').mockImplementation(() => {console.log("ALLLLEEERRT");});
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
     const mockLike = jest.fn();
 
     const isLiked = isPublicationLikedByUser(publication, user);
@@ -256,7 +252,7 @@ test("Test Comment", async () => {
     expect(publications.length > 0).toBe(true);
     let publication = publications[0];
 
-    jest.spyOn(window, 'alert').mockImplementation(() => {console.log("ALLLLEEERRT");});
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
 
     const mockComment = jest.fn(text=>{});
 
