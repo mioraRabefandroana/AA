@@ -26,14 +26,14 @@ export function Profile({defaultUser, viewer, header=true, activeMenu=PROFILE_ME
     /** on user updated*/
     const handleUserUpdate = function(user){
         console.log("USER UPDATED");
-        console.log(user);
         setUser(u => user);
     }
 
-    const handleUserSave = function(user){     
+    const handleUserSave = function(userNewData, updatedUser){     
         // submit update user
-        updateUser(user);
-        handleUserUpdate(user);
+        updateUser(userNewData);
+        handleUserUpdate(updatedUser);
+        console.log([userNewData, updatedUser])
     }
 
     const handleArtistSave = function(artist){     
@@ -278,7 +278,7 @@ function ProfileInfoUser({user, onUserSave, readOnly}){
 
     const handleProfileSave = function(e){
         setNotOnUpdate(notOnUpdate => true);
-        onUserSave({...user, 
+        let updatedUser = {...user, 
             biography, 
             name, 
             firstName,
@@ -287,7 +287,20 @@ function ProfileInfoUser({user, onUserSave, readOnly}){
             dateOfBirth, 
             placeOfBirth, 
             address
-        });
+        }
+
+        let userNewData = {
+            id: user.id,
+            biography, 
+            name, 
+            firstName,
+            email, 
+            tel, 
+            dateOfBirth, 
+            placeOfBirth, 
+            address
+        }
+        onUserSave(userNewData, updatedUser);
     }
     const handleCancel = function(e){
         setNotOnUpdate(notOnUpdate => true);

@@ -127,11 +127,18 @@ export async function registerUser(user){
 
 
 export async function updateUser(user){
-    console.log("updateUser")
+    console.log("updateUser ;;; ", user)
+
+    let putUser = {...user,}
+    delete putUser.profilePicture;
+    delete putUser.coverPicture;
+
+    console.log("updateUser 222 ", putUser)
+
     const requestOptions = {
         method: 'PUT',
         headers: getHeaders(),
-        body: JSON.stringify(user)
+        body: JSON.stringify(putUser)
     };
 
     const res = await fetch(API_URLS.updateUser(user.id), requestOptions)

@@ -158,7 +158,6 @@ export function capitalize(str) {
 }
 
 export function formatDateHour(dateHour){
-    console.log(dateHour)
     let date = dateHour.substr(0, 10);
     let d = date.split("-");
     date = d[2]+"/"+d[1]+"/"+d[0];
