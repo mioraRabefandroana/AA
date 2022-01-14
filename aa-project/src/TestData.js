@@ -8,7 +8,13 @@ export const notValidUser = {
     password: ""
 }
 export const validUser = {
+    id: 3,
     username: "fan1",
+    password: "toor"
+}
+export const artistTest = {
+    id: 6,
+    username: "artist4",
     password: "toor"
 }
 

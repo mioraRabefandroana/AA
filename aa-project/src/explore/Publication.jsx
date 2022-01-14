@@ -119,7 +119,7 @@ function PublicationContentWrapper({publication, user, publisher, isLiked, onLik
     </div>
 }
 
-function PublicationCommentsWrapper({comments, onNewCommentSubmitted, allowComment}){
+export function PublicationCommentsWrapper({comments, onNewCommentSubmitted, allowComment}){
     const [isCommenting, setIsCommenting ] = useState(false)
     const handleCommenting = function(){
         if(!allowComment)
@@ -167,8 +167,8 @@ function NewCommentField({onNewCommentSubmitted}){
 
     return <div className="new-comment" valid={ (!!text).toString() }>
         <textarea name="new-comment" id="" value={ text } onChange={ handleChange }></textarea>
-        <button className="new-comment-btn">
-            <img src={submitCommentIcon} alt="" onClick={ handleCommentSubmit }/>
+        <button className="new-comment-btn" onClick={ handleCommentSubmit }>
+            <img src={submitCommentIcon} alt="" />
         </button>
     </div>
 }
@@ -237,7 +237,7 @@ function PublicationText({children}){
     </div>
 }
 
-function LikeButton({isLiked, onLiked}){
+export function LikeButton({isLiked, onLiked}){
     const likeIcon = isLiked ? likeFilledIcon : likeLineIcon;
     const likeTitle = isLiked ? "unlike" : "like";
     return <button className="like-btn" title={ likeTitle } onClick={ onLiked }>
@@ -256,7 +256,7 @@ function PublicationLikes({likesNumber}){
     </div>
 }
 
-function PublisherName({user, publisher, badges, children, isSubscribed, onSubscribe, onUnSubscribe}){
+export function PublisherName({user, publisher, badges, children, isSubscribed, onSubscribe, onUnSubscribe}){
     const badgeElts = (badges && badges.length > 0)? 
         badges.map(badge => <UserBadge name={ badge.name } icon={ badge.icon } key={ cuniqid(badge.name) }/>)
         : "";

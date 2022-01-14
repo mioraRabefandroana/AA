@@ -264,8 +264,8 @@ function UserInfo({user, onProfileChange}){
     const handleDisconnect = function(e){
         e.preventDefault();
         logout();
-        // remove token
-        removeToken();
+        // // remove token
+        // removeToken();
         gotoHome();
     }
 
@@ -297,7 +297,7 @@ function ExploreContent({topArtists, publications, user, onSubscribe, onUnSubscr
                     user={ user } 
                     onSubscribe={ onSubscribe }
                     onUnSubscribe={ onUnSubscribe }
-                    key={ cuniqid(publication.name) }/>)
+                    key={ cuniqid(publication.id) }/>)
             }
 
             {/* { <Publication publication={ publications[0] }/> } */}
@@ -356,7 +356,7 @@ function LeftSubMenuItem({menu}){
 export function ExploreRightMenu({user, notifications, messages, onNewPublicationCreated}){
     
     let newBtn = "";
-    if( "artist" in user && user.artist && "id" in user.artist )
+    if( user && "artist" in user && user.artist && "id" in user.artist )
     {
         newBtn = <li> <NewFloatButton user={ user } onNewPublicationCreated={onNewPublicationCreated}/> </li>;
     }

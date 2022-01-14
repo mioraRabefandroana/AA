@@ -43,6 +43,8 @@ export async function logout(){
         body: JSON.stringify({})
     };
     
+    removeToken();
+    
     const res = await fetch(API_URLS.apiLogoutUrl, requestOptions)
         .then(response => {
             return response.json();
@@ -53,7 +55,7 @@ export async function logout(){
         (error)=>{
             
         })
-        
+    
     return res;
 }
 

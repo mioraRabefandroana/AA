@@ -42,7 +42,6 @@ export async function getUserPublications(user){
         method: 'GET',
         headers: getHeaders()
     };
-    console.log( "API_URLS.userPublications(user.id)" , API_URLS.userPublications(user.id))
 
     const res = await fetch(API_URLS.userPublications(user.id), requestOptions)
         .then(response => {
