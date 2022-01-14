@@ -29,24 +29,9 @@ from django.conf import settings
 from datetime import datetime
 
 
-# class ModelFilter(django_filters.FilterSet):
-#     username = django_filters.ModelChoiceFilter(
-#         field_name="user__username",
-#         queryset=User.objects.all()
-#     )
-
-#     class Meta:
-#         model = AAUser
-#         fields = ('username',)
-
-
 class AAUserViewSet(viewsets.ModelViewSet):
     queryset = AAUser.objects.all()
     serializer_class = AAUserSerializer
-    # filter_class = ModelFilter
-
-    # permissions
-    # permission_classes = (IsAuthenticated,)
 
     filterset_fields  = ['id','name', 'firstName', 'user__username']
     filter_backends = [DjangoFilterBackend]
@@ -62,8 +47,6 @@ class AAUserViewSet(viewsets.ModelViewSet):
 class LikeViewSet(viewsets.ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
-    # permissions
-    # permission_classes = (IsAuthenticated,)
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['id','publication__id', 'aaUser__id']
@@ -88,7 +71,6 @@ class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
 
-    # filterset_fields  = ['x']
     filter_backends = [DjangoFilterBackend]
 
 
@@ -119,16 +101,12 @@ class PublicationViewSet(viewsets.ModelViewSet):
     # permissions
     # permission_classes = (IsAuthenticated,)
 
-# user (publisher) publications
-# Restricted access : authentified user only
 class UserPublicationViewSet(viewsets.ModelViewSet):
     queryset = Publication.objects.all().order_by("-publicationDate")
     serializer_class = PublicationSerializer
     
     filterset_fields  = ['id', 'userPublisher__id']
 
-    # permissions
-    # permission_classes = (IsAuthenticated,)
 
 
 class PageViewSet(viewsets.ModelViewSet):
@@ -146,7 +124,6 @@ class FanClubViewSet(viewsets.ModelViewSet):
     # permissions
     permission_classes = (IsAuthenticated,)
 
-#>> TODO : voir si BecomeMember sera afficher ou pas à la fin
 class BecomeMemberViewSet(viewsets.ModelViewSet):
     queryset = BecomeMember.objects.all()
     serializer_class = BecomeMemberSerializer
@@ -155,7 +132,6 @@ class BecomeMemberViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
-#>> TODO : voir si Content sera afficher ou pas à la fin
 class ContentViewSet(viewsets.ModelViewSet):
     queryset = Content.objects.all()
     serializer_class = ContentSerializer
@@ -164,7 +140,6 @@ class ContentViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
 
-#>> TODO : voir si ArtistType sera afficher ou pas à la fin
 class ArtistTypeViewSet(viewsets.ModelViewSet):
     queryset = ArtistType.objects.all()
     serializer_class = ArtistTypeSerializer
@@ -175,11 +150,6 @@ class ArtistTypeViewSet(viewsets.ModelViewSet):
 class EmailValidationViewSet(viewsets.ModelViewSet):
     queryset = EmailValidation.objects.all()
     serializer_class = EmailValidationSerializer
-
-    # permissions
-    # permission_classes = (IsAuthenticated,)
-    # filterset_fields  = ['email']
-    # filter_backends = [DjangoFilterBackend]
 
 
 class UserAuthentificationView(views.APIView):
@@ -519,7 +489,6 @@ class LikePubicationView(views.APIView):
                 like.save()
 
             return response.HttpResponseRedirect(redirect_to= self.publication_url(publication.id))
-            # return Response({"publication": PublicationSerializer(publication).data})
 
         except Exception as error:
             print("/!\ /!\ Like a publication error ==>", error)
@@ -615,10 +584,6 @@ class SubscribeView(views.APIView):
 
         return Response(True) 
 
-        # except Exception as error:
-        #     print("/!\ /!\ SUBSCRIBE error ==>", error)
-        #     return Response(False)
-
 
 
 """"
@@ -642,9 +607,6 @@ class UnSubscribeView(views.APIView):
             return Response(True)
 
 
-# class ExplorePublicationsByUserView(views.APIView):
-
-
 ######################################################
 class CreateUserView(CreateAPIView):
 
@@ -657,7 +619,7 @@ class CreateUserView(CreateAPIView):
 
 
 ####################################################
-def index(request):
-    return HttpResponse("Hello, world.")
+# def index(request):
+#     return HttpResponse("Hello, world.")
 
 

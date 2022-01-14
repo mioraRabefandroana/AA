@@ -8,13 +8,11 @@ class FanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fan
         exclude = ['aaUser']
-        # fields = '__all__'
 
 class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         exclude = ['aaUser']
-        # fields = '__all__'
 
 class ArtistBadgeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,24 +31,19 @@ class TestSerializer(serializers.ModelSerializer):
 
 
 class AAUserSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source="user.username", read_only=True)    
-    # fullname = serializers.JSONField(source="get_fullname")
+    username = serializers.CharField(source="user.username", read_only=True)   
     subscribers = serializers.JSONField(source="get_subscriberIds", read_only=True)
 
     class Meta:
         model = AAUser
-        # exclude = ['profilePicture', 'coverPicture'] 
         exclude = ['user', ]       
         depth = 1 
-        # fields = '__all__'
 """
 depth = 0
 """
 class AAUserSerializer2(serializers.ModelSerializer):
-    username = serializers.CharField(source="user.username", read_only=True)    
-    # fullname = serializers.JSONField(source="get_fullname")
+    username = serializers.CharField(source="user.username", read_only=True)   
     subscribers = serializers.JSONField(source="get_subscriberIds", read_only=True)
-    # subscribers = serializers.SerializerMethodField()
     class Meta:
         model = AAUser    
         exclude = ['user', 'active', 'dateOfBirth', 'placeOfBirth', 'pseudo']  
@@ -66,7 +59,6 @@ class LikeSerializer(serializers.ModelSerializer):
     user = AAUserSerializer2(source="aaUser")
     class Meta:
         model = Like
-        # fields = '__all__'
         exclude = ['aaUser',]
         depth = 1
 
@@ -75,17 +67,13 @@ class CommentSerializer(serializers.ModelSerializer):
     publishTime = serializers.JSONField(source="get_publishTime") 
     class Meta:
         model = Comment
-        # fields = '__all__'
         exclude = ['aaUser',]
         depth = 0
 
 class SubscribeSerializer(serializers.ModelSerializer):
-    # subscribed = AAUserSerializer2(source="aaUser")
-    # subscriber = AAUserSerializer2(source="subscriber")
     class Meta:
         model = Subscribe
         fields = '__all__'
-        # exclude = ['aaUser',]
 
 class PublicationSerializer(serializers.ModelSerializer):
     comments = serializers.JSONField(source="get_comments")   
@@ -94,7 +82,6 @@ class PublicationSerializer(serializers.ModelSerializer):
     publisher = AAUserSerializer(source="userPublisher")
     class Meta:
         model = Publication
-        # fields = '__all__'
         exclude=['userPublisher']
         depth = 1
     
@@ -123,7 +110,6 @@ class ContentSerializer(serializers.ModelSerializer):
     imageUrl = serializers.SerializerMethodField()
     class Meta:
         model = Content
-        # fields = '__all__'
         exclude = ['image']
     
     

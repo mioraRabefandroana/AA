@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from random import random
 
 
-# from multiselectfield import MultiSelectField
-
 class AAUser(models.Model):
     id = models.BigAutoField(primary_key=True)
 
@@ -28,13 +26,10 @@ class AAUser(models.Model):
     address = models.CharField(max_length=500)
     dateOfBirth = models.DateField()
     placeOfBirth = models.CharField(max_length=100)
-    # mot_de_passe = models.CharField(max_length=1000)
-    # profilePicture  = models.CharField(max_length=1000, blank=True, null=True)
-    # coverPicture = models.CharField(max_length=1000, blank=True, null=True)
+    
     profilePicture  = models.ImageField(upload_to="profilePicture/", blank=True, null=True)
     coverPicture  = models.ImageField(upload_to="coverPicture/", blank=True, null=True)
 
-    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)
 
     # 0 : waiting for email validation
@@ -227,7 +222,6 @@ class Administrator(models.Model):
 
     description = models.TextField()
 
-    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)
 
 class Content(models.Model):
@@ -245,7 +239,6 @@ class Content(models.Model):
 
     image = models.ImageField(upload_to="publication/", blank=True, null=True)
 
-    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)
 
 
@@ -254,7 +247,6 @@ class Publication(models.Model):
     text = models.TextField()
     contents = models.ManyToManyField(Content, blank=True, null=True)
 
-    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     publicationDate = models.DateTimeField(auto_now=True)
     userPublisher = models.ForeignKey(AAUser, on_delete=models.CASCADE)
 
@@ -262,7 +254,6 @@ class Publication(models.Model):
         return self.text
 
     def get_likes(self):
-        # return []
         try:
             from api.models import Like
             return Like.objects.filter(publication_id=self.id).order_by("-id")
@@ -330,7 +321,6 @@ class FanClub(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
 
-    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)
 
     members = models.ManyToManyField(Fan, through='BecomeMember')
@@ -366,7 +356,6 @@ class Action(models.Model):
     type = models.CharField(choices=ACTION_TYPE, max_length=100)
     description = models.TextField()
 
-    # TODO : vérifier si auto_now correspond bien à CURRENT_TIMESTAMP (sur le net)
     creationDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -387,8 +376,6 @@ class EmailValidation(models.Model):
         return self.validationCode
     
     def send_validation_code(self):
-        # TODO: send validation code to user by email
-        # pass
         print("code sent to ", self.aaUser.email)
 
     def set_utilisateur(self, aaUser):
