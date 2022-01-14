@@ -39,9 +39,10 @@ class AAUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AAUser
-        # exclude = ['profilePicture', 'coverPicture']        
+        # exclude = ['profilePicture', 'coverPicture'] 
+        exclude = ['user', ]       
         depth = 1 
-        fields = '__all__'
+        # fields = '__all__'
 """
 depth = 0
 """
