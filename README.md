@@ -1,34 +1,48 @@
+
 ![logo](2A_logo.png)
 
-# AA project
+# Artiflex et Auditorium - Front-end
+## Description
+Projet réalisé dans le cadre de l'**UE E-Commerce, ECUE Application E-Commerce**
+Ce projet concerne le developpement d'une application web de type réseau social dedié aux artistes et ses fans pour une communication plus exclusive. D'où son nom "**Artiflex et Auditorium**" (Artiste et Fan en français).
 
-Gestionnaire d’évènement pour artiste.
-Fonctionnalités
-•	Création page artiste (compte)
-o	~sous réserve d’une validation
-o	Superstar
-o	Star
-o	En herbe
-o	
-•	Création fanClub (groupe de discussion) : forum de discussion
-•	Publication de contenue : évènement, publication, vidéo [avec espace commentaire et réaction]
-•	Vente œuvre
-•	Création d’événement
-•	Vente place d’événement (spectacle)
-•	Diffusion de contenu : live vidéo, podcast (payant ou non)
-•	MODE VIP
-•	
-•	Création de compte fan
-•	Chat privé avec l’artiste ou autre fan
-•	Chat public dans le fan club
-•	Abonnement à une page d’artiste : avec différent modalité (payant ou pas
-o	Recevoir les notifications
-o	En fonction de l’activité, le fan aura un badge : 
-	superfan
-	Fan
-o	
-•	Achat d’un pass VIP (accès à des contenus exclusive)
-•	
-•	Affichage du lieu de l’évènement sur une carte
-•	Faire un don
-•	
+La partie client du projet est developpé avec **React**.
+Quant à la partie serveur, elle s'appuie sur un API Rest developpé avec Rest **Framework de django** . Cette dernière se trouve se la branche [backend](https://github.com/mioraRabefandroana/AA/tree/backend) de ce dépôt.
+
+![](https://www.datocms-assets.com/45470/1631110818-logo-react-js.png)
+
+## Auteur
+**Miora RARABEFANDROANA**
+
+## Principe de fonctionnement
+- Un fan ou artiste peut s'abonner/se desabonner à autant de page d'artiste
+- Seul les artistes ont le droit de publier
+- Un fan ou artiste peut liker/unliker une publication
+- Un fan ou artiste peut commenter/décommenter une publication
+
+## Fonctionalités implémentées
+
+- [x] **Création de compte**
+    - [x] Artiste
+    - [x] Fan
+
+- [x] **Ajout / Modification des informations de compte**
+    - [x] Détails personnelles
+    - [x] Photo de profile
+    - [x] Photo de couverture
+
+- [x] **Consultation d'une page d'un artiste**
+    - [x] Informations
+    - [x] Publications
+
+- [x] **Publication d'un post**
+    - [x] Texte
+    - [x] Image
+
+- [x] **Abonnement / desabonnement à un artiste**
+- [x] **Ajout de commentaire à une publication**
+
+- [x] **Like / Unlike une publication**
+
+## Screenshots
+
