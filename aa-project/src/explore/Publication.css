@@ -284,6 +284,7 @@
     grid-row-gap: 10px;
 
     max-height: 327px;
+    min-height: 62px;
     overflow-y: auto;
 }
 
