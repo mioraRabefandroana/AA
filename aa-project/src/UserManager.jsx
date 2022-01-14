@@ -151,7 +151,6 @@ export async function updateUser(user){
 }
 
 export async function updateArtist(artist){
-    console.log("updateArtist")
     const requestOptions = {
         method: 'PUT',
         headers: getHeaders(),
@@ -188,7 +187,7 @@ export async function getAuthentifiedUserFromSession(){
     if(!token)
         return null;
 
-    console.log("TOKEN", token);
+    // console.log("TOKEN", token);
     const requestOptions = {
         method: 'POST',
         headers: getHeaders(),
@@ -261,7 +260,7 @@ export async function getFanByUser(user){
             (error)=>{
                 return [];        
             })    
-    console.log("FAN",API_URLS.fanByUserId(user.id), fan)
+            
     return fan;
 }
 

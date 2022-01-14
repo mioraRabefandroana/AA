@@ -63,8 +63,6 @@ export function Publication({
         onUnSubscribe(publication.publisher);
     }
 
-    // console.log([publication.publisher.name,publication.text, " : ",isSubscribed]);
-
     return <div className="publication">  
         <PublicationContentWrapper 
             user={ user } 
@@ -311,7 +309,6 @@ export function NewPublication({user, onNewPublicationCreated}){
 
     /** submit new publication */
     const handleClick = async function(){
-        // console.log("New publication : ",publication);
         const res = await createNewPublication(publication, user.id);
         if(res.publication)
         {

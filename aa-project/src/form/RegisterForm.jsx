@@ -15,8 +15,6 @@ export function RegisterForm({}){
         const {name, value} = e.target;
         setUser(user => {
             user = {...user, [name]: value}
-            console.log("++new user register :", {[name]: value})
-            console.log("new User : ", user)
             return user;
         })
     }
@@ -38,10 +36,6 @@ export function RegisterForm({}){
             
             const newUser = await getAuthentifiedUserFromSession(user.username);
 
-            // const newUser = res.user
-            // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            // console.log(newUser)
-            // setUser(u => newUser)
             ReactDOM.render(<RegisterSuccess user={ newUser }/>, root)
             
         }
@@ -107,7 +101,7 @@ function RegisterAccountTypeField({onChange, value}){
 function RegisterSuccess({user, children}){
     const handleClick = function(e){
         e.preventDefault();
-        gotoProfile({user});
+        gotoProfile({user, viewer:user});
     }
 
     const message = "Heureux de t'acceuillr parmis nous "+user.username+"!";

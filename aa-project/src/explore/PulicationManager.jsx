@@ -67,7 +67,6 @@ export async function getUserPublications(user){
  * @returns 
  */
 export async function likePublication(publication, user){
-    console.log("liked")
     try{
         const requestOptions = {
             method: 'POST',
@@ -104,7 +103,6 @@ export async function likePublication(publication, user){
  * @returns 
  */
 export async function unlikePublication(publication, user){
-    console.log("UNliked")
     try{
         const requestOptions = {
             method: 'POST',
@@ -146,7 +144,6 @@ export function isPublicationLikedByUser(publication, user){
     {
         if(like.user.id == user.id)
         {
-            // console.log("pub ",publication.id," liked");
             return true;
         }
     }

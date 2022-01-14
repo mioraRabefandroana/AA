@@ -11,9 +11,7 @@ import { getUserPublications } from "./PulicationManager";
 import { Publication } from "./Publication";
 
 export function Profile({defaultUser, viewer, header=true, activeMenu=PROFILE_MENU.PUBLICATION}){
-    // debugger;
-    console.log("viewer, defaultUser")
-    console.log(viewer, defaultUser)
+    
     const [user, setUser] = useState(defaultUser);
 
     const [currentViewer, setCurrentViewer] = useState(viewer);
@@ -25,7 +23,6 @@ export function Profile({defaultUser, viewer, header=true, activeMenu=PROFILE_ME
 
     /** on user updated*/
     const handleUserUpdate = function(user){
-        console.log("USER UPDATED");
         setUser(u => user);
     }
 
@@ -36,8 +33,7 @@ export function Profile({defaultUser, viewer, header=true, activeMenu=PROFILE_ME
         console.log([userNewData, updatedUser])
     }
 
-    const handleArtistSave = function(artist){     
-        // console.log("---handleArtistSave")
+    const handleArtistSave = function(artist){   
         // submit updated artist
         updateArtist(artist);
     }
@@ -87,7 +83,6 @@ export function Profile({defaultUser, viewer, header=true, activeMenu=PROFILE_ME
 
 /** header */
 function ProfileHeader({user, onUserUpdate, readOnly}){
-    console.log(">>>>>> ProfileHeader ", readOnly)
     return <div className="user-profile-header">
         <CoverPicture user={ user }  readOnly={ readOnly }/>
         <div className="user-profile-picture-wrapper">
@@ -143,11 +138,8 @@ function ProfilePicture({user, onUserUpdate, readOnly}){
         {
             alert(message);
         }
-        
-        
-        console.log("new 0 :", filename)
+                
         user = {...user, profilePicture: filename};
-        console.log("new 1:", user.profilePicture)
         onUserUpdate(user);
     }
 

@@ -138,9 +138,7 @@ export function Explore({}){
         : "";
     
     useEffect(async () => { 
-        // console.log("auth user = ", user);
         let explorePublications = []
-        debugger;
         if(!user)
         {
             const u = await getAuthentifiedUserFromSession(); 
@@ -239,7 +237,7 @@ function NavMenuItem({menu}){
 }
 
 function UserInfo({user, onProfileChange}){
-    console.log("USER >>>",user);
+    // console.log("USER >>>",user);
     const className = (user) ? "user-info-btn" : "nav-connexion-btn";
     const text = (user) ? user.username : "Se connecter";
     const icon = (user) ? ( (user.profilePicture) ? user.profilePicture : defaultUserIcon ) : null;
@@ -287,7 +285,7 @@ function UserInfo({user, onProfileChange}){
 }
 
 function ExploreContent({topArtists, publications, user, onSubscribe, onUnSubscribe}){
-    console.log("PUBLICATIONS : ", publications);
+    // console.log("PUBLICATIONS : ", publications);
     return <div id="explore-content" className="content">
             <CardList artists={ topArtists } id="top-5"/>
             <div className="publications-wrapper">
@@ -299,8 +297,6 @@ function ExploreContent({topArtists, publications, user, onSubscribe, onUnSubscr
                     onUnSubscribe={ onUnSubscribe }
                     key={ cuniqid(publication.id) }/>)
             }
-
-            {/* { <Publication publication={ publications[0] }/> } */}
         </div>
     </div>
 }
